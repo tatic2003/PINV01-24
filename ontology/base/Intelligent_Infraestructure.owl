@@ -1,0 +1,2242 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE Ontology [
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY xml "http://www.w3.org/XML/1998/namespace" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+]>
+
+
+<Ontology xmlns="http://www.w3.org/2002/07/owl#"
+     xml:base="http://www.owl-ontologies.com/Ontology1302518959.owl"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     ontologyIRI="http://www.owl-ontologies.com/Ontology1302518959.owl">
+    <Prefix name="rdf" IRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+    <Prefix name="rdfs" IRI="http://www.w3.org/2000/01/rdf-schema#"/>
+    <Prefix name="xsd" IRI="http://www.w3.org/2001/XMLSchema#"/>
+    <Prefix name="owl" IRI="http://www.w3.org/2002/07/owl#"/>
+    <Declaration>
+        <Class IRI="#Accuracy_Area"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Adaptive_Cruise_Control"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Advanced_Environment"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Advanced_Incidents"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Animals"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Architecture_Problems"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Arterial_Management_Systems"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Artificial_Actions"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Asset_Management"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Automatic_Train_Operational"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Automatic_Vehicle_Location"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Autonomous_Driving"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Bicycle"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Border_Crossing"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Cellular_Integration_Efforts"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Centralized_Limit"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Circuit_Remote_Technology"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Collision_Avoidance"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Collision_Avoidance_Systems"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Collision_Notification_Systems"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Commercial_Vehicle_Operations"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Communication_Systems"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Container_Handling"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Crash_Prevention_&amp;_Safety"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Critical_Route_Sensor"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#DataBase_Operation_Report"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Data_Management"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Distributed_Routing"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Drayage"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Driver_Assistance_Systems"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Driver_Evaluation"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Driver_Information"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Driver_Network_Estimation"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Driver_Route"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Dynamic_Sensors_Estimation"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Electronic_Payment"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Electronic_Payment_Systems"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Embedded_Transmission_Frequency"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Emergency_Management_Systems"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Emergency_Response"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#En-route_Information"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Enforcement"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Engineering_Applications"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Engineering_Transport"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Estimate_Loop_Detector"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Fare_Payment"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Fleet_Management"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Flow_Behaviour"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Forward_Collision_Warning"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Freeway_Link"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Freeway_Management_Systems"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Global_Freeway"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Guidance_Detectors"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Guidance_Message"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Hazardous_Material"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Hazardous_Materials_Functions"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#High_Motion_Background"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Highway_Decision"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Highway_Dissemination"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Highway_Safety"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Highway_Tracking"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Historical_Matrix_Measurements"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Human_Decisions"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ITS"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Improved_Vehicle_Systems"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#In-Transit"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#In-vehicle_Collision"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Incident_Clearance"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Incident_Detection"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Incident_Management_Systems"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Incident_Response"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Incident_Speed"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Incidents_Simulation"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Information_Dissemination"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Information_Management"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Information_Technologies"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Intelligence_Problem"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Intelligent_Flow_Controllers"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Intelligent_Infraestructures"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Intelligent_Queue"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Intelligent_Speed"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Intelligent_Vehicles"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Intermodal_Freight"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Internet_Server_Type"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Intersection_Collision"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Intersection_Performance"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Intersection_Variable_Rules"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Intervals_Prediction"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Lane_Change"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Lane_Control"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Lane_Departure_Warning"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Lane_Keeping_Assistance"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Lane_Strategies"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Level_Support"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Limited_Navigation"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Local_Coordination_Mobile"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Located_Systems"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Location_Areas"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Matrices_Simulation_Observed"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Medic"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Message_Measures"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Mobile_Message"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Monitoring_Improve"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Multimedia_Object"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Multiple_Road_Management"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Network_Navigation_Route"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Network_Potential_Analisis_"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Networks_Intervehicle"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Object_Detection"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Obstacle_Detection"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#On-board_System"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Operating_Process"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Origin_&amp;_Destination_Measurement"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Parking_Fee"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Parking_Management"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Pedestrian_Safety"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Performance_Conditions"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Plate_Identification_Techniques"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Pre-trip_Information"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Probe_Response"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Public_User"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Quality_Period_System"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Rail_System"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Railway_Techniques"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Ramp_Conditions"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Ramp_Flow"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Range_Sensor"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Real_Data_Control"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Real_Dynamic_System"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Real_Location_Management"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Rear-end_Collision"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Road_Departure"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Road_Weather_Management"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Roadway_Operations_&amp;_Maintenance"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Route_Guidance"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Safety_&amp;_Security"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Safety_Analysis"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Safety_Definition_License"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Sleepiness"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Software_Policy"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Software_Update_Scheduling"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Special_Event"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Speed_Control"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Speed_Routes_Location"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Stability_Control"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Stage_Deviation"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Surveillance"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Surveillance_Sensors"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Surveillance_Technologies"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Technologies_Planning_Guidance"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Technology_Convenience_"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Temporal_Analysis_Detection"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Toll_Collection"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Traffic_Control"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Traffic_Incident"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Train_Computer"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Transit_Management_Systems"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Transportation_Demand"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Transportation_Efficiency"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Transportation_Error"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Transportation_System"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Travel_Framework"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Traveler_Assistance"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Traveler_Information"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Traveler_Work_Support"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Unit_Transactions"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Units_Testing"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Urban_Infraestructure"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Urban_Networks_Management"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Vehicle_Length"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Vehicle_Sensors_Signals"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Vehicles_Applications"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Vehicles_Support"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Vision_Enhancement"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Weather_Conditions"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Weather_Information"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Wide_Network_Operation"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Wide_Reliability"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Wifi_Wimax_Relay"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Winter_Corridor"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Wireless_Infrastructure"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Work_Zone"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#feature"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#icus_information"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#icus_location"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#id_icus"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#location_ior"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#name"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#ontology_location"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#port"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#bcast"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#enabled_protocols"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#feature"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#free"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#ftp"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#host_date"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#host_information"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#host_time"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#hostname"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#icus_location"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#id_icus"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#ip"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#location_ior"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#mask"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#mcast"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#memory"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#name"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#network"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#ontology_location"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#operating_system"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#platform"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#port"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#scp"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#sftp"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#total"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#uptime"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#used"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#version_op_sys"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="http://www.owl-ontologies.com/rita_Class2"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="http://www.owl-ontologies.com/rita_Class5"/>
+    </Declaration>
+    <Declaration>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+    </Declaration>
+    <Declaration>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#Accuracy_Area"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Adaptive_Cruise_Control"/>
+        <Class IRI="#Driver_Assistance_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Advanced_Environment"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Advanced_Incidents"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Animals"/>
+        <Class IRI="#Crash_Prevention_&amp;_Safety"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Architecture_Problems"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Arterial_Management_Systems"/>
+        <Class IRI="#Intelligent_Infraestructures"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Artificial_Actions"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Asset_Management"/>
+        <Class IRI="#Roadway_Operations_&amp;_Maintenance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Automatic_Train_Operational"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Automatic_Vehicle_Location"/>
+        <Class IRI="#Incident_Management_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Autonomous_Driving"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Bicycle"/>
+        <Class IRI="#Crash_Prevention_&amp;_Safety"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Border_Crossing"/>
+        <Class IRI="#Intermodal_Freight"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Cellular_Integration_Efforts"/>
+        <Class IRI="#Information_Dissemination"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Centralized_Limit"/>
+        <Class IRI="#Information_Dissemination"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Circuit_Remote_Technology"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Collision_Avoidance"/>
+        <Class IRI="#Collision_Notification_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Collision_Avoidance_Systems"/>
+        <Class IRI="#Intelligent_Vehicles"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Collision_Notification_Systems"/>
+        <Class IRI="#Intelligent_Vehicles"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Commercial_Vehicle_Operations"/>
+        <Class IRI="#Intelligent_Infraestructures"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Communication_Systems"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Container_Handling"/>
+        <Class IRI="#Intermodal_Freight"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Crash_Prevention_&amp;_Safety"/>
+        <Class IRI="#Intelligent_Infraestructures"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Critical_Route_Sensor"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#DataBase_Operation_Report"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Data_Management"/>
+        <Class IRI="#Information_Management"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Distributed_Routing"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Drayage"/>
+        <Class IRI="#Intermodal_Freight"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Driver_Assistance_Systems"/>
+        <Class IRI="#Intelligent_Vehicles"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Driver_Evaluation"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Driver_Information"/>
+        <Class IRI="#Driver_Assistance_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Driver_Network_Estimation"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Driver_Route"/>
+        <Class IRI="#Information_Dissemination"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Dynamic_Sensors_Estimation"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Electronic_Payment"/>
+        <Class IRI="#Electronic_Payment_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Electronic_Payment_Systems"/>
+        <Class IRI="#Intelligent_Infraestructures"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Embedded_Transmission_Frequency"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Emergency_Management_Systems"/>
+        <Class IRI="#Intelligent_Infraestructures"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Emergency_Response"/>
+        <Class IRI="#Emergency_Management_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#En-route_Information"/>
+        <Class IRI="#Traveler_Assistance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Enforcement"/>
+        <Class IRI="#Arterial_Management_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Enforcement"/>
+        <Class IRI="#Freeway_Management_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Engineering_Applications"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Engineering_Transport"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Estimate_Loop_Detector"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Fare_Payment"/>
+        <Class IRI="#Electronic_Payment_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Fleet_Management"/>
+        <Class IRI="#Commercial_Vehicle_Operations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Flow_Behaviour"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Forward_Collision_Warning"/>
+        <Class IRI="#Collision_Avoidance_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Forward_Collision_Warning"/>
+        <Class IRI="#Collision_Notification_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Freeway_Link"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Freeway_Management_Systems"/>
+        <Class IRI="#Intelligent_Infraestructures"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Global_Freeway"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Guidance_Detectors"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Guidance_Message"/>
+        <Class IRI="#Information_Dissemination"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Hazardous_Material"/>
+        <Class IRI="#Commercial_Vehicle_Operations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Hazardous_Material"/>
+        <Class IRI="#Emergency_Management_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Hazardous_Materials_Functions"/>
+        <Class IRI="#Information_Dissemination"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#High_Motion_Background"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Highway_Decision"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Highway_Dissemination"/>
+        <Class IRI="#Information_Dissemination"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Highway_Safety"/>
+        <Class IRI="#Crash_Prevention_&amp;_Safety"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Highway_Tracking"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Historical_Matrix_Measurements"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Human_Decisions"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Improved_Vehicle_Systems"/>
+        <Class IRI="#Information_Dissemination"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#In-Transit"/>
+        <Class IRI="#Commercial_Vehicle_Operations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#In-vehicle_Collision"/>
+        <Class IRI="#Collision_Notification_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Incident_Clearance"/>
+        <Class IRI="#Incident_Management_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Incident_Detection"/>
+        <Class IRI="#Incident_Management_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Incident_Management_Systems"/>
+        <Class IRI="#Intelligent_Infraestructures"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Incident_Response"/>
+        <Class IRI="#Commercial_Vehicle_Operations"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Incident_Speed"/>
+        <Class IRI="#Information_Dissemination"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Incidents_Simulation"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Information_Dissemination"/>
+        <Class IRI="#Arterial_Management_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Information_Dissemination"/>
+        <Class IRI="#Freeway_Management_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Information_Dissemination"/>
+        <Class IRI="#Incident_Management_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Information_Dissemination"/>
+        <Class IRI="#Road_Weather_Management"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Information_Dissemination"/>
+        <Class IRI="#Roadway_Operations_&amp;_Maintenance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Information_Dissemination"/>
+        <Class IRI="#Transit_Management_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Information_Management"/>
+        <Class IRI="#Intelligent_Infraestructures"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Information_Technologies"/>
+        <Class IRI="#Information_Dissemination"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Intelligence_Problem"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Intelligent_Flow_Controllers"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Intelligent_Infraestructures"/>
+        <Class IRI="#ITS"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Intelligent_Queue"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Intelligent_Speed"/>
+        <Class IRI="#Driver_Assistance_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Intelligent_Vehicles"/>
+        <Class IRI="#ITS"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Intermodal_Freight"/>
+        <Class IRI="#Intelligent_Infraestructures"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Internet_Server_Type"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Intersection_Collision"/>
+        <Class IRI="#Collision_Avoidance_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Intersection_Collision"/>
+        <Class IRI="#Crash_Prevention_&amp;_Safety"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Intersection_Performance"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Intersection_Variable_Rules"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Intervals_Prediction"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Lane_Change"/>
+        <Class IRI="#Collision_Avoidance_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Lane_Control"/>
+        <Class IRI="#Arterial_Management_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Lane_Control"/>
+        <Class IRI="#Freeway_Management_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Lane_Departure_Warning"/>
+        <Class IRI="#Collision_Avoidance_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Lane_Keeping_Assistance"/>
+        <Class IRI="#Driver_Assistance_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Lane_Strategies"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Level_Support"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Limited_Navigation"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Local_Coordination_Mobile"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Located_Systems"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Location_Areas"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Matrices_Simulation_Observed"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Medic"/>
+        <Class IRI="#Emergency_Management_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Message_Measures"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Mobile_Message"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Monitoring_Improve"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Multimedia_Object"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Multiple_Road_Management"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Network_Navigation_Route"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Network_Potential_Analisis_"/>
+        <Class IRI="#Information_Dissemination"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Networks_Intervehicle"/>
+        <Class IRI="#Information_Dissemination"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Object_Detection"/>
+        <Class IRI="#Driver_Assistance_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Obstacle_Detection"/>
+        <Class IRI="#Collision_Avoidance_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#On-board_System"/>
+        <Class IRI="#Driver_Assistance_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Operating_Process"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Origin_&amp;_Destination_Measurement"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Parking_Fee"/>
+        <Class IRI="#Electronic_Payment_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Parking_Management"/>
+        <Class IRI="#Arterial_Management_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Pedestrian_Safety"/>
+        <Class IRI="#Crash_Prevention_&amp;_Safety"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Performance_Conditions"/>
+        <Class IRI="#Information_Dissemination"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Plate_Identification_Techniques"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Pre-trip_Information"/>
+        <Class IRI="#Traveler_Assistance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Probe_Response"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Public_User"/>
+        <Class IRI="#Information_Dissemination"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Quality_Period_System"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Rail_System"/>
+        <Class IRI="#Crash_Prevention_&amp;_Safety"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Railway_Techniques"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Ramp_Conditions"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Ramp_Flow"/>
+        <Class IRI="#Freeway_Management_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Range_Sensor"/>
+        <Class IRI="#Information_Dissemination"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Real_Data_Control"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Real_Dynamic_System"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Real_Location_Management"/>
+        <Class IRI="#Information_Dissemination"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Rear-end_Collision"/>
+        <Class IRI="#Collision_Avoidance_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Rear-end_Collision"/>
+        <Class IRI="#Collision_Notification_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Road_Departure"/>
+        <Class IRI="#Collision_Avoidance_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Road_Weather_Management"/>
+        <Class IRI="#Intelligent_Infraestructures"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Roadway_Operations_&amp;_Maintenance"/>
+        <Class IRI="#Intelligent_Infraestructures"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Route_Guidance"/>
+        <Class IRI="#Driver_Assistance_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Safety_&amp;_Security"/>
+        <Class IRI="#Transit_Management_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Safety_Analysis"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Safety_Definition_License"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Sleepiness"/>
+        <Class IRI="#Driver_Assistance_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Software_Policy"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Software_Update_Scheduling"/>
+        <Class IRI="#Information_Dissemination"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Special_Event"/>
+        <Class IRI="#Freeway_Management_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Speed_Control"/>
+        <Class IRI="#Driver_Assistance_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Speed_Routes_Location"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Stability_Control"/>
+        <Class IRI="#Driver_Assistance_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Stage_Deviation"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Surveillance"/>
+        <Class IRI="#Arterial_Management_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Surveillance"/>
+        <Class IRI="#Freeway_Management_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Surveillance_Sensors"/>
+        <Class IRI="#Information_Dissemination"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Surveillance_Technologies"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Technologies_Planning_Guidance"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Technology_Convenience_"/>
+        <Class IRI="#Information_Dissemination"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Temporal_Analysis_Detection"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Toll_Collection"/>
+        <Class IRI="#Electronic_Payment_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Traffic_Control"/>
+        <Class IRI="#Arterial_Management_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Traffic_Control"/>
+        <Class IRI="#Road_Weather_Management"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Traffic_Incident"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Train_Computer"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Transit_Management_Systems"/>
+        <Class IRI="#Intelligent_Infraestructures"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Transportation_Demand"/>
+        <Class IRI="#Transit_Management_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Transportation_Efficiency"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Transportation_Error"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Transportation_System"/>
+        <Class IRI="#Information_Dissemination"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Travel_Framework"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Traveler_Assistance"/>
+        <Class IRI="#Intelligent_Infraestructures"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Traveler_Information"/>
+        <Class IRI="#Traveler_Assistance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Traveler_Work_Support"/>
+        <Class IRI="#Information_Dissemination"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Unit_Transactions"/>
+        <Class IRI="#Information_Dissemination"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Units_Testing"/>
+        <Class IRI="#Information_Dissemination"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Urban_Infraestructure"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Urban_Networks_Management"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Vehicle_Length"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Vehicle_Sensors_Signals"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Vehicles_Applications"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Vehicles_Support"/>
+        <Class IRI="#Surveillance"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Vision_Enhancement"/>
+        <Class IRI="#Driver_Assistance_Systems"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Weather_Conditions"/>
+        <Class IRI="#Road_Weather_Management"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Weather_Information"/>
+        <Class IRI="#Road_Weather_Management"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Wide_Network_Operation"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Wide_Reliability"/>
+        <Class IRI="#Information_Dissemination"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Wifi_Wimax_Relay"/>
+        <Class IRI="#Information_Dissemination"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Winter_Corridor"/>
+        <Class IRI="#Traffic_Control"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Wireless_Infrastructure"/>
+        <Class IRI="#Information_Dissemination"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Work_Zone"/>
+        <Class IRI="#Roadway_Operations_&amp;_Maintenance"/>
+    </SubClassOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#feature"/>
+        <ObjectProperty IRI="#icus_information"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#icus_location"/>
+        <ObjectProperty IRI="#icus_information"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#id_icus"/>
+        <ObjectProperty IRI="#icus_information"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#location_ior"/>
+        <ObjectProperty IRI="#icus_information"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#name"/>
+        <ObjectProperty IRI="#icus_information"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#ontology_location"/>
+        <ObjectProperty IRI="#icus_information"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#port"/>
+        <ObjectProperty IRI="#icus_information"/>
+    </SubObjectPropertyOf>
+    <FunctionalObjectProperty>
+        <ObjectProperty IRI="#feature"/>
+    </FunctionalObjectProperty>
+    <FunctionalObjectProperty>
+        <ObjectProperty IRI="#icus_information"/>
+    </FunctionalObjectProperty>
+    <FunctionalObjectProperty>
+        <ObjectProperty IRI="#icus_location"/>
+    </FunctionalObjectProperty>
+    <FunctionalObjectProperty>
+        <ObjectProperty IRI="#id_icus"/>
+    </FunctionalObjectProperty>
+    <FunctionalObjectProperty>
+        <ObjectProperty IRI="#location_ior"/>
+    </FunctionalObjectProperty>
+    <FunctionalObjectProperty>
+        <ObjectProperty IRI="#name"/>
+    </FunctionalObjectProperty>
+    <FunctionalObjectProperty>
+        <ObjectProperty IRI="#ontology_location"/>
+    </FunctionalObjectProperty>
+    <FunctionalObjectProperty>
+        <ObjectProperty IRI="#port"/>
+    </FunctionalObjectProperty>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#bcast"/>
+        <DataProperty IRI="#network"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#enabled_protocols"/>
+        <DataProperty IRI="#host_information"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#free"/>
+        <DataProperty IRI="#memory"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#ftp"/>
+        <DataProperty IRI="#enabled_protocols"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#host_date"/>
+        <DataProperty IRI="#host_information"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#host_time"/>
+        <DataProperty IRI="#host_information"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#hostname"/>
+        <DataProperty IRI="#network"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#ip"/>
+        <DataProperty IRI="#network"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#mask"/>
+        <DataProperty IRI="#network"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#mcast"/>
+        <DataProperty IRI="#network"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#memory"/>
+        <DataProperty IRI="#host_information"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#network"/>
+        <DataProperty IRI="#host_information"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#operating_system"/>
+        <DataProperty IRI="#host_information"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#platform"/>
+        <DataProperty IRI="#host_information"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#scp"/>
+        <DataProperty IRI="#enabled_protocols"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#sftp"/>
+        <DataProperty IRI="#enabled_protocols"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#total"/>
+        <DataProperty IRI="#memory"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#uptime"/>
+        <DataProperty IRI="#host_information"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#used"/>
+        <DataProperty IRI="#memory"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#version_op_sys"/>
+        <DataProperty IRI="#host_information"/>
+    </SubDataPropertyOf>
+    <FunctionalDataProperty>
+        <DataProperty IRI="#bcast"/>
+    </FunctionalDataProperty>
+    <FunctionalDataProperty>
+        <DataProperty IRI="#enabled_protocols"/>
+    </FunctionalDataProperty>
+    <FunctionalDataProperty>
+        <DataProperty IRI="#free"/>
+    </FunctionalDataProperty>
+    <FunctionalDataProperty>
+        <DataProperty IRI="#ftp"/>
+    </FunctionalDataProperty>
+    <FunctionalDataProperty>
+        <DataProperty IRI="#host_date"/>
+    </FunctionalDataProperty>
+    <FunctionalDataProperty>
+        <DataProperty IRI="#host_information"/>
+    </FunctionalDataProperty>
+    <FunctionalDataProperty>
+        <DataProperty IRI="#host_time"/>
+    </FunctionalDataProperty>
+    <FunctionalDataProperty>
+        <DataProperty IRI="#hostname"/>
+    </FunctionalDataProperty>
+    <FunctionalDataProperty>
+        <DataProperty IRI="#ip"/>
+    </FunctionalDataProperty>
+    <FunctionalDataProperty>
+        <DataProperty IRI="#mask"/>
+    </FunctionalDataProperty>
+    <FunctionalDataProperty>
+        <DataProperty IRI="#mcast"/>
+    </FunctionalDataProperty>
+    <FunctionalDataProperty>
+        <DataProperty IRI="#memory"/>
+    </FunctionalDataProperty>
+    <FunctionalDataProperty>
+        <DataProperty IRI="#network"/>
+    </FunctionalDataProperty>
+    <FunctionalDataProperty>
+        <DataProperty IRI="#operating_system"/>
+    </FunctionalDataProperty>
+    <FunctionalDataProperty>
+        <DataProperty IRI="#platform"/>
+    </FunctionalDataProperty>
+    <FunctionalDataProperty>
+        <DataProperty IRI="#scp"/>
+    </FunctionalDataProperty>
+    <FunctionalDataProperty>
+        <DataProperty IRI="#sftp"/>
+    </FunctionalDataProperty>
+    <FunctionalDataProperty>
+        <DataProperty IRI="#total"/>
+    </FunctionalDataProperty>
+    <FunctionalDataProperty>
+        <DataProperty IRI="#uptime"/>
+    </FunctionalDataProperty>
+    <FunctionalDataProperty>
+        <DataProperty IRI="#used"/>
+    </FunctionalDataProperty>
+    <FunctionalDataProperty>
+        <DataProperty IRI="#version_op_sys"/>
+    </FunctionalDataProperty>
+    <DataPropertyRange>
+        <DataProperty IRI="#bcast"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#enabled_protocols"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#feature"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#free"/>
+        <Datatype abbreviatedIRI="xsd:int"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#ftp"/>
+        <Datatype abbreviatedIRI="xsd:boolean"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#host_date"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#host_information"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#host_time"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#hostname"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#icus_location"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#id_icus"/>
+        <Datatype abbreviatedIRI="xsd:int"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#ip"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#location_ior"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#mask"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#mcast"/>
+        <Datatype abbreviatedIRI="xsd:boolean"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#memory"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#name"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#network"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#ontology_location"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#operating_system"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#platform"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#port"/>
+        <Datatype abbreviatedIRI="xsd:int"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#scp"/>
+        <Datatype abbreviatedIRI="xsd:boolean"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#sftp"/>
+        <Datatype abbreviatedIRI="xsd:boolean"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#total"/>
+        <Datatype abbreviatedIRI="xsd:int"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#uptime"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#used"/>
+        <Datatype abbreviatedIRI="xsd:int"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#version_op_sys"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Adaptive_Cruise_Control</IRI>
+        <Literal datatypeIRI="&xsd;string">Adaptive_Cruise_Control</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#Arterial_Management_Systems</IRI>
+        <Literal datatypeIRI="&xsd;string">Arterial management systems manage traffic along arterial roadways, employing traffic detectors, traffic signals, and various means of communicating information to travelers. These systems make use of information collected by traffic surveillance devices to smooth the flow of traffic along travel corridors. They also disseminate important information about travel conditions to travelers via technologies such as dynamic message signs (DMS) or highway advisory radio (HAR).</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Arterial_Management_Systems</IRI>
+        <Literal datatypeIRI="&xsd;string">Arterial_Management_Systems</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#Collision_Avoidance_Systems</IRI>
+        <Literal datatypeIRI="&xsd;string">To improve the ability of drivers to avoid accidents, vehicle-mounted collision warning systems (CWS) continue to be tested and deployed. These applications use a variety of sensors to monitor the vehicle&#39;s surroundings and alert the driver of conditions that could lead to a collision. Examples include forward collision warning, obstacle detection systems, and road departure warning systems.</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Collision_Avoidance_Systems</IRI>
+        <Literal datatypeIRI="&xsd;string">Collision_Avoidance_Systems</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Collision_Notification_Systems</IRI>
+        <Literal datatypeIRI="&xsd;string">Collision_Notification_Systems</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Commercial_Vehicle_Operations</IRI>
+        <Literal datatypeIRI="&xsd;string">Commercial_Vehicle_Operations</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Driver_Assistance_Systems</IRI>
+        <Literal datatypeIRI="&xsd;string">Driver_Assistance_Systems</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Electronic_Payment_Systems</IRI>
+        <Literal datatypeIRI="&xsd;string">Electronic_Payment_Systems</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Emergency_Management_Systems</IRI>
+        <Literal datatypeIRI="&xsd;string">Emergency_Management_Systems</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#Enforcement</IRI>
+        <Literal datatypeIRI="&xsd;string">Automated enforcement systems, such as speed enforcement and stop/yield enforcement, improve safety, reduce aggressive driving, and assist in the enforcement of traffic signal and speed compliance.</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Enforcement</IRI>
+        <Literal datatypeIRI="&xsd;string">Enforcement</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#Forward_Collision_Warning</IRI>
+        <Literal datatypeIRI="&xsd;string">In the application area of forward-collision warning systems, microwave radar and machine vision technology help detect and avert vehicle collisions. These systems typically use in-vehicle displays or audible alerts to warn drivers of unsafe following distances. If a driver does not properly aply brakes in a critical situation, some systems automatically assume control and apply the brakes in an ttempt to avoid a collision.</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Forward_Collision_Warning</IRI>
+        <Literal datatypeIRI="&xsd;string">Forward_Collision_Warning</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Freeway_Management_Systems</IRI>
+        <Literal datatypeIRI="&xsd;string">Freeway_Management_Systems</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#ITS</IRI>
+        <Literal datatypeIRI="&xsd;string">ITS</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Information_Management</IRI>
+        <Literal datatypeIRI="&xsd;string">Information_Management</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Intermodal_Freight</IRI>
+        <Literal datatypeIRI="&xsd;string">Intermodal_Freight</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Lane_Change</IRI>
+        <Literal>Lane-change warning systems habe been deployed to alert bus and truck drivers of vehicle, or obstuctions, in adjacent lanes when the driver prepares to change lanes.</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Lane_Change</IRI>
+        <Literal>Lane_Change</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#Lane_Control</IRI>
+        <Literal>Lane control applications can promote the most effective use of available capacity during emergency evacuations, incidents, construction and a variety of other traffic and/or weather conditions.</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Lane_Control</IRI>
+        <Literal>Lane_Control</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#Lane_Departure_Warning</IRI>
+        <Literal datatypeIRI="&xsd;string">Lane departure warning systems warn drivers that their vehicle is unintentionally drifting out of the lane.</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Lane_Departure_Warning</IRI>
+        <Literal datatypeIRI="&xsd;string">Lane_Departure_Warning</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Lane_Keeping_Assistance</IRI>
+        <Literal datatypeIRI="&xsd;string">Lane_Keeping_Assistance</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Object_Detection</IRI>
+        <Literal datatypeIRI="&xsd;string">Object_Detection</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#Obstacle_Detection</IRI>
+        <Literal datatypeIRI="&xsd;string">Obstacle detection systems use vehicle-mounted sensors to detect obstuctions, such as other vehicles, road debris, or animals, in a vehicle&#39;s path and alert the driver.</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Obstacle_Detection</IRI>
+        <Literal datatypeIRI="&xsd;string">Obstacle_Detection</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#Parking_Management</IRI>
+        <Literal datatypeIRI="&xsd;string">Parking management systems with information dissemination capabilities, most commonly deployed in urban centers or at modal transfer points such as airports, monitor the availability of parking and disseminate the information to drivers, reducing traveler frustration and congestion associated with searching for parking.</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Parking_Management</IRI>
+        <Literal datatypeIRI="&xsd;string">Parking_Management</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#Rear-end_Collision</IRI>
+        <Literal>Rear-end collision warning systems use radar detection to prevent accidents. A warning sign is activated on the rear of the vehicle to warn tailgating drivers of impending danger.</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Rear-end_Collision</IRI>
+        <Literal>Rear-end_Collision</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#Road_Departure</IRI>
+        <Literal>Road departure warning systems have been tested using machine vision and other in-vehicle systems to detect and alert drivers of potentially unsafe lane-keeping practices and to keep drowsy drivers from running off the road.</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Road_Departure</IRI>
+        <Literal>Road_Departure</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Road_Weather_Management</IRI>
+        <Literal datatypeIRI="&xsd;string">Road_Weather_Management</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#Surveillance</IRI>
+        <Literal datatypeIRI="&xsd;string">Many of the services possible through arterial management systems are enabled by traffic surveillance and detection technologies, such as sensors or cameras, monitoring traffic flow. The surveillance and detection technologies used to monitor traffic flow in support of ITS applications can also be used to monitor key transportation facilities for security purposes.</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Surveillance</IRI>
+        <Literal datatypeIRI="&xsd;string">Surveillance</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Toll_Collection</IRI>
+        <Literal datatypeIRI="&xsd;string">Toll_Collection</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#Traffic_Control</IRI>
+        <Literal datatypeIRI="&xsd;string">Traffic control measures on arterials optimize travel speeds and provide transit signal priority and signal preemption for emergency vehicles, as well as improve safety of bicyclists and pedestrians and smooth traffic flow during special events.</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Traffic_Control</IRI>
+        <Literal datatypeIRI="&xsd;string">Traffic_Control</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Transit_Management_Systems</IRI>
+        <Literal datatypeIRI="&xsd;string">Transit_Management_Systems</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#Vision_Enhancement</IRI>
+        <Literal datatypeIRI="&xsd;string">Vision_Enhancement</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#bcast</IRI>
+        <Literal datatypeIRI="&xsd;string">broadcast host</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#bcast</IRI>
+        <Literal datatypeIRI="&xsd;string">bcast</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#enabled_protocols</IRI>
+        <Literal datatypeIRI="&xsd;string">enabled_protocols</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#feature</IRI>
+        <Literal datatypeIRI="&xsd;string">the characteristic of ICUS</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#feature</IRI>
+        <Literal datatypeIRI="&xsd;string">feature</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#free</IRI>
+        <Literal datatypeIRI="&xsd;string">free memory on the host</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#free</IRI>
+        <Literal datatypeIRI="&xsd;string">free</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#ftp</IRI>
+        <Literal datatypeIRI="&xsd;string">have file transference protocol (ftp) ON?</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#ftp</IRI>
+        <Literal datatypeIRI="&xsd;string">ftp</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#host_date</IRI>
+        <Literal datatypeIRI="&xsd;string">current date of host</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#host_date</IRI>
+        <Literal datatypeIRI="&xsd;string">host_date</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#host_information</IRI>
+        <Literal datatypeIRI="&xsd;string">host_information</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#host_time</IRI>
+        <Literal datatypeIRI="&xsd;string">current time of host</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#host_time</IRI>
+        <Literal datatypeIRI="&xsd;string">host_time</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#hostname</IRI>
+        <Literal datatypeIRI="&xsd;string">real hostname of host</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#hostname</IRI>
+        <Literal datatypeIRI="&xsd;string">hostname</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#icus_information</IRI>
+        <Literal datatypeIRI="&xsd;string">icus_information</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#icus_location</IRI>
+        <Literal datatypeIRI="&xsd;string">icus_location</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#id_icus</IRI>
+        <Literal datatypeIRI="&xsd;string">identification number of icus</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#id_icus</IRI>
+        <Literal datatypeIRI="&xsd;string">id_icus</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#ip</IRI>
+        <Literal datatypeIRI="&xsd;string">real ip address</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#ip</IRI>
+        <Literal datatypeIRI="&xsd;string">ip</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#location_ior</IRI>
+        <Literal datatypeIRI="&xsd;string">the real location lo found the icus ior</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#location_ior</IRI>
+        <Literal datatypeIRI="&xsd;string">location_ior</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#mask</IRI>
+        <Literal datatypeIRI="&xsd;string">netmask host</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#mask</IRI>
+        <Literal datatypeIRI="&xsd;string">mask</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#mcast</IRI>
+        <Literal datatypeIRI="&xsd;string">have multicast ON?</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#mcast</IRI>
+        <Literal datatypeIRI="&xsd;string">mcast</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#memory</IRI>
+        <Literal datatypeIRI="&xsd;string">memory</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#name</IRI>
+        <Literal datatypeIRI="&xsd;string">the name of the icus</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#name</IRI>
+        <Literal datatypeIRI="&xsd;string">name</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#network</IRI>
+        <Literal datatypeIRI="&xsd;string">network</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#ontology_location</IRI>
+        <Literal datatypeIRI="&xsd;string">ontology_location</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#operating_system</IRI>
+        <Literal datatypeIRI="&xsd;string">Operating System Type</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#operating_system</IRI>
+        <Literal datatypeIRI="&xsd;string">operating_system</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#platform</IRI>
+        <Literal datatypeIRI="&xsd;string">Platform</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#platform</IRI>
+        <Literal datatypeIRI="&xsd;string">platform</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#port</IRI>
+        <Literal datatypeIRI="&xsd;string">the real port to found the ICUS</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#port</IRI>
+        <Literal datatypeIRI="&xsd;string">port</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#scp</IRI>
+        <Literal datatypeIRI="&xsd;string">have secure copy protocol (scp) ON?</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#scp</IRI>
+        <Literal datatypeIRI="&xsd;string">scp</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#sftp</IRI>
+        <Literal datatypeIRI="&xsd;string">have secure file transference protocol (sftp) ON?</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#sftp</IRI>
+        <Literal datatypeIRI="&xsd;string">sftp</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#total</IRI>
+        <Literal datatypeIRI="&xsd;string">total memory on the host</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#total</IRI>
+        <Literal datatypeIRI="&xsd;string">total</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#uptime</IRI>
+        <Literal datatypeIRI="&xsd;string">Gives a one line display of the following information. The current time, how long the system has been running, how many users are currently logged on, and the system load averages for the past 1, 5, and 15 minutes.</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#uptime</IRI>
+        <Literal datatypeIRI="&xsd;string">uptime</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#used</IRI>
+        <Literal datatypeIRI="&xsd;string">used  memory on the host</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#used</IRI>
+        <Literal datatypeIRI="&xsd;string">used</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#version_op_sys</IRI>
+        <Literal datatypeIRI="&xsd;string">Version of the operating system</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#version_op_sys</IRI>
+        <Literal datatypeIRI="&xsd;string">version_op_sys</Literal>
+    </AnnotationAssertion>
+</Ontology>
+
+
+
+<!-- Generated by the OWL API (version 3.0.0.1451) http://owlapi.sourceforge.net -->
+

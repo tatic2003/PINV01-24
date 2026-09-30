@@ -1,0 +1,239 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix iot: <http://pnp-its.fiuna.edu.py/ontology/iot#> .
+
+# ============================================================
+# SHACL Shapes for IoT Device Validation
+# Project: PINV01-24 - IoT Interoperability for ITS
+# ============================================================
+
+# ------------------------------------------------------------
+# IoT Device Shape - Basic validation for all devices
+# ------------------------------------------------------------
+iot:IoTDeviceShape
+    a sh:NodeShape ;
+    sh:targetClass iot:IoTDevice ;
+    sh:property [
+        sh:path iot:deviceId ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:minLength 1 ;
+        sh:maxLength 64 ;
+        sh:pattern "^[a-zA-Z0-9_-]+$" ;
+        sh:name "Device ID" ;
+        sh:description "Unique identifier for the device" ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path iot:ipAddress ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:pattern "^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" ;
+        sh:name "IP Address" ;
+        sh:description "IPv4 address of the device" ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path iot:hardwareType ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:name "Hardware Type" ;
+        sh:description "Type of hardware (e.g., ESP32-WROOM32, RaspberryPi4)" ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path iot:hasState ;
+        sh:class iot:DeviceState ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:name "Device State" ;
+        sh:description "Current state of the device" ;
+        sh:severity sh:Warning ;
+    ] .
+
+# ------------------------------------------------------------
+# ESP32 Device Shape - Specific validation for ESP32 devices
+# ------------------------------------------------------------
+iot:ESP32DeviceShape
+    a sh:NodeShape ;
+    sh:targetClass iot:ESP32Device ;
+    sh:property [
+        sh:path iot:deviceId ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:pattern "^esp32-" ;
+        sh:name "ESP32 Device ID" ;
+        sh:description "ESP32 device IDs must start with 'esp32-'" ;
+        sh:severity sh:Warning ;
+    ] ;
+    sh:property [
+        sh:path iot:memoryTotal ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 320000 ;
+        sh:maxInclusive 8388608 ;
+        sh:name "Total Memory" ;
+        sh:description "ESP32 typically has 320KB-8MB RAM" ;
+        sh:severity sh:Info ;
+    ] .
+
+# ------------------------------------------------------------
+# Edge Node Shape - Validation for edge computing nodes
+# ------------------------------------------------------------
+iot:EdgeNodeShape
+    a sh:NodeShape ;
+    sh:targetClass iot:EdgeNode ;
+    sh:property [
+        sh:path iot:deviceId ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:name "Edge Node ID" ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path iot:runsAgent ;
+        sh:class iot:EdgeAgent ;
+        sh:minCount 0 ;
+        sh:name "Running Agents" ;
+        sh:description "Edge agents running on this node" ;
+        sh:severity sh:Info ;
+    ] ;
+    sh:property [
+        sh:path iot:memoryTotal ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 536870912 ;
+        sh:name "Total Memory" ;
+        sh:description "Edge nodes should have at least 512MB RAM" ;
+        sh:severity sh:Warning ;
+    ] .
+
+# ------------------------------------------------------------
+# Device Registration Shape - For new device announcements
+# ------------------------------------------------------------
+iot:DeviceRegistrationShape
+    a sh:NodeShape ;
+    sh:targetClass iot:IoTDevice ;
+    sh:property [
+        sh:path iot:deviceId ;
+        sh:minCount 1 ;
+        sh:severity sh:Violation ;
+        sh:message "Device must have a unique ID for registration" ;
+    ] ;
+    sh:property [
+        sh:path iot:ipAddress ;
+        sh:minCount 1 ;
+        sh:severity sh:Violation ;
+        sh:message "Device must have an IP address for registration" ;
+    ] ;
+    sh:property [
+        sh:path iot:hardwareType ;
+        sh:minCount 1 ;
+        sh:severity sh:Violation ;
+        sh:message "Device must specify hardware type for registration" ;
+    ] ;
+    sh:property [
+        sh:path iot:registeredAt ;
+        sh:datatype xsd:dateTime ;
+        sh:maxCount 1 ;
+        sh:name "Registration Timestamp" ;
+        sh:severity sh:Info ;
+    ] .
+
+# ------------------------------------------------------------
+# Connection Shape - Validation for network connections
+# ------------------------------------------------------------
+iot:ConnectionShape
+    a sh:NodeShape ;
+    sh:targetClass iot:ConnectionType ;
+    sh:or (
+        [ sh:class iot:WiFiConnection ]
+        [ sh:class iot:EthernetConnection ]
+        [ sh:class iot:BluetoothConnection ]
+        [ sh:class iot:LoRaConnection ]
+    ) ;
+    sh:name "Valid Connection Type" ;
+    sh:description "Connection must be one of the supported types" .
+
+# ------------------------------------------------------------
+# State Transition Shape - Ensure valid state transitions
+# ------------------------------------------------------------
+iot:DeviceStateShape
+    a sh:NodeShape ;
+    sh:targetClass iot:DeviceState ;
+    sh:or (
+        [ sh:class iot:ActiveState ]
+        [ sh:class iot:InactiveState ]
+        [ sh:class iot:ConfiguringState ]
+        [ sh:class iot:ErrorState ]
+    ) ;
+    sh:name "Valid Device State" ;
+    sh:description "Device state must be one of: Active, Inactive, Configuring, Error" .
+
+# ------------------------------------------------------------
+# Edge Agent Shape - Validation for edge agents
+# ------------------------------------------------------------
+iot:EdgeAgentShape
+    a sh:NodeShape ;
+    sh:targetClass iot:EdgeAgent ;
+    sh:or (
+        [ sh:class iot:DiscoveryAgent ]
+        [ sh:class iot:ClassificationAgent ]
+        [ sh:class iot:SyncAgent ]
+    ) ;
+    sh:name "Valid Edge Agent Type" ;
+    sh:description "Edge agent must be Discovery, Classification, or Sync type" .
+
+# ------------------------------------------------------------
+# MAC Address Shape - Optional but validated if present
+# ------------------------------------------------------------
+iot:MacAddressPropertyShape
+    a sh:PropertyShape ;
+    sh:path iot:macAddress ;
+    sh:datatype xsd:string ;
+    sh:pattern "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$" ;
+    sh:name "MAC Address" ;
+    sh:description "Valid MAC address format (XX:XX:XX:XX:XX:XX)" ;
+    sh:severity sh:Warning .
+
+# ------------------------------------------------------------
+# Sensor Shape - Validation for sensor devices
+# ------------------------------------------------------------
+iot:SensorShape
+    a sh:NodeShape ;
+    sh:targetClass iot:Sensor ;
+    sh:property [
+        sh:path iot:hasCapability ;
+        sh:class iot:SensingCapability ;
+        sh:minCount 1 ;
+        sh:name "Sensing Capability" ;
+        sh:description "Sensor must have at least one sensing capability" ;
+        sh:severity sh:Warning ;
+    ] .
+
+# ------------------------------------------------------------
+# Gateway Shape - Validation for IoT gateways
+# ------------------------------------------------------------
+iot:GatewayShape
+    a sh:NodeShape ;
+    sh:targetClass iot:IoTGateway ;
+    sh:property [
+        sh:path iot:hasCapability ;
+        sh:class iot:CommunicationCapability ;
+        sh:minCount 1 ;
+        sh:name "Communication Capability" ;
+        sh:description "Gateway must have communication capability" ;
+        sh:severity sh:Warning ;
+    ] ;
+    sh:property [
+        sh:path iot:hasCapability ;
+        sh:class iot:ProcessingCapability ;
+        sh:minCount 1 ;
+        sh:name "Processing Capability" ;
+        sh:description "Gateway should have processing capability" ;
+        sh:severity sh:Info ;
+    ] .

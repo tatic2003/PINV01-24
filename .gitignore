@@ -1,0 +1,100 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.settings/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Testing
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
+.cache/
+
+# Logs
+*.log
+logs/
+
+# Database
+*.db
+*.sqlite3
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Project specific
+data/
+models/
+*.pkl
+*.joblib
+*.onnx
+
+# BlockDAG storage
+dag_storage/
+*.dag
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Arduino build files
+firmware/esp32/build/
+firmware/esp32/.pio/
+*.elf
+*.bin
+*.hex
+
+# Docker
+.docker/
+
+# Documentation drafts (keep published docs)
+.docs/
+docs/
+# Secrets
+*.pem
+*.key
+credentials.json
+secrets.yml

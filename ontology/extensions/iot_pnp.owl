@@ -1,0 +1,527 @@
+<?xml version="1.0"?>
+<!DOCTYPE Ontology [
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY its "http://edsplab.us.es/ITSresearch/ITS#" >
+    <!ENTITY iot "http://pnp-its.fiuna.edu.py/ontology/iot#" >
+]>
+
+<Ontology xmlns="http://www.w3.org/2002/07/owl#"
+     xml:base="http://pnp-its.fiuna.edu.py/ontology/iot"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:its="http://edsplab.us.es/ITSresearch/ITS#"
+     xmlns:iot="http://pnp-its.fiuna.edu.py/ontology/iot#"
+     ontologyIRI="http://pnp-its.fiuna.edu.py/ontology/iot">
+
+    <!-- Prefixes -->
+    <Prefix name="rdf" IRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+    <Prefix name="rdfs" IRI="http://www.w3.org/2000/01/rdf-schema#"/>
+    <Prefix name="xsd" IRI="http://www.w3.org/2001/XMLSchema#"/>
+    <Prefix name="owl" IRI="http://www.w3.org/2002/07/owl#"/>
+    <Prefix name="its" IRI="http://edsplab.us.es/ITSresearch/ITS#"/>
+    <Prefix name="iot" IRI="http://pnp-its.fiuna.edu.py/ontology/iot#"/>
+
+    <!-- Ontology Metadata -->
+    <Annotation>
+        <AnnotationProperty IRI="http://purl.org/dc/elements/1.1/title"/>
+        <Literal>IoT Plug-and-Play Extension for ITS</Literal>
+    </Annotation>
+    <Annotation>
+        <AnnotationProperty IRI="http://purl.org/dc/elements/1.1/description"/>
+        <Literal>Extension ontology for IoT device interoperability in Intelligent Transportation Systems. Part of PINV01-24 project.</Literal>
+    </Annotation>
+    <Annotation>
+        <AnnotationProperty IRI="http://purl.org/dc/elements/1.1/creator"/>
+        <Literal>FIUNA - Laboratorio de Sistemas Distribuidos</Literal>
+    </Annotation>
+    <Annotation>
+        <AnnotationProperty IRI="http://purl.org/dc/elements/1.1/date"/>
+        <Literal>2026-01</Literal>
+    </Annotation>
+
+    <!-- Import base ITS ontology -->
+    <Import>http://edsplab.us.es/ITSresearch/ITS.owl</Import>
+
+    <!-- ============================================================ -->
+    <!-- DEVICE CLASSES -->
+    <!-- ============================================================ -->
+
+    <!-- Base IoT Device -->
+    <Declaration>
+        <Class IRI="#IoTDevice"/>
+    </Declaration>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#IoTDevice</IRI>
+        <Literal>IoT Device</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#IoTDevice</IRI>
+        <Literal>Base class for all IoT devices in the ITS network</Literal>
+    </AnnotationAssertion>
+
+    <!-- Edge Computing Node -->
+    <Declaration>
+        <Class IRI="#EdgeNode"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#EdgeNode"/>
+        <Class IRI="#IoTDevice"/>
+    </SubClassOf>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#EdgeNode</IRI>
+        <Literal>Edge computing node capable of local processing and AI inference</Literal>
+    </AnnotationAssertion>
+
+    <!-- Single Board Computer -->
+    <Declaration>
+        <Class IRI="#SingleBoardComputer"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#SingleBoardComputer"/>
+        <Class IRI="#EdgeNode"/>
+    </SubClassOf>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#SingleBoardComputer</IRI>
+        <Literal>SBC devices like Raspberry Pi, Jetson Nano</Literal>
+    </AnnotationAssertion>
+
+    <!-- Microcontroller -->
+    <Declaration>
+        <Class IRI="#Microcontroller"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#Microcontroller"/>
+        <Class IRI="#IoTDevice"/>
+    </SubClassOf>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#Microcontroller</IRI>
+        <Literal>Microcontroller devices like ESP32, Arduino</Literal>
+    </AnnotationAssertion>
+
+    <!-- ESP32 Device -->
+    <Declaration>
+        <Class IRI="#ESP32Device"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#ESP32Device"/>
+        <Class IRI="#Microcontroller"/>
+    </SubClassOf>
+
+    <!-- Gateway -->
+    <Declaration>
+        <Class IRI="#IoTGateway"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#IoTGateway"/>
+        <Class IRI="#EdgeNode"/>
+    </SubClassOf>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#IoTGateway</IRI>
+        <Literal>Industrial IoT gateway connecting sensors to the network</Literal>
+    </AnnotationAssertion>
+
+    <!-- Sensor -->
+    <Declaration>
+        <Class IRI="#Sensor"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#Sensor"/>
+        <Class IRI="#IoTDevice"/>
+    </SubClassOf>
+
+    <!-- Actuator -->
+    <Declaration>
+        <Class IRI="#Actuator"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#Actuator"/>
+        <Class IRI="#IoTDevice"/>
+    </SubClassOf>
+
+    <!-- ============================================================ -->
+    <!-- CAPABILITY CLASSES -->
+    <!-- ============================================================ -->
+
+    <Declaration>
+        <Class IRI="#DeviceCapability"/>
+    </Declaration>
+
+    <Declaration>
+        <Class IRI="#SensingCapability"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#SensingCapability"/>
+        <Class IRI="#DeviceCapability"/>
+    </SubClassOf>
+
+    <Declaration>
+        <Class IRI="#ProcessingCapability"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#ProcessingCapability"/>
+        <Class IRI="#DeviceCapability"/>
+    </SubClassOf>
+
+    <Declaration>
+        <Class IRI="#CommunicationCapability"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#CommunicationCapability"/>
+        <Class IRI="#DeviceCapability"/>
+    </SubClassOf>
+
+    <!-- ============================================================ -->
+    <!-- STATE CLASSES -->
+    <!-- ============================================================ -->
+
+    <Declaration>
+        <Class IRI="#DeviceState"/>
+    </Declaration>
+
+    <Declaration>
+        <Class IRI="#ActiveState"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#ActiveState"/>
+        <Class IRI="#DeviceState"/>
+    </SubClassOf>
+
+    <Declaration>
+        <Class IRI="#InactiveState"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#InactiveState"/>
+        <Class IRI="#DeviceState"/>
+    </SubClassOf>
+
+    <Declaration>
+        <Class IRI="#ConfiguringState"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#ConfiguringState"/>
+        <Class IRI="#DeviceState"/>
+    </SubClassOf>
+
+    <Declaration>
+        <Class IRI="#ErrorState"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#ErrorState"/>
+        <Class IRI="#DeviceState"/>
+    </SubClassOf>
+
+    <!-- ============================================================ -->
+    <!-- CONNECTIVITY CLASSES -->
+    <!-- ============================================================ -->
+
+    <Declaration>
+        <Class IRI="#ConnectionType"/>
+    </Declaration>
+
+    <Declaration>
+        <Class IRI="#WiFiConnection"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#WiFiConnection"/>
+        <Class IRI="#ConnectionType"/>
+    </SubClassOf>
+
+    <Declaration>
+        <Class IRI="#EthernetConnection"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#EthernetConnection"/>
+        <Class IRI="#ConnectionType"/>
+    </SubClassOf>
+
+    <Declaration>
+        <Class IRI="#BluetoothConnection"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#BluetoothConnection"/>
+        <Class IRI="#ConnectionType"/>
+    </SubClassOf>
+
+    <Declaration>
+        <Class IRI="#LoRaConnection"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#LoRaConnection"/>
+        <Class IRI="#ConnectionType"/>
+    </SubClassOf>
+
+    <!-- ============================================================ -->
+    <!-- EDGE AGENT CLASSES -->
+    <!-- ============================================================ -->
+
+    <Declaration>
+        <Class IRI="#EdgeAgent"/>
+    </Declaration>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#EdgeAgent</IRI>
+        <Literal>Software agent running on edge nodes for PnP-AI functionality</Literal>
+    </AnnotationAssertion>
+
+    <Declaration>
+        <Class IRI="#DiscoveryAgent"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#DiscoveryAgent"/>
+        <Class IRI="#EdgeAgent"/>
+    </SubClassOf>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#DiscoveryAgent</IRI>
+        <Literal>Agent responsible for device discovery and registration</Literal>
+    </AnnotationAssertion>
+
+    <Declaration>
+        <Class IRI="#ClassificationAgent"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#ClassificationAgent"/>
+        <Class IRI="#EdgeAgent"/>
+    </SubClassOf>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#ClassificationAgent</IRI>
+        <Literal>Agent responsible for device classification using AI models</Literal>
+    </AnnotationAssertion>
+
+    <Declaration>
+        <Class IRI="#SyncAgent"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#SyncAgent"/>
+        <Class IRI="#EdgeAgent"/>
+    </SubClassOf>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#SyncAgent</IRI>
+        <Literal>Agent responsible for BlockDAG synchronization</Literal>
+    </AnnotationAssertion>
+
+    <!-- ============================================================ -->
+    <!-- OBJECT PROPERTIES -->
+    <!-- ============================================================ -->
+
+    <!-- Device relationships -->
+    <Declaration>
+        <ObjectProperty IRI="#hasState"/>
+    </Declaration>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#hasState"/>
+        <Class IRI="#IoTDevice"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#hasState"/>
+        <Class IRI="#DeviceState"/>
+    </ObjectPropertyRange>
+
+    <Declaration>
+        <ObjectProperty IRI="#hasCapability"/>
+    </Declaration>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#hasCapability"/>
+        <Class IRI="#IoTDevice"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#hasCapability"/>
+        <Class IRI="#DeviceCapability"/>
+    </ObjectPropertyRange>
+
+    <Declaration>
+        <ObjectProperty IRI="#hasConnection"/>
+    </Declaration>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#hasConnection"/>
+        <Class IRI="#IoTDevice"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#hasConnection"/>
+        <Class IRI="#ConnectionType"/>
+    </ObjectPropertyRange>
+
+    <Declaration>
+        <ObjectProperty IRI="#connectsTo"/>
+    </Declaration>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#connectsTo"/>
+        <Class IRI="#IoTDevice"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#connectsTo"/>
+        <Class IRI="#IoTDevice"/>
+    </ObjectPropertyRange>
+
+    <Declaration>
+        <ObjectProperty IRI="#managedBy"/>
+    </Declaration>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#managedBy"/>
+        <Class IRI="#IoTDevice"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#managedBy"/>
+        <Class IRI="#EdgeNode"/>
+    </ObjectPropertyRange>
+
+    <Declaration>
+        <ObjectProperty IRI="#runsAgent"/>
+    </Declaration>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#runsAgent"/>
+        <Class IRI="#EdgeNode"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#runsAgent"/>
+        <Class IRI="#EdgeAgent"/>
+    </ObjectPropertyRange>
+
+    <!-- ============================================================ -->
+    <!-- DATA PROPERTIES -->
+    <!-- ============================================================ -->
+
+    <Declaration>
+        <DataProperty IRI="#deviceId"/>
+    </Declaration>
+    <DataPropertyDomain>
+        <DataProperty IRI="#deviceId"/>
+        <Class IRI="#IoTDevice"/>
+    </DataPropertyDomain>
+    <DataPropertyRange>
+        <DataProperty IRI="#deviceId"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+
+    <Declaration>
+        <DataProperty IRI="#ipAddress"/>
+    </Declaration>
+    <DataPropertyDomain>
+        <DataProperty IRI="#ipAddress"/>
+        <Class IRI="#IoTDevice"/>
+    </DataPropertyDomain>
+    <DataPropertyRange>
+        <DataProperty IRI="#ipAddress"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+
+    <Declaration>
+        <DataProperty IRI="#macAddress"/>
+    </Declaration>
+    <DataPropertyDomain>
+        <DataProperty IRI="#macAddress"/>
+        <Class IRI="#IoTDevice"/>
+    </DataPropertyDomain>
+    <DataPropertyRange>
+        <DataProperty IRI="#macAddress"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+
+    <Declaration>
+        <DataProperty IRI="#hardwareType"/>
+    </Declaration>
+    <DataPropertyDomain>
+        <DataProperty IRI="#hardwareType"/>
+        <Class IRI="#IoTDevice"/>
+    </DataPropertyDomain>
+    <DataPropertyRange>
+        <DataProperty IRI="#hardwareType"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+
+    <Declaration>
+        <DataProperty IRI="#firmwareVersion"/>
+    </Declaration>
+    <DataPropertyDomain>
+        <DataProperty IRI="#firmwareVersion"/>
+        <Class IRI="#IoTDevice"/>
+    </DataPropertyDomain>
+    <DataPropertyRange>
+        <DataProperty IRI="#firmwareVersion"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+
+    <Declaration>
+        <DataProperty IRI="#lastSeen"/>
+    </Declaration>
+    <DataPropertyDomain>
+        <DataProperty IRI="#lastSeen"/>
+        <Class IRI="#IoTDevice"/>
+    </DataPropertyDomain>
+    <DataPropertyRange>
+        <DataProperty IRI="#lastSeen"/>
+        <Datatype abbreviatedIRI="xsd:dateTime"/>
+    </DataPropertyRange>
+
+    <Declaration>
+        <DataProperty IRI="#registeredAt"/>
+    </Declaration>
+    <DataPropertyDomain>
+        <DataProperty IRI="#registeredAt"/>
+        <Class IRI="#IoTDevice"/>
+    </DataPropertyDomain>
+    <DataPropertyRange>
+        <DataProperty IRI="#registeredAt"/>
+        <Datatype abbreviatedIRI="xsd:dateTime"/>
+    </DataPropertyRange>
+
+    <Declaration>
+        <DataProperty IRI="#memoryTotal"/>
+    </Declaration>
+    <DataPropertyDomain>
+        <DataProperty IRI="#memoryTotal"/>
+        <Class IRI="#IoTDevice"/>
+    </DataPropertyDomain>
+    <DataPropertyRange>
+        <DataProperty IRI="#memoryTotal"/>
+        <Datatype abbreviatedIRI="xsd:integer"/>
+    </DataPropertyRange>
+
+    <Declaration>
+        <DataProperty IRI="#memoryFree"/>
+    </Declaration>
+    <DataPropertyDomain>
+        <DataProperty IRI="#memoryFree"/>
+        <Class IRI="#IoTDevice"/>
+    </DataPropertyDomain>
+    <DataPropertyRange>
+        <DataProperty IRI="#memoryFree"/>
+        <Datatype abbreviatedIRI="xsd:integer"/>
+    </DataPropertyRange>
+
+    <Declaration>
+        <DataProperty IRI="#cpuUsage"/>
+    </Declaration>
+    <DataPropertyDomain>
+        <DataProperty IRI="#cpuUsage"/>
+        <Class IRI="#IoTDevice"/>
+    </DataPropertyDomain>
+    <DataPropertyRange>
+        <DataProperty IRI="#cpuUsage"/>
+        <Datatype abbreviatedIRI="xsd:float"/>
+    </DataPropertyRange>
+
+    <Declaration>
+        <DataProperty IRI="#location"/>
+    </Declaration>
+    <DataPropertyDomain>
+        <DataProperty IRI="#location"/>
+        <Class IRI="#IoTDevice"/>
+    </DataPropertyDomain>
+    <DataPropertyRange>
+        <DataProperty IRI="#location"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+
+</Ontology>

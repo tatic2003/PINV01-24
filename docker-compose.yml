@@ -1,0 +1,79 @@
+# Docker Compose for IoT-ITS System
+# Project: PINV01-24 - FIUNA
+#
+# Usage:
+#   docker-compose up -d        # Start all services
+#   docker-compose logs -f      # View logs
+#   docker-compose down         # Stop all services
+
+version: '3.8'
+
+services:
+  # Primary gateway node
+  gateway-primary:
+    build: .
+    container_name: its-gateway-primary
+    ports:
+      - "5000:5000"
+    environment:
+      - ITS_NODE_ID=gateway-primary
+      - ITS_PORT=5000
+      - ITS_CLASSIFIER=decision_tree
+      - ITS_ENABLE_DAG=true
+      - ITS_LOG_LEVEL=INFO
+    volumes:
+      - gateway-primary-data:/app/data
+      - ./ontology:/app/ontology:ro
+    networks:
+      - its-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Secondary gateway node (for distributed setup)
+  gateway-secondary:
+    build: .
+    container_name: its-gateway-secondary
+    ports:
+      - "5001:5000"
+    environment:
+      - ITS_NODE_ID=gateway-secondary
+      - ITS_PORT=5000
+      - ITS_CLASSIFIER=rule_based
+      - ITS_ENABLE_DAG=true
+      - ITS_LOG_LEVEL=INFO
+    volumes:
+      - gateway-secondary-data:/app/data
+      - ./ontology:/app/ontology:ro
+    networks:
+      - its-network
+    restart: unless-stopped
+    depends_on:
+      - gateway-primary
+
+  # MQTT Broker (for future MQTT support)
+  mqtt-broker:
+    image: eclipse-mosquitto:2
+    container_name: its-mqtt-broker
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - mqtt-data:/mosquitto/data
+      - mqtt-logs:/mosquitto/log
+    networks:
+      - its-network
+    restart: unless-stopped
+
+networks:
+  its-network:
+    driver: bridge
+
+volumes:
+  gateway-primary-data:
+  gateway-secondary-data:
+  mqtt-data:
+  mqtt-logs:
