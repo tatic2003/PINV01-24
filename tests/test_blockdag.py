@@ -272,5 +272,107 @@ class TestDAGStorage:
         assert 'node-2' in stats['dags']
 
 
+class TestMergeOrderIndependence:
+    """
+    Merging must not depend on the order in which nodes are listed.
+
+    A node is only accepted when all its parents are present, so merging a
+    shuffled batch used to drop every node that was listed before its parents.
+    """
+
+    @staticmethod
+    def _build(node_id, n):
+        dag = BlockDAG(node_id)
+        for i in range(n):
+            dag.add_event('state_change', {'i': i})
+        return dag
+
+    @staticmethod
+    def _ids(dag):
+        """Node ids, excluding the DAG's own genesis (each replica has one)."""
+        own = f"{dag.node_id}:genesis"
+        return {n['node_id'] for n in dag.export()['nodes']} - {own}
+
+    @staticmethod
+    def _tips(dag):
+        """Tips, excluding the DAG's own genesis, which stays a tip forever
+        on a replica that never creates events itself."""
+        return set(dag.get_tips()) - {f"{dag.node_id}:genesis"}
+
+    def test_shuffled_batch_is_fully_merged(self):
+        import random
+        source = self._build('A', 20)
+        data = source.get_sync_data()
+        nodes = data['nodes'][:]
+        random.Random(7).shuffle(nodes)
+
+        target = BlockDAG('B')
+        result = target.merge_sync_data({**data, 'nodes': nodes})
+
+        assert result['failed'] == 0
+        assert result['added'] == len(source)
+        assert self._ids(source) - {'A:genesis'} <= self._ids(target)
+
+    def test_shuffled_equals_ordered(self):
+        import random
+        source = self._build('A', 15)
+        data = source.get_sync_data()
+        shuffled = data['nodes'][:]
+        random.Random(3).shuffle(shuffled)
+
+        ordered_dag, shuffled_dag = BlockDAG('B'), BlockDAG('B')
+        ordered_dag.merge_sync_data(data)
+        shuffled_dag.merge_sync_data({**data, 'nodes': shuffled})
+
+        assert self._ids(ordered_dag) == self._ids(shuffled_dag)
+        assert self._tips(ordered_dag) == self._tips(shuffled_dag)
+
+    def test_merge_is_idempotent(self):
+        source = self._build('A', 10)
+        data = source.get_sync_data()
+        target = BlockDAG('B')
+        target.merge_sync_data(data)
+        before = (self._ids(target), self._tips(target))
+
+        again = target.merge_sync_data(data)
+
+        assert again['added'] == 0 and again['failed'] == 0
+        assert (self._ids(target), self._tips(target)) == before
+
+    def test_merge_is_commutative_across_two_peers(self):
+        a, b = self._build('A', 8), self._build('B', 8)
+        da, db = a.get_sync_data(), b.get_sync_data()
+
+        x, y = BlockDAG('X'), BlockDAG('Y')
+        x.merge_sync_data(da); x.merge_sync_data(db)
+        y.merge_sync_data(db); y.merge_sync_data(da)
+
+        assert self._ids(x) == self._ids(y)
+        assert self._tips(x) == self._tips(y)
+
+    def test_genuinely_missing_parent_is_reported(self):
+        source = self._build('A', 5)
+        data = source.get_sync_data()
+        # Remove a middle node: its descendants have a parent that never arrives.
+        gone = data['nodes'][3]['node_id']
+        data['nodes'] = [n for n in data['nodes'] if n['node_id'] != gone]
+
+        target = BlockDAG('B')
+        result = target.merge_sync_data(data)
+
+        assert gone not in target
+        assert result['failed'] >= 1
+
+    def test_tampered_node_is_rejected(self):
+        source = self._build('A', 3)
+        data = source.get_sync_data()
+        data['nodes'][2]['payload'] = {'i': 'tampered'}
+
+        target = BlockDAG('B')
+        target.merge_sync_data(data)
+
+        assert data['nodes'][2]['node_id'] not in target
+
+
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])

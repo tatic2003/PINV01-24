@@ -392,27 +392,59 @@ class BlockDAG:
         existing = 0
         _fail_reasons: Dict[str, int] = {}
 
+        # A node can only be accepted once all of its parents are present, so
+        # the outcome must not depend on the order in which the sender listed
+        # the nodes. Nodes whose parents have not arrived yet are held back
+        # and retried until a full pass makes no progress. Only nodes whose
+        # parents are genuinely absent from both this DAG and the offered
+        # batch are reported as failed ("missing_parents"). A node whose hash
+        # does not verify is rejected at once and never retried.
+        pending: List[DAGNode] = []
         for node_dict in sync_data.get('nodes', []):
             node = DAGNode.from_dict(node_dict)
-
             if node.node_id in self._nodes:
                 existing += 1
-                continue
-
-            success, reason = self.add_external_node(node)
-            if success:
-                added += 1
             else:
-                failed += 1
-                if self._metrics_hook is not None:
-                    # Categorize failure reason
-                    if "Missing parents" in reason:
-                        key = "missing_parents"
-                    elif "Hash" in reason:
-                        key = "hash_failed"
-                    else:
-                        key = "other"
-                    _fail_reasons[key] = _fail_reasons.get(key, 0) + 1
+                pending.append(node)
+
+        def _record_failure(reason: str) -> None:
+            nonlocal failed
+            failed += 1
+            if self._metrics_hook is not None:
+                if "Missing parents" in reason:
+                    key = "missing_parents"
+                elif "Hash" in reason:
+                    key = "hash_failed"
+                else:
+                    key = "other"
+                _fail_reasons[key] = _fail_reasons.get(key, 0) + 1
+
+        progress = True
+        while pending and progress:
+            progress = False
+            still_pending: List[DAGNode] = []
+            for node in pending:
+                if node.node_id in self._nodes:
+                    # Duplicate of a node added earlier in this same batch.
+                    existing += 1
+                    progress = True
+                    continue
+                success, reason = self.add_external_node(node)
+                if success:
+                    added += 1
+                    progress = True
+                elif "Missing parents" in reason:
+                    still_pending.append(node)
+                else:
+                    _record_failure(reason)
+                    progress = True
+            pending = still_pending
+
+        for node in pending:
+            _record_failure(
+                "Missing parents: "
+                f"{[p for p in node.parent_ids if p not in self._nodes]}"
+            )
 
         result = {
             'added': added,
