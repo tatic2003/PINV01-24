@@ -1,6 +1,4 @@
 """
-ARGENCON 2026 — Distributed System Benchmark
-=============================================
 Benchmarks the distributed PINV01-24 architecture:
     device data → PnP-AI classify → SHACL validate → BlockDAG add_event
 
@@ -15,7 +13,6 @@ Output CSVs are named so run_benchmark.py can load them automatically:
     baseline/results/distributed_random_forest_events.csv
 
 Project: PINV01-24 - FIUNA
-Paper:   ARGENCON 2026
 """
 
 import time

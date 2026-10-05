@@ -1,5 +1,5 @@
 """
-Centralized Baseline for ARGENCON 2026 Benchmark
+Centralized Baseline Benchmark
 =================================================
 Replicates the same processing pipeline as the distributed architecture
 (PnP-AI classification → SHACL validation → event logging) but operates
@@ -13,7 +13,6 @@ distributed PINV01-24 architecture on latency, throughput, and
 SHACL overhead metrics.
 
 Project: PINV01-24 - FIUNA
-Paper:   ARGENCON 2026
 """
 
 import time

@@ -1,5 +1,5 @@
 """
-ARGENCON 2026 — Benchmark Runner
+Benchmark Runner
 =================================
 Runs the centralized baseline and produces comparison figures for the paper:
 
@@ -25,7 +25,6 @@ Output:
         comparison_table.json
 
 Project: PINV01-24 - FIUNA
-Paper:   ARGENCON 2026
 """
 
 import argparse

@@ -1,5 +1,5 @@
 """
-ARGENCON 2026 — PnP-AI Classifier Metrics Comparison
+PnP-AI Classifier Metrics Comparison
 =====================================================
 Trains all four classifiers (DT, RF, SVM, MLP) on the same
 synthetic dataset under identical conditions and generates
@@ -23,7 +23,6 @@ Output:
         clsf_metrics_summary.json
 
 Project: PINV01-24 - FIUNA
-Paper:   ARGENCON 2026
 """
 
 import sys
