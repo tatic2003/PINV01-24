@@ -48,14 +48,33 @@ class TestOntologyLoading:
         with pytest.raises(ValueError):
             load_owlxml(bad, Graph())
 
-    def test_subclass_device_is_validated_with_ontology(self):
+    def test_validator_covers_subclass_devices(self):
+        """The validator brings the class hierarchy itself, so it does not matter
+        whether the data graph carries the ontology (the benchmarks validate a
+        throwaway graph per event, built without it)."""
+        store = RDFStore(load_ontology=False)
+        self._invalid_esp32(store)
+        assert not SHACLValidator().validate(store.graph).conforms
+
+    def test_validator_covers_subclass_devices_with_ontology_in_graph(self):
         store = RDFStore(load_ontology=True)
         self._invalid_esp32(store)
         assert not SHACLValidator().validate(store.graph).conforms
 
-    def test_subclass_device_escapes_validation_without_ontology(self):
-        """Documents why the hierarchy matters: without it the same invalid
-        device is not selected by the general shape and wrongly conforms."""
+    def test_validator_without_ontology_misses_subclass_devices(self):
+        """Documents the original defect: with no class hierarchy visible, the
+        general shape is not selected for subclass-typed devices and the same
+        invalid device wrongly conforms."""
         store = RDFStore(load_ontology=False)
         self._invalid_esp32(store)
-        assert SHACLValidator().validate(store.graph).conforms
+        assert SHACLValidator(use_ontology=False).validate(store.graph).conforms
+
+    def test_validation_does_not_modify_data_graph(self):
+        store = RDFStore(load_ontology=False)
+        store.register_device(
+            {'device_id': 'esp-1', 'ip_address': '10.0.0.1', 'hardware_type': 'ESP32'},
+            device_type='ESP32Device',
+        )
+        before = len(store.graph)
+        SHACLValidator().validate(store.graph)
+        assert len(store.graph) == before

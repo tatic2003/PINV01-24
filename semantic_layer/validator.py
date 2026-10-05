@@ -11,6 +11,8 @@ from pathlib import Path
 from typing import Tuple, List, Dict, Any, Optional
 from dataclasses import dataclass
 
+from .owlxml import load_owlxml
+
 
 IOT = Namespace("http://pnp-its.fiuna.edu.py/ontology/iot#")
 
@@ -55,15 +57,38 @@ class SHACLValidator:
     Provides lightweight validation suitable for edge computing.
     """
 
-    def __init__(self, shapes_path: Optional[str] = None):
+    def __init__(self, shapes_path: Optional[str] = None, use_ontology: bool = True):
         """
         Initialize the validator.
 
         Args:
             shapes_path: Path to SHACL shapes file. If None, uses default shapes.
+            use_ontology: Supply the class hierarchy of the IoT-PnP ontology to
+                SHACL. The shapes select devices with sh:targetClass
+                iot:IoTDevice, which only covers devices typed with a subclass
+                (ESP32Device, SingleBoardComputer, ...) when rdfs:subClassOf is
+                visible. Without it those devices skip the general shape and
+                invalid data wrongly conforms. Set False only to reproduce that.
         """
         self.shapes_graph = Graph()
         self._load_shapes(shapes_path)
+        self.ontology_graph: Optional[Graph] = None
+        if use_ontology:
+            self._load_ontology()
+
+    def _load_ontology(self):
+        """Load the class hierarchy once; it is mixed in on every validation."""
+        path = Path(__file__).parent.parent / "ontology" / "extensions" / "iot_pnp.owl"
+        if not path.exists():
+            print(f"Warning: ontology not found at {path}")
+            return
+        graph = Graph()
+        try:
+            load_owlxml(path, graph)
+        except Exception as e:
+            print(f"Warning: Could not load ontology for validation: {e}")
+            return
+        self.ontology_graph = graph
 
     def _load_shapes(self, shapes_path: Optional[str] = None):
         """Load SHACL shapes from file."""
@@ -100,6 +125,7 @@ class SHACLValidator:
             conforms, results_graph, results_text = validate(
                 data_graph,
                 shacl_graph=self.shapes_graph,
+                ont_graph=self.ontology_graph,
                 inference=inference,
                 abort_on_first=False,
                 allow_infos=True,
