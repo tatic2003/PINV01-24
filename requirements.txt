@@ -23,6 +23,7 @@ aiohttp>=3.9.0    # For async HTTP (edge agents)
 
 # Development
 pytest>=7.4.0
+pytest-asyncio>=0.23.0  # Required for async edge agent tests (@pytest.mark.asyncio)
 black>=23.0.0
 
 # Optional: For Raspberry Pi / Edge
