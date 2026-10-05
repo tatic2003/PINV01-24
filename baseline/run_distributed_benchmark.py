@@ -72,14 +72,17 @@ class EdgeNode:
     Each node has its own classifier, validator, and DAG instance.
     """
 
-    def __init__(self, node_id: str, model_type: str, training_samples: int = 1000):
+    def __init__(self, node_id: str, model_type: str, training_samples: int = 1000,
+                 feature_set: str = 'resource'):
         self.node_id = node_id
         self.model_type = model_type
+        self.feature_set = feature_set
 
         # Train classifier
         self.classifier, train_metrics = train_classifier_from_synthetic_data(
             num_samples=training_samples,
-            model_type=model_type
+            model_type=model_type,
+            feature_set=feature_set
         )
         self._train_accuracy = train_metrics.get('accuracy', 0.0)
 
@@ -178,7 +181,8 @@ def run_distributed_benchmark(
     warmup_events: int = 10,
     training_samples: int = 1000,
     seed: int = 42,
-    output_dir: str = 'baseline/results'
+    output_dir: str = 'baseline/results',
+    feature_set: str = 'resource'
 ) -> List[DistributedEventRecord]:
 
     out_dir = Path(output_dir)
@@ -195,7 +199,8 @@ def run_distributed_benchmark(
         EdgeNode(
             node_id=f"edge-node-{i+1:02d}",
             model_type=model_type,
-            training_samples=training_samples
+            training_samples=training_samples,
+            feature_set=feature_set
         )
         for i in range(num_nodes)
     ]
@@ -273,6 +278,7 @@ def run_distributed_benchmark(
     # --- Save summary JSON ---
     summary = {
         'architecture': 'distributed',
+        'feature_set': feature_set,
         'model': model_type,
         'num_nodes': num_nodes,
         'num_events': num_events,
@@ -320,6 +326,9 @@ if __name__ == '__main__':
                         help='PnP-AI training samples (default: 1000)')
     parser.add_argument('--seed', type=int, default=42,
                         help='Random seed (default: 42)')
+    parser.add_argument('--feature-set', choices=['resource', 'resource+name'],
+                        default='resource',
+                        help="Classifier features (default: resource, observable only)")
     parser.add_argument('--output-dir', type=str, default='baseline/results',
                         help='Output directory (default: baseline/results)')
     args = parser.parse_args()
@@ -335,7 +344,8 @@ if __name__ == '__main__':
             warmup_events=args.warmup,
             training_samples=args.training_samples,
             seed=args.seed,
-            output_dir=args.output_dir
+            output_dir=args.output_dir,
+            feature_set=args.feature_set
         )
 
     print("\n✓ Done. Now run 'python baseline/run_benchmark.py' to generate comparison figures.")

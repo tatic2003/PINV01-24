@@ -106,10 +106,15 @@ class CentralizedBaseline:
         self,
         model_type: str = 'decision_tree',
         training_samples: int = 1000,
-        seed: int = 42
+        seed: int = 42,
+        feature_set: str = 'resource'
     ):
         self.model_type = model_type
         self.seed = seed
+        # 'resource' = only self-reported quantities (deployable signal).
+        # 'resource+name' also uses hardware-name flags and is circular with
+        # the rule-based baseline; keep it only for comparison.
+        self.feature_set = feature_set
         self._log: List[Dict[str, Any]] = []   # Simulated centralized event log
 
         print(f"[Baseline] Initializing centralized node (model={model_type})")
@@ -118,7 +123,8 @@ class CentralizedBaseline:
         t0 = time.perf_counter()
         self.classifier, train_metrics = train_classifier_from_synthetic_data(
             num_samples=training_samples,
-            model_type=model_type
+            model_type=model_type,
+            feature_set=feature_set
         )
         self._train_accuracy = train_metrics.get('accuracy', 0.0)
         print(f"[Baseline] Classifier trained in {(time.perf_counter()-t0)*1000:.1f} ms "
@@ -393,6 +399,7 @@ class CentralizedBaseline:
         summary = {k: v for k, v in asdict(results).items() if k != 'records'}
         summary['generated_at'] = datetime.utcnow().isoformat()
         summary['architecture'] = 'centralized_baseline'
+        summary['feature_set'] = self.feature_set
 
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(summary, f, indent=2)

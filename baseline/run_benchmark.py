@@ -285,7 +285,8 @@ def run(args):
         baseline = CentralizedBaseline(
             model_type=model,
             training_samples=args.training_samples,
-            seed=args.seed
+            seed=args.seed,
+            feature_set=args.feature_set
         )
 
         results = baseline.run_benchmark(
@@ -417,6 +418,9 @@ if __name__ == '__main__':
                         help='PnP-AI training samples (default: 1000)')
     parser.add_argument('--seed', type=int, default=42,
                         help='Random seed (default: 42)')
+    parser.add_argument('--feature-set', choices=['resource', 'resource+name'],
+                        default='resource',
+                        help="Classifier features (default: resource, observable only)")
     parser.add_argument('--output-dir', type=str, default='baseline/results',
                         help='Output directory (default: baseline/results)')
     args = parser.parse_args()
