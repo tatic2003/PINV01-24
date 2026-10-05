@@ -10,6 +10,7 @@ from rdflib.namespace import NamespaceManager
 from datetime import datetime
 from pathlib import Path
 from typing import Optional, Dict, List, Any
+from .owlxml import load_owlxml
 import json
 
 
@@ -50,7 +51,8 @@ class RDFStore:
         ontology_path = Path(__file__).parent.parent / "ontology" / "extensions" / "iot_pnp.owl"
         if ontology_path.exists():
             try:
-                self.graph.parse(str(ontology_path), format="xml")
+                load_owlxml(ontology_path, self.graph)
+                # self.graph.parse(str(ontology_path), format="xml")
             except Exception as e:
                 print(f"Warning: Could not load ontology: {e}")
 
