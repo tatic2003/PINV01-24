@@ -24,8 +24,12 @@ class DAGStorageBackend(ABC):
         pass
 
     @abstractmethod
-    def load(self, node_id: str) -> Optional[BlockDAG]:
-        """Load a DAG from storage."""
+    def load(self, node_id: str, **dag_options) -> Optional[BlockDAG]:
+        """Load a DAG from storage.
+
+        ``dag_options`` (signing_key, trusted_keys, require_signatures) are
+        passed to ``BlockDAG.import_from``.
+        """
         pass
 
     @abstractmethod
@@ -67,7 +71,7 @@ class FileStorageBackend(DAGStorageBackend):
             print(f"Error saving DAG: {e}")
             return False
 
-    def load(self, node_id: str) -> Optional[BlockDAG]:
+    def load(self, node_id: str, **dag_options) -> Optional[BlockDAG]:
         """Load DAG from JSON file."""
         filepath = self._get_filepath(node_id)
 
@@ -78,7 +82,7 @@ class FileStorageBackend(DAGStorageBackend):
             with open(filepath, 'r', encoding='utf-8') as f:
                 data = json.load(f)
 
-            return BlockDAG.import_from(data)
+            return BlockDAG.import_from(data, **dag_options)
         except Exception as e:
             print(f"Error loading DAG: {e}")
             return None
@@ -119,11 +123,11 @@ class MemoryStorageBackend(DAGStorageBackend):
         self._storage[dag.node_id] = dag.export()
         return True
 
-    def load(self, node_id: str) -> Optional[BlockDAG]:
+    def load(self, node_id: str, **dag_options) -> Optional[BlockDAG]:
         """Load DAG from memory."""
         data = self._storage.get(node_id)
         if data:
-            return BlockDAG.import_from(data)
+            return BlockDAG.import_from(data, **dag_options)
         return None
 
     def exists(self, node_id: str) -> bool:
@@ -146,7 +150,8 @@ class DAGStorage:
     def __init__(
         self,
         backend: Optional[DAGStorageBackend] = None,
-        auto_save_interval: int = 0
+        auto_save_interval: int = 0,
+        dag_options: Optional[Dict[str, Any]] = None
     ):
         """
         Initialize DAG storage.
@@ -154,9 +159,13 @@ class DAGStorage:
         Args:
             backend: Storage backend (defaults to FileStorageBackend)
             auto_save_interval: Auto-save interval in seconds (0 = disabled)
+            dag_options: Keyword arguments for every BlockDAG this storage
+                creates or loads (signing_key, trusted_keys,
+                require_signatures); see blockdag.signing.build_dag_options
         """
         self.backend = backend or FileStorageBackend()
         self.auto_save_interval = auto_save_interval
+        self.dag_options: Dict[str, Any] = dict(dag_options or {})
         self._dags: Dict[str, BlockDAG] = {}
 
     def create(self, node_id: str) -> BlockDAG:
@@ -173,15 +182,21 @@ class DAGStorage:
         if node_id in self._dags:
             return self._dags[node_id]
 
-        # Try to load from storage
+        # Try to load from storage. A stored DAG that cannot be loaded (for
+        # example because it fails verification) is never replaced silently:
+        # the next save would overwrite the evidence.
         if self.backend.exists(node_id):
-            dag = self.backend.load(node_id)
+            dag = self.backend.load(node_id, **self.dag_options)
             if dag:
                 self._dags[node_id] = dag
                 return dag
+            raise RuntimeError(
+                f"Stored DAG '{node_id}' exists but could not be loaded or verified; "
+                "refusing to create a new one over it. Move or fix the stored file."
+            )
 
         # Create new
-        dag = BlockDAG(node_id)
+        dag = BlockDAG(node_id, **self.dag_options)
         self._dags[node_id] = dag
         return dag
 
@@ -205,7 +220,7 @@ class DAGStorage:
 
     def load(self, node_id: str) -> Optional[BlockDAG]:
         """Load a DAG from storage."""
-        dag = self.backend.load(node_id)
+        dag = self.backend.load(node_id, **self.dag_options)
         if dag:
             self._dags[node_id] = dag
         return dag

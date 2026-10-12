@@ -17,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from .config import Config
 from semantic_layer import SemanticDeviceManager
 from pnp_ai.device_classifier import DeviceClassifier
-from blockdag import BlockDAG, DAGStorage
+from blockdag import BlockDAG, DAGStorage, build_dag_options
 
 
 def create_app(config: Config = None) -> Flask:
@@ -110,9 +110,18 @@ def _init_components(app: Flask, config: Config):
 
     # BlockDAG
     if config.enable_dag:
-        app.dag_storage = DAGStorage()
+        dag_options = build_dag_options(
+            key_file=config.dag_key_file,
+            trusted_keys_file=config.dag_trusted_keys_file,
+            require_signatures=config.dag_require_signatures
+        )
+        app.dag_storage = DAGStorage(dag_options=dag_options)
         app.dag = app.dag_storage.create(config.node_id)
-        app.logger.info("BlockDAG initialized")
+        app.logger.info(
+            "BlockDAG initialized "
+            f"(signing: {'on' if 'signing_key' in dag_options else 'off'}, "
+            f"require_signatures: {dag_options.get('require_signatures', False)})"
+        )
     else:
         app.dag = None
         app.dag_storage = None

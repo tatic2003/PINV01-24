@@ -12,8 +12,12 @@ Features:
 - Lightweight for edge devices
 
 Guarantees (and non-guarantees):
-- Integrity: yes (hash chain). Authenticity of the creator: NOT provided yet
-  (``signature`` is carried but neither hashed nor verified).
+- Integrity: yes (hash chain).
+- Authenticity: optional Ed25519 signatures. A node's ``signature`` signs its
+  hash (which covers creator_id, payload and parent hashes). A DAG configured
+  with ``trusted_keys`` verifies the signatures it receives; with
+  ``require_signatures=True`` it rejects unsigned nodes and unknown creators.
+  No key rotation or revocation yet.
 - Convergence: replicas that hold the same set of nodes compute the same total
   order and the same resolved device state (merge is a set union).
 - Consensus: none. There is no voting, leader or finality.
@@ -29,6 +33,8 @@ from typing import Dict, Any, Optional, List, Set, Tuple, Callable, Iterable
 from dataclasses import dataclass, field
 from collections import defaultdict, deque
 import threading
+
+from . import signing
 
 
 # Event types that take part in device-state conflict resolution.
@@ -57,7 +63,7 @@ class DAGNode:
     timestamp: str
     creator_id: str  # ID of the node/device that created this event
     parent_ids: List[str]  # References to parent nodes (can be multiple)
-    signature: str = ""  # Reserved: not hashed, not verified (no authenticity yet)
+    signature: str = ""  # Ed25519 signature (hex) of the node hash; not part of the hash
     parent_hashes: Dict[str, str] = field(default_factory=dict)
     _hash: str = field(default="", repr=False)
 
@@ -132,14 +138,37 @@ class BlockDAG:
     - Conflict resolution: resolve_device_states() (remove-wins)
     """
 
-    def __init__(self, node_id: str):
+    def __init__(
+        self,
+        node_id: str,
+        signing_key: Optional[str] = None,
+        trusted_keys: Optional[Dict[str, str]] = None,
+        require_signatures: bool = False
+    ):
         """
         Initialize the BlockDAG.
 
         Args:
             node_id: Unique identifier for this DAG instance
+            signing_key: Ed25519 private key (hex) used to sign the nodes this
+                instance creates. None = nodes are created unsigned.
+            trusted_keys: ``{creator_id: public_key_hex}`` used to verify
+                signatures. The public key of ``signing_key`` is added for
+                ``node_id`` automatically.
+            require_signatures: Reject nodes that are unsigned or whose
+                creator has no trusted key.
         """
         self.node_id = node_id
+        self._signing_key = signing_key
+        self._trusted_keys: Dict[str, str] = dict(trusted_keys or {})
+        self.require_signatures = require_signatures
+        if signing_key is not None:
+            own_public = signing.public_key_of(signing_key)
+            if self._trusted_keys.setdefault(node_id, own_public) != own_public:
+                raise ValueError(
+                    f"trusted_keys has a different public key for {node_id!r} "
+                    "than the one derived from signing_key"
+                )
         self._nodes: Dict[str, DAGNode] = {}  # node_id -> DAGNode
         self._children: Dict[str, Set[str]] = defaultdict(set)  # parent_id -> child_ids
         self._tips: Set[str] = set()  # Nodes with no children
@@ -161,8 +190,30 @@ class BlockDAG:
             creator_id=self.node_id,
             parent_ids=[]
         )
+        self._sign_node(genesis)
         self._add_node_internal(genesis)
         return genesis
+
+    def add_trusted_key(self, creator_id: str, public_key_hex: str) -> None:
+        """Trust ``public_key_hex`` for nodes created by ``creator_id``."""
+        self._trusted_keys[creator_id] = public_key_hex
+
+    def _sign_node(self, node: DAGNode) -> None:
+        """Sign the node with this instance's key, if it has one."""
+        if self._signing_key is not None:
+            node.signature = signing.sign(self._signing_key, bytes.fromhex(node.hash))
+
+    def _signature_problem(self, node: DAGNode) -> Optional[str]:
+        """Why the node's signature is not acceptable, or None if it is."""
+        public_key = self._trusted_keys.get(node.creator_id)
+        if not node.signature:
+            return "Signature missing" if self.require_signatures else None
+        if public_key is None:
+            # Cannot be checked. Acceptable only when signatures are optional.
+            return "Unknown creator" if self.require_signatures else None
+        if not signing.verify(public_key, bytes.fromhex(node.hash), node.signature):
+            return "Signature invalid"
+        return None
 
     def _generate_node_id(self) -> str:
         """Generate a node ID that is guaranteed not to exist in this DAG."""
@@ -289,6 +340,7 @@ class BlockDAG:
                 parent_ids=parent_ids,
                 parent_hashes={p: self._nodes[p].hash for p in parent_ids}
             )
+            self._sign_node(node)
 
             if not self._add_node_internal(node):
                 raise RuntimeError(f"Node id collision: {node.node_id}")
@@ -312,6 +364,11 @@ class BlockDAG:
             # Verify hash integrity
             if not node.verify_hash():
                 return False, "Hash verification failed"
+
+            # Check who created it (the signature covers the hash verified above)
+            problem = self._signature_problem(node)
+            if problem:
+                return False, f"{problem}: {node.creator_id}"
 
             # Check parent references
             missing_parents = [p for p in node.parent_ids if p not in self._nodes]
@@ -344,6 +401,8 @@ class BlockDAG:
             for node_id, node in self._nodes.items():
                 if not node.verify_hash():
                     problems.append({'node_id': node_id, 'problem': 'hash_mismatch'})
+                if self._signature_problem(node):
+                    problems.append({'node_id': node_id, 'problem': 'bad_signature'})
                 if set(node.parent_hashes) != set(node.parent_ids):
                     problems.append({'node_id': node_id, 'problem': 'parent_set_mismatch'})
                 for parent_id in node.parent_ids:
@@ -575,6 +634,8 @@ class BlockDAG:
             if self._metrics_hook is not None:
                 if "Missing parents" in reason:
                     key = "missing_parents"
+                elif "Signature" in reason or "Unknown creator" in reason:
+                    key = "bad_signature"
                 elif "Hash conflict" in reason:
                     key = "hash_conflict"
                 elif "Parent hash" in reason:
@@ -743,7 +804,14 @@ class BlockDAG:
         }
 
     @classmethod
-    def import_from(cls, data: Dict[str, Any], verify: bool = True) -> 'BlockDAG':
+    def import_from(
+        cls,
+        data: Dict[str, Any],
+        verify: bool = True,
+        signing_key: Optional[str] = None,
+        trusted_keys: Optional[Dict[str, str]] = None,
+        require_signatures: bool = False
+    ) -> 'BlockDAG':
         """
         Import a DAG from exported data.
 
@@ -753,10 +821,17 @@ class BlockDAG:
 
         Args:
             data: Output of :meth:`export`
-            verify: Check hashes, parents and hash links (default). A DAG that
-                fails raises ``ValueError`` instead of being loaded silently.
+            verify: Check hashes, parents, hash links and (when configured)
+                signatures. A DAG that fails raises ``ValueError`` instead of
+                being loaded silently.
+            signing_key, trusted_keys, require_signatures: as in the constructor
         """
-        dag = cls(node_id=data['node_id'])
+        dag = cls(
+            node_id=data['node_id'],
+            signing_key=signing_key,
+            trusted_keys=trusted_keys,
+            require_signatures=require_signatures
+        )
         dag._nodes.clear()
 
         for node_dict in data['nodes']:

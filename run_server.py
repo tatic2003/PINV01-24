@@ -13,6 +13,7 @@ Project: PINV01-24 - FIUNA
 """
 
 import argparse
+import os
 import sys
 from pathlib import Path
 
@@ -83,6 +84,25 @@ Examples:
         help='Disable BlockDAG event logging'
     )
     parser.add_argument(
+        '--dag-key-file',
+        default=None,
+        help='Ed25519 private key file (hex) used to sign the DAG nodes this '
+             'server creates; created if it does not exist. Without it the '
+             'nodes are created unsigned. Also: ITS_DAG_KEY_FILE'
+    )
+    parser.add_argument(
+        '--dag-trusted-keys',
+        default=None,
+        help='JSON file {creator_id: public_key_hex} with the public keys of '
+             'the servers whose DAG nodes are accepted. Also: ITS_DAG_TRUSTED_KEYS_FILE'
+    )
+    parser.add_argument(
+        '--dag-require-signatures',
+        action='store_true',
+        help='Reject DAG nodes that are unsigned or come from an unknown '
+             'creator. Also: ITS_DAG_REQUIRE_SIGNATURES=true'
+    )
+    parser.add_argument(
         '--log-level',
         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR'],
         default='INFO',
@@ -109,6 +129,14 @@ def main():
             classifier_type=args.classifier,
             classifier_feature_set=args.feature_set,
             enable_dag=not args.no_dag,
+            dag_key_file=args.dag_key_file or os.getenv('ITS_DAG_KEY_FILE') or None,
+            dag_trusted_keys_file=(
+                args.dag_trusted_keys or os.getenv('ITS_DAG_TRUSTED_KEYS_FILE') or None
+            ),
+            dag_require_signatures=(
+                args.dag_require_signatures
+                or os.getenv('ITS_DAG_REQUIRE_SIGNATURES', 'false').lower() == 'true'
+            ),
             log_level=args.log_level
         )
 
@@ -124,6 +152,9 @@ def main():
     if config.classifier_type != 'rule_based':
         print(f" Features:   {config.classifier_feature_set}")
     print(f" BlockDAG:   {'enabled' if config.enable_dag else 'disabled'}")
+    if config.enable_dag:
+        print(f" DAG signing: {'on' if config.dag_key_file else 'off'}"
+              f" (require signatures: {config.dag_require_signatures})")
     print(f" Debug:      {config.debug}")
     print("=" * 60)
 

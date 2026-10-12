@@ -9,6 +9,9 @@ numpy>=1.24.0
 onnxruntime>=1.16.0  # For edge inference
 matplotlib>=3.7.0    # For evaluation plots (learning curves, confusion matrices)
 
+# Signatures for the BlockDAG (Ed25519)
+cryptography>=41.0.0
+
 # Data handling
 pandas>=2.0.0
 pyyaml>=6.0

@@ -8,5 +8,6 @@ Project: PINV01-24 - FIUNA
 from .dag import BlockDAG, DAGNode
 from .storage import DAGStorage
 from .metrics import DAGMetricsCollector
+from .signing import build_dag_options
 
-__all__ = ['BlockDAG', 'DAGNode', 'DAGStorage', 'DAGMetricsCollector']
+__all__ = ['BlockDAG', 'DAGNode', 'DAGStorage', 'DAGMetricsCollector', 'build_dag_options']

@@ -98,3 +98,4 @@ docs/
 *.key
 credentials.json
 secrets.yml
+keys/*.key
