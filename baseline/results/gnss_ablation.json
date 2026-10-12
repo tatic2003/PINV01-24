@@ -1,0 +1,70 @@
+{
+  "decision_tree|resource|with declares_gnss": {
+    "recall_mean": 1.0,
+    "recall_sd": 0.0,
+    "predicted_as": {
+      "GNSSReceiver": 359
+    }
+  },
+  "decision_tree|resource|without declares_gnss": {
+    "recall_mean": 0.11925632848021502,
+    "recall_sd": 0.05618286443689516,
+    "predicted_as": {
+      "SingleBoardComputer": 146,
+      "ESP32Device": 152,
+      "GNSSReceiver": 43,
+      "IoTGateway": 17,
+      "Sensor": 1
+    }
+  },
+  "random_forest|resource|with declares_gnss": {
+    "recall_mean": 1.0,
+    "recall_sd": 0.0,
+    "predicted_as": {
+      "GNSSReceiver": 359
+    }
+  },
+  "random_forest|resource|without declares_gnss": {
+    "recall_mean": 0.043451964229403256,
+    "recall_sd": 0.03181333197910796,
+    "predicted_as": {
+      "SingleBoardComputer": 170,
+      "ESP32Device": 171,
+      "GNSSReceiver": 15,
+      "IoTGateway": 3
+    }
+  },
+  "decision_tree|resource+name|with declares_gnss": {
+    "recall_mean": 1.0,
+    "recall_sd": 0.0,
+    "predicted_as": {
+      "GNSSReceiver": 359
+    }
+  },
+  "decision_tree|resource+name|without declares_gnss": {
+    "recall_mean": 0.4592347722848783,
+    "recall_sd": 0.15003770068623262,
+    "predicted_as": {
+      "GNSSReceiver": 163,
+      "ESP32Device": 96,
+      "SingleBoardComputer": 99,
+      "IoTGateway": 1
+    }
+  },
+  "random_forest|resource+name|with declares_gnss": {
+    "recall_mean": 1.0,
+    "recall_sd": 0.0,
+    "predicted_as": {
+      "GNSSReceiver": 359
+    }
+  },
+  "random_forest|resource+name|without declares_gnss": {
+    "recall_mean": 0.3844765306198233,
+    "recall_sd": 0.13839754212712602,
+    "predicted_as": {
+      "GNSSReceiver": 137,
+      "ESP32Device": 97,
+      "SingleBoardComputer": 125
+    }
+  }
+}
