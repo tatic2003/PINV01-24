@@ -198,7 +198,9 @@ class TestBlockDAG:
             payload={'source': 'external'},
             timestamp='2026-01-28T12:00:00',
             creator_id='other-node',
-            parent_ids=[genesis_id]
+            parent_ids=[genesis_id],
+            # An external node must commit to the hash of each parent.
+            parent_hashes={genesis_id: dag.get_node(genesis_id).hash}
         )
 
         success, message = dag.add_external_node(external_node)
