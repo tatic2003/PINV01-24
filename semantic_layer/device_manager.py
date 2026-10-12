@@ -122,7 +122,17 @@ class SemanticDeviceManager:
             'mac_address': 'mac_address',
             'firmware': 'firmware_version',
             'firmwareVersion': 'firmware_version',
-            'firmware_version': 'firmware_version'
+            'firmware_version': 'firmware_version',
+            # GNSS receivers
+            'lat': 'latitude',
+            'lon': 'longitude',
+            'lng': 'longitude',
+            'satellites': 'satellites_used',
+            'satellitesUsed': 'satellites_used',
+            'sats': 'satellites_used',
+            'fixQuality': 'fix_quality',
+            'fix': 'fix_quality',
+            'updateRateHz': 'update_rate_hz'
         }
 
         for key, value in data.items():

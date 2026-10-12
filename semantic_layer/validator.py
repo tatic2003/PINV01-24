@@ -277,6 +277,8 @@ class SHACLValidator:
                     'message': 'Invalid MAC address format (expected XX:XX:XX:XX:XX:XX)'
                 })
 
+        violations.extend(self._validate_gnss_fields(device_data))
+
         conforms = len(violations) == 0
         return ValidationResult(
             conforms=conforms,
@@ -284,6 +286,56 @@ class SHACLValidator:
             warnings=warnings,
             info=info
         )
+
+    @staticmethod
+    def _validate_gnss_fields(data: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        Range checks for GNSS fields, mirroring GNSSReceiverShape.
+        Only applies when the announcement carries GNSS fields.
+        """
+        gnss_keys = ('latitude', 'longitude', 'hdop', 'satellites_used',
+                     'fix_quality', 'update_rate_hz')
+        if not any(k in data for k in gnss_keys):
+            return []
+        out = []
+
+        def number(key):
+            value = data.get(key)
+            if value is None:
+                return None
+            if isinstance(value, bool):
+                out.append({'path': key, 'value': value, 'message': f'{key} must be a number'})
+                return None
+            try:
+                return float(value)
+            except (TypeError, ValueError):
+                out.append({'path': key, 'value': value, 'message': f'{key} must be a number'})
+                return None
+
+        lat, lon = number('latitude'), number('longitude')
+        hdop, sats = number('hdop'), number('satellites_used')
+        fix, rate = number('fix_quality'), number('update_rate_hz')
+
+        if lat is not None and not -90 <= lat <= 90:
+            out.append({'path': 'latitude', 'value': lat, 'message': 'Latitude must be between -90 and 90'})
+        if lon is not None and not -180 <= lon <= 180:
+            out.append({'path': 'longitude', 'value': lon, 'message': 'Longitude must be between -180 and 180'})
+        if hdop is not None and hdop < 0:
+            out.append({'path': 'hdop', 'value': hdop, 'message': 'HDOP must be non-negative'})
+        if sats is not None and not 0 <= sats <= 64:
+            out.append({'path': 'satellites_used', 'value': sats, 'message': 'Satellites used must be between 0 and 64'})
+        if rate is not None and rate <= 0:
+            out.append({'path': 'update_rate_hz', 'value': rate, 'message': 'Update rate must be positive'})
+        if fix is None:
+            if 'fix_quality' not in data:
+                out.append({'path': 'fix_quality', 'message': "Required field 'fix_quality' is missing"})
+        elif not 0 <= fix <= 8:
+            out.append({'path': 'fix_quality', 'value': fix, 'message': 'Fix quality must be between 0 and 8'})
+        elif fix >= 1 and (lat is None or lon is None):
+            out.append({'path': 'latitude', 'message': 'A position is required when the receiver reports a fix'})
+        if (lat is None) != (lon is None) and fix is not None and fix < 1:
+            out.append({'path': 'latitude', 'message': 'Latitude and longitude must be given together'})
+        return out
 
     def validate_state_transition(self, current_state: str, new_state: str) -> ValidationResult:
         """

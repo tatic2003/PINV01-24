@@ -13,7 +13,7 @@ import csv
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, field
 import hashlib
 
 from ..features import FEATURE_SET_RESOURCE_NAME, extract_features
@@ -30,6 +30,8 @@ class DeviceProfile:
     typical_roles: List[str]
     id_prefix: str
     manufacturer: str
+    #: Capabilities the device declares in its announcement (empty = none).
+    capabilities: List[str] = field(default_factory=list)
 
 
 # Device profiles based on real hardware from PINV01-24 report
@@ -103,6 +105,38 @@ DEVICE_PROFILES = {
         id_prefix='sbc-low',
         manufacturer='Various'
     ),
+    # GNSS receivers (GPS HATs and modules).
+    #
+    # A receiver has no resources of its own that the network can see: it
+    # announces those of its host. Two profiles cover the two usual hosts, a
+    # Linux single-board computer and a microcontroller, so that memory and
+    # CPU alone cannot separate the class. What does: the capability the
+    # device declares. Hardware names deliberately include a host name
+    # ('RaspberryPi-5+GPS-HAT') so the name flags do not give the class away.
+    'gnss_on_sbc': DeviceProfile(
+        device_type='GNSSReceiver',
+        hardware_variants=['Adafruit-Ultimate-GPS-HAT', 'RaspberryPi-5+GPS-HAT',
+                           'RaspberryPi-4B+GPS-HAT', 'u-blox-NEO-M8N-USB'],
+        memory_range=(1_073_741_824, 8_589_934_592),
+        cpu_freq_range=(900, 2400),
+        connection_types=['ethernet', 'wifi'],
+        typical_roles=['sensor'],
+        id_prefix='gnss-sbc',
+        manufacturer='Various',
+        capabilities=['gnss', 'position', 'time']
+    ),
+    'gnss_on_mcu': DeviceProfile(
+        device_type='GNSSReceiver',
+        hardware_variants=['ESP32-WROOM32+NEO-6M', 'ESP32-OLIMEX-PoE+L76K',
+                           'Quectel-L76K', 'u-blox-NEO-M8N'],
+        memory_range=(320_000, 520_000),
+        cpu_freq_range=(80, 240),
+        connection_types=['wifi', 'ethernet'],
+        typical_roles=['sensor'],
+        id_prefix='gnss-mcu',
+        manufacturer='Various',
+        capabilities=['gnss', 'position', 'time']
+    ),
     'industrial_gateway': DeviceProfile(
         device_type='IoTGateway',
         hardware_variants=['IIoT-Gateway-ARM', 'IIoT-Gateway-x86', 'Edge-Gateway-Pro'],
@@ -138,6 +172,8 @@ DEFAULT_PROFILE_WEIGHTS = {
     'jetson': 0.05,
     'industrial_gateway': 0.10,
     'generic_sensor': 0.10,
+    'gnss_on_sbc': 0.05,
+    'gnss_on_mcu': 0.05,
 }
 
 #: Weight given to a profile that DEFAULT_PROFILE_WEIGHTS does not mention.
@@ -264,6 +300,9 @@ class SyntheticDatasetGenerator:
             'last_seen': None,  # Will be set
             'state': 'active'
         }
+
+        if profile.capabilities:
+            device['capabilities'] = list(profile.capabilities)
 
         # Calculate free memory (60-95% of total typically free at registration)
         device['memory_free'] = int(device['memory_total'] * random.uniform(0.6, 0.95))

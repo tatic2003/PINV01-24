@@ -115,6 +115,28 @@
         <Class IRI="#Microcontroller"/>
     </SubClassOf>
 
+    <!-- GNSS Receiver (GPS and other satellite positioning devices) -->
+    <Declaration>
+        <Class IRI="#GNSSReceiver"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#GNSSReceiver"/>
+        <Class IRI="#Sensor"/>
+    </SubClassOf>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#GNSSReceiver</IRI>
+        <Literal>Satellite positioning receiver (GPS/GNSS) that reports position, fix quality and time</Literal>
+    </AnnotationAssertion>
+
+    <Declaration>
+        <Class IRI="#GNSSCapability"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#GNSSCapability"/>
+        <Class IRI="#SensingCapability"/>
+    </SubClassOf>
+
     <!-- Gateway -->
     <Declaration>
         <Class IRI="#IoTGateway"/>
@@ -522,6 +544,79 @@
     <DataPropertyRange>
         <DataProperty IRI="#location"/>
         <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+
+
+    <Declaration>
+        <DataProperty IRI="#latitude"/>
+    </Declaration>
+    <DataPropertyDomain>
+        <DataProperty IRI="#latitude"/>
+        <Class IRI="#GNSSReceiver"/>
+    </DataPropertyDomain>
+    <DataPropertyRange>
+        <DataProperty IRI="#latitude"/>
+        <Datatype abbreviatedIRI="xsd:decimal"/>
+    </DataPropertyRange>
+
+    <Declaration>
+        <DataProperty IRI="#longitude"/>
+    </Declaration>
+    <DataPropertyDomain>
+        <DataProperty IRI="#longitude"/>
+        <Class IRI="#GNSSReceiver"/>
+    </DataPropertyDomain>
+    <DataPropertyRange>
+        <DataProperty IRI="#longitude"/>
+        <Datatype abbreviatedIRI="xsd:decimal"/>
+    </DataPropertyRange>
+
+    <Declaration>
+        <DataProperty IRI="#hdop"/>
+    </Declaration>
+    <DataPropertyDomain>
+        <DataProperty IRI="#hdop"/>
+        <Class IRI="#GNSSReceiver"/>
+    </DataPropertyDomain>
+    <DataPropertyRange>
+        <DataProperty IRI="#hdop"/>
+        <Datatype abbreviatedIRI="xsd:decimal"/>
+    </DataPropertyRange>
+
+    <Declaration>
+        <DataProperty IRI="#satellitesUsed"/>
+    </Declaration>
+    <DataPropertyDomain>
+        <DataProperty IRI="#satellitesUsed"/>
+        <Class IRI="#GNSSReceiver"/>
+    </DataPropertyDomain>
+    <DataPropertyRange>
+        <DataProperty IRI="#satellitesUsed"/>
+        <Datatype abbreviatedIRI="xsd:integer"/>
+    </DataPropertyRange>
+
+    <Declaration>
+        <DataProperty IRI="#fixQuality"/>
+    </Declaration>
+    <DataPropertyDomain>
+        <DataProperty IRI="#fixQuality"/>
+        <Class IRI="#GNSSReceiver"/>
+    </DataPropertyDomain>
+    <DataPropertyRange>
+        <DataProperty IRI="#fixQuality"/>
+        <Datatype abbreviatedIRI="xsd:integer"/>
+    </DataPropertyRange>
+
+    <Declaration>
+        <DataProperty IRI="#updateRateHz"/>
+    </Declaration>
+    <DataPropertyDomain>
+        <DataProperty IRI="#updateRateHz"/>
+        <Class IRI="#GNSSReceiver"/>
+    </DataPropertyDomain>
+    <DataPropertyRange>
+        <DataProperty IRI="#updateRateHz"/>
+        <Datatype abbreviatedIRI="xsd:decimal"/>
     </DataPropertyRange>
 
 </Ontology>

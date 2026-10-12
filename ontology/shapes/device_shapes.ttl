@@ -216,6 +216,79 @@ iot:SensorShape
     ] .
 
 # ------------------------------------------------------------
+# GNSS Receiver Shape - Validation for GPS/GNSS devices
+# Position values must be physically possible. A position is only
+# required when the receiver reports a fix (fixQuality >= 1); without
+# a fix the receiver still registers, but must not claim a position.
+# ------------------------------------------------------------
+iot:GNSSReceiverShape
+    a sh:NodeShape ;
+    sh:targetClass iot:GNSSReceiver ;
+    sh:property [
+        sh:path iot:latitude ;
+        sh:datatype xsd:decimal ;
+        sh:minInclusive -90 ;
+        sh:maxInclusive 90 ;
+        sh:maxCount 1 ;
+        sh:name "Latitude" ;
+        sh:description "Latitude in decimal degrees, -90 to 90" ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path iot:longitude ;
+        sh:datatype xsd:decimal ;
+        sh:minInclusive -180 ;
+        sh:maxInclusive 180 ;
+        sh:maxCount 1 ;
+        sh:name "Longitude" ;
+        sh:description "Longitude in decimal degrees, -180 to 180" ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path iot:hdop ;
+        sh:datatype xsd:decimal ;
+        sh:minInclusive 0 ;
+        sh:maxCount 1 ;
+        sh:name "HDOP" ;
+        sh:description "Horizontal dilution of precision, non-negative" ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path iot:satellitesUsed ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 0 ;
+        sh:maxInclusive 64 ;
+        sh:maxCount 1 ;
+        sh:name "Satellites used" ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path iot:fixQuality ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 0 ;
+        sh:maxInclusive 8 ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:name "Fix quality" ;
+        sh:description "NMEA GGA fix quality indicator, 0 (no fix) to 8" ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path iot:updateRateHz ;
+        sh:datatype xsd:decimal ;
+        sh:exclusiveMinimum 0 ;
+        sh:maxCount 1 ;
+        sh:name "Update rate" ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:or (
+        [ sh:property [ sh:path iot:fixQuality ; sh:maxInclusive 0 ] ]
+        [ sh:property [ sh:path iot:latitude ; sh:minCount 1 ] ;
+          sh:property [ sh:path iot:longitude ; sh:minCount 1 ] ]
+    ) .
+
+
+# ------------------------------------------------------------
 # Gateway Shape - Validation for IoT gateways
 # ------------------------------------------------------------
 iot:GatewayShape

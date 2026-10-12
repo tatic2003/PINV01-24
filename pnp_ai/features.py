@@ -72,6 +72,9 @@ _NAME_FEATURES = {
     'has_sensor': ('sensor',),
 }
 
+#: Capability names, declared in the announcement, that mean "GNSS receiver".
+GNSS_CAPABILITY_NAMES = ('gnss', 'gps')
+
 # ---------------------------------------------------------------------------
 # Feature sets
 # ---------------------------------------------------------------------------
@@ -156,6 +159,14 @@ def normalize_announcement(data: Dict[str, Any]) -> Dict[str, Any]:
     return out
 
 
+def declared_capabilities(data: Dict[str, Any]) -> set:
+    """Lower-cased capability names declared in an announcement."""
+    caps = data.get('capabilities') or []
+    if isinstance(caps, str):
+        caps = [caps]
+    return {str(c).strip().lower() for c in caps}
+
+
 def hardware_name(data: Dict[str, Any]) -> str:
     """Lowercased hardware model string, from either accepted key."""
     return str(_first(data, 'hardware_type', 'hardware') or '').lower()
@@ -204,6 +215,13 @@ def extract_features(
     }
     for name in _LINK_FEATURES:
         features[f'is_{name}'] = 1.0 if link == name else 0.0
+
+    # Declared capability, present in both feature sets. Resources alone cannot
+    # tell a GNSS receiver from the board that hosts it: a GPS HAT on a
+    # Raspberry Pi announces the Pi's memory and CPU.
+    features['declares_gnss'] = (
+        1.0 if declared_capabilities(device) & set(GNSS_CAPABILITY_NAMES) else 0.0
+    )
 
     if feature_set == FEATURE_SET_RESOURCE_NAME:
         hardware = hardware_name(device)

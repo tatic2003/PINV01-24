@@ -22,6 +22,8 @@ from .features import (
     extract_features,
     feature_names as feature_names_for,
     features_to_vector,
+    declared_capabilities,
+    GNSS_CAPABILITY_NAMES,
     hardware_name,
     normalize_announcement,
 )
@@ -91,7 +93,8 @@ class DeviceClassifier:
         'IoTGateway': ['protocol_conversion', 'data_aggregation', 'routing', 'security'],
         'Sensor': ['sensing', 'low_power', 'battery'],
         'Actuator': ['actuation', 'control'],
-        'Microcontroller': ['sensing', 'actuation', 'low_power']
+        'Microcontroller': ['sensing', 'actuation', 'low_power'],
+        'GNSSReceiver': ['gnss', 'position', 'time']
     }
 
     # Device type to typical role mapping
@@ -101,7 +104,8 @@ class DeviceClassifier:
         'IoTGateway': ['gateway', 'protocol_converter'],
         'Sensor': ['sensor'],
         'Actuator': ['actuator'],
-        'Microcontroller': ['sensor', 'actuator']
+        'Microcontroller': ['sensor', 'actuator'],
+        'GNSSReceiver': ['sensor']
     }
 
     def __init__(
@@ -295,7 +299,10 @@ class DeviceClassifier:
         memory = device_data.get('memory_total', 0)
 
         # Hardware name-based rules
-        if 'esp32' in hardware:
+        if declared_capabilities(device_data) & set(GNSS_CAPABILITY_NAMES):
+            device_type = 'GNSSReceiver'
+            confidence = 0.95
+        elif 'esp32' in hardware:
             device_type = 'ESP32Device'
             confidence = 0.95
         elif 'raspberry' in hardware or 'rpi' in hardware:

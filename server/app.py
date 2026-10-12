@@ -17,7 +17,14 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from .config import Config
 from semantic_layer import SemanticDeviceManager
 from pnp_ai.device_classifier import DeviceClassifier
+from pnp_ai.capability_rules import apply_capability_rules
 from blockdag import BlockDAG, DAGStorage, build_dag_options
+
+
+def _known_classes(classifier):
+    """Classes a trained classifier can output; empty for the rule-based one."""
+    encoder = getattr(classifier, 'label_encoder', None)
+    return list(encoder.classes_) if encoder is not None else []
 
 
 def create_app(config: Config = None) -> Flask:
@@ -189,6 +196,8 @@ def _register_routes(app: Flask):
 
         # Classify the device
         classification = app.classifier.classify(data)
+        # Safety net for models that predate the GNSSReceiver class.
+        classification = apply_capability_rules(data, classification, _known_classes(app.classifier))
 
         # The classification is what types the device in the ontology, but only
         # when the classifier is confident enough. Below the threshold we do not
@@ -312,7 +321,7 @@ def _register_routes(app: Flask):
         if not data:
             return jsonify({'error': 'No JSON data provided'}), 400
 
-        classification = app.classifier.classify(data)
+        classification = apply_capability_rules(data, app.classifier.classify(data), _known_classes(app.classifier))
         return jsonify(classification.to_dict())
 
     # ===================

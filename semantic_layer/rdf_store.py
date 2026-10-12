@@ -5,6 +5,7 @@ Designed for low memory footprint and efficient querying.
 Project: PINV01-24 - FIUNA
 """
 
+from decimal import Decimal
 from rdflib import Graph, Namespace, Literal, URIRef, RDF, RDFS, OWL, XSD
 from rdflib.namespace import NamespaceManager
 from datetime import datetime
@@ -118,6 +119,10 @@ class RDFStore:
             self.graph.add((device_uri, IOT.location,
                            Literal(device_data['location'], datatype=XSD.string)))
 
+        # GNSS receivers: typed position/quality literals and a capability
+        if device_class == IOT.GNSSReceiver:
+            self._add_gnss_properties(device_uri, device_id, device_data)
+
         # Add timestamps
         now = datetime.utcnow().isoformat()
         self.graph.add((device_uri, IOT.registeredAt, Literal(now, datatype=XSD.dateTime)))
@@ -130,11 +135,32 @@ class RDFStore:
 
         return device_uri
 
+    def _add_gnss_properties(self, device_uri: URIRef, device_id: str,
+                             device_data: Dict[str, Any]) -> None:
+        """Add GNSS-specific triples with their XSD datatypes."""
+        decimals = {'latitude': IOT.latitude, 'longitude': IOT.longitude,
+                    'hdop': IOT.hdop, 'update_rate_hz': IOT.updateRateHz}
+        integers = {'satellites_used': IOT.satellitesUsed,
+                    'fix_quality': IOT.fixQuality}
+        for key, prop in decimals.items():
+            if device_data.get(key) is not None:
+                self.graph.add((device_uri, prop,
+                                Literal(Decimal(str(device_data[key])), datatype=XSD.decimal)))
+        for key, prop in integers.items():
+            if device_data.get(key) is not None:
+                self.graph.add((device_uri, prop,
+                                Literal(int(device_data[key]), datatype=XSD.integer)))
+        cap_uri = IOT[f"capability/{device_id}/gnss"]
+        self.graph.add((cap_uri, RDF.type, IOT.GNSSCapability))
+        self.graph.add((device_uri, IOT.hasCapability, cap_uri))
+
     def _determine_device_class(self, hardware_type: str) -> URIRef:
         """Determine the appropriate OWL class based on hardware type."""
         hardware_lower = hardware_type.lower()
 
-        if 'esp32' in hardware_lower:
+        if 'gps' in hardware_lower or 'gnss' in hardware_lower:
+            return IOT.GNSSReceiver
+        elif 'esp32' in hardware_lower:
             return IOT.ESP32Device
         elif 'raspberry' in hardware_lower or 'rpi' in hardware_lower:
             return IOT.SingleBoardComputer
@@ -238,7 +264,13 @@ class RDFStore:
             IOT.registeredAt: 'registered_at',
             IOT.memoryTotal: 'memory_total',
             IOT.memoryFree: 'memory_free',
-            IOT.cpuUsage: 'cpu_usage'
+            IOT.cpuUsage: 'cpu_usage',
+            IOT.latitude: 'latitude',
+            IOT.longitude: 'longitude',
+            IOT.hdop: 'hdop',
+            IOT.satellitesUsed: 'satellites_used',
+            IOT.fixQuality: 'fix_quality',
+            IOT.updateRateHz: 'update_rate_hz'
         }
 
         for rdf_prop, dict_key in property_map.items():
