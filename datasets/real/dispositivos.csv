@@ -1,0 +1,7 @@
+device_id,board_id,label_true,notas
+esp32-olimex-poe-01,olimex_esp32_poe_16mb,ESP32Device,Olimex ESP32-PoE rev L1 16 MB (mqtt_device_olimex_poe.ino)
+esp32-poecam-01,m5stack_unit_poe_cam_w,ESP32Device,M5Stack Unit PoE CAM-W (mqtt_device_poecam.ino)
+esp32-mqtt-01,espressif_esp32_wroom_32,ESP32Device,ESP32-WROOM32 (mqtt_device.ino); confirmar la placa exacta
+esp32-c3-01,waveshare_esp32_c3_zero,ESP32Device,Waveshare ESP32-C3-Zero (mqtt_device_c3.ino)
+esp32-cam-01,ai_thinker_esp32_cam,ESP32Device,Ai-Thinker ESP32-CAM (mqtt_device_cam.ino)
+gnss-pi5-01,raspberry_pi_5_8gb,GNSSReceiver,Pi 5 + Adafruit Ultimate GPS HAT (devices/gnss_agent.py)
