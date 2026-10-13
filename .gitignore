@@ -99,3 +99,5 @@ docs/
 credentials.json
 secrets.yml
 keys/*.key
+
+wifi_secrets.h

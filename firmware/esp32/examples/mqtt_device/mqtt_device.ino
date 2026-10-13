@@ -8,8 +8,9 @@
  *
  * Instructions:
  * 1. Install PubSubClient library via Arduino Library Manager
- * 2. Update WiFi credentials below
- * 3. Update MQTT broker IP address
+ * 2. Copy wifi_secrets.example.h to wifi_secrets.h in this sketch folder
+ *    and fill in your WiFi name and password (wifi_secrets.h is not committed)
+ * 3. Check MQTT_BROKER below (IP of the Raspberry Pi 5 running Mosquitto)
  * 4. Upload to ESP32
  * 5. Monitor serial output (115200 baud)
  */
@@ -20,12 +21,12 @@
 
 // ========== Configuration ==========
 
-// WiFi credentials
-const char* WIFI_SSID = "YOUR_WIFI_SSID";
-const char* WIFI_PASSWORD = "YOUR_WIFI_PASSWORD";
+// WiFi credentials: defined in wifi_secrets.h, which git ignores so the
+// password never reaches the repository. Template: wifi_secrets.example.h
+#include "wifi_secrets.h"
 
 // MQTT Broker (Raspberry Pi)
-const char* MQTT_BROKER = "192.168.1.1";  // Update with your broker IP
+const char* MQTT_BROKER = "192.168.0.21";  // Raspberry Pi 5 (Mosquitto)
 const uint16_t MQTT_PORT = 1883;
 
 // MQTT keepalive, in seconds. The broker declares this client dead (and
