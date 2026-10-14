@@ -1,2 +1,3 @@
 captured_at,device_id,motivo
 2026-10-13T11:43:20.295-03:00,esp32-poecam-01,se desconectó el PoE OUT por error (corte de alimentación); no corresponde al escenario ethernet
+*,sbc-picarx,Pi 5 anunciada sin --device-id (nombre por defecto); repetida como sbc-pi5-01
