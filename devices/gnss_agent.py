@@ -25,6 +25,7 @@ Project: PINV01-24 - FIUNA
 import argparse
 import json
 import logging
+import os
 import random
 import socket
 import threading
@@ -55,6 +56,31 @@ def local_ip():
         return "127.0.0.1"
     finally:
         s.close()
+
+
+def default_interface():
+    """Network interface of the default route (from /proc/net/route)."""
+    try:
+        with open("/proc/net/route") as f:
+            next(f)
+            for line in f:
+                fields = line.split()
+                if len(fields) > 1 and fields[1] == "00000000":
+                    return fields[0]
+    except (OSError, StopIteration):
+        pass
+    return ""
+
+
+def detect_link(iface):
+    """'wifi' if the interface is wireless, 'ethernet' if it is wired, '' if unknown."""
+    if not iface:
+        return ""
+    if os.path.isdir(f"/sys/class/net/{iface}/wireless") or os.path.exists(f"/sys/class/net/{iface}/phy80211"):
+        return "wifi"
+    if iface.startswith(("eth", "en", "end")):
+        return "ethernet"
+    return ""
 
 
 def host_resources():
@@ -157,6 +183,8 @@ def main():
     ap = argparse.ArgumentParser(description="GNSS device agent for IoT-ITS")
     ap.add_argument("--device-id", default="gnss-pi5-01")
     ap.add_argument("--hardware", default="Adafruit Ultimate GPS HAT (PA1616D)")
+    ap.add_argument("--link", choices=["wifi", "ethernet"], default=None,
+                    help="default: detected from the interface of the default route")
     ap.add_argument("--mqtt-host", default="localhost")
     ap.add_argument("--mqtt-port", type=int, default=1883)
     ap.add_argument("--topic-prefix", default="its")
@@ -172,6 +200,11 @@ def main():
     ap.add_argument("--duration", type=float, default=0.0, help="stop after N seconds (0 = run forever)")
     args = ap.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+
+    iface = default_interface()
+    link = args.link or detect_link(iface)
+    if not link:
+        log.warning("could not detect the link of interface %r; pass --link wifi|ethernet", iface)
 
     receiver, stop = Receiver(), threading.Event()
     target, targs = (simulator, (receiver, stop)) if args.simulate else \
@@ -190,10 +223,11 @@ def main():
         snap = receiver.snapshot()
         lat, lon = published_position(snap, args.coords)
         msg = {"id": args.device_id, "hardware": args.hardware, "ip": local_ip(),
-               "link_type": "ethernet", "protocol": "mqtt",
+               "link_type": link or None, "protocol": "mqtt", "connection_type": link or "mqtt",
                "capabilities": ["gnss", "position", "time"],
                **host_resources(),
                "fix_quality": snap["fix_quality"], "update_rate_hz": 1}
+        msg = {k: v for k, v in msg.items() if v is not None}
         if lat is not None:
             msg.update(lat=lat, lon=lon)
         if snap["hdop"] is not None:
@@ -202,7 +236,9 @@ def main():
         client.publish(t_register, json.dumps(msg), qos=1)
         client.publish(t_state, json.dumps({"device_id": args.device_id, "state": "active"}),
                        qos=1, retain=True)
-        log.info("announced %s (fix_quality=%s)", args.device_id, snap["fix_quality"])
+        log.info("announced %s: link=%s (%s) mem=%s free=%s cpu=%s MHz fix_quality=%s",
+                 args.device_id, link or "?", iface or "?", msg.get("memory_total"),
+                 msg.get("memory_free"), msg.get("cpu_freq_mhz"), snap["fix_quality"])
 
     client.connect(args.mqtt_host, args.mqtt_port, keepalive=args.keepalive)
     client.loop_start()
