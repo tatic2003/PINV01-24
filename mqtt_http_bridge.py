@@ -70,7 +70,8 @@ ONBOARDING_COLUMNS = [
     "setup_ms",              # millis() on entering setup()
     "serial_ms",             # millis() after the serial-port wait
     "link_ms",               # millis() with the link up (IP assigned)
-    "sync_ms",               # millis() with the clock synchronized (SNTP/NTP)
+    "sync_ms",               # millis() with the clock synchronized (NTP)
+    "sync_rtt_ms",           # round trip of the NTP sample that set the clock
     "mqtt_ms",               # millis() with the MQTT session connected
     "publish_ms",            # millis() just before publishing the announcement
     "epoch_publish_ms",      # wall-clock time (ms) just before publishing

@@ -13,8 +13,9 @@ Stages of an ESP32 onboarding (milliseconds):
                   setup(); the ROM bootloader before it is not counted
   serial_wait     fixed wait for the serial port in setup()
   link            WiFi association and DHCP
-  sntp            clock synchronization; exists only for the measurement and
-                  is excluded from the onboarding totals
+  sntp            clock synchronization (NTP); exists only for the measurement
+                  and is excluded from the onboarding totals. The round trip of
+                  the NTP sample that set the clock is kept as sync_rtt_ms
   mqtt_connect    TCP + MQTT session, Last Will included
   announce        retained state + building the announcement
   transit         device publish -> MQTT client of the bridge (crosses clocks:
@@ -93,6 +94,7 @@ def compute_stages(df):
     out["serial_wait"] = serial - setup
     out["link"] = link - serial
     out["sntp"] = sync - link
+    out["sync_rtt_ms"] = num(df, "sync_rtt_ms")
     out["mqtt_connect"] = mqtt_ms - sync
     out["announce"] = publish - mqtt_ms
 
@@ -224,7 +226,7 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     stages.to_csv(out / "stages_per_event.csv", index=False)
 
-    cols = (ESP32_STAGES + ["sntp"] + LINUX_STAGES + PIPELINE_STAGES
+    cols = (ESP32_STAGES + ["sntp", "sync_rtt_ms"] + LINUX_STAGES + PIPELINE_STAGES
             + ["publish_to_registered", "boot_to_registered"])
     summary = summarize(stages, cols)
     if args.probe:

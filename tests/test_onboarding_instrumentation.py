@@ -30,7 +30,7 @@ def load_module(name, path):
 
 TIMING = {
     "seq": 1, "synced": True, "setup_ms": 300, "serial_ms": 1300, "link_ms": 3300,
-    "sync_ms": 3500, "mqtt_ms": 3700, "publish_ms": 3750,
+    "sync_ms": 3500, "sync_rtt_ms": 2.5, "mqtt_ms": 3700, "publish_ms": 3750,
     "epoch_publish_ms": "1760550000000",
 }
 
@@ -128,6 +128,7 @@ class TestBridge:
         assert row["session"] == "solo_c3"
         assert row["device_id"] == "esp32-c3-abc123"
         assert row["link_ms"] == "3300" and row["epoch_publish_ms"] == "1760550000000"
+        assert row["sync_rtt_ms"] == "2.5"
         assert row["srv_total_ms"] == "4.0" and row["device_type"] == "ESP32Device"
         assert float(row["callback_epoch_ms"]) >= float(row["arrival_epoch_ms"])
 
@@ -205,6 +206,7 @@ class TestAnalysis:
         assert st["device_type"] == "ESP32-C3-Zero"
         assert st["boot_to_setup"] == 300 and st["serial_wait"] == 1000
         assert st["link"] == 2000 and st["sntp"] == 200
+        assert st["sync_rtt_ms"] == 2.5
         assert st["mqtt_connect"] == 200 and st["announce"] == 50
         assert st["transit"] == pytest.approx(40) and st["bridge_queue"] == pytest.approx(5)
         assert st["http"] == pytest.approx(6) and st["srv_other"] == pytest.approx(0.5)

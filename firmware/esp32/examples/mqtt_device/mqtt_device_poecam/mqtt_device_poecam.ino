@@ -34,11 +34,12 @@
  * After DHCP, the board sets its clock from NTP_SERVER (the Raspberry Pi 5,
  * disciplined by the GPS PPS signal). The W5500 has its own TCP/IP stack,
  * outside the ESP32's network stack, so the ESP-IDF SNTP client cannot reach
- * it: a minimal NTP request is sent over EthernetUDP instead, and the clock is
- * set to the server's transmit time plus half the round trip. Every
- * registration then carries a "timing" block (millis() of each boot stage and
- * the wall-clock time of the publication), which the MQTT->HTTP bridge
- * removes before forwarding. The "time_probe" command answers with the
+ * it: a minimal NTP client runs over EthernetUDP instead. It sends NTP_SAMPLES
+ * requests and sets the clock from the one with the shortest round trip
+ * (server transmit time + half the round trip), the same method as the other
+ * boards. Every registration then carries a "timing" block (millis() of each
+ * boot stage, the round trip of the NTP sample used and the wall-clock time of
+ * the publication), which the MQTT->HTTP bridge removes before forwarding. The "time_probe" command answers with the
  * board's clock at reception and at reply (experiments/clock_probe.py).
  * The NTP step exists only for the measurement and is reported separately.
  */
@@ -66,8 +67,9 @@ const uint16_t MQTT_PORT = 1883;
 // (chrony must allow the LAN: "allow 192.168.0.0/24").
 const char* NTP_SERVER = "192.168.0.21";
 const uint16_t NTP_LOCAL_PORT = 8123;
-const int NTP_ATTEMPTS = 5;
-const unsigned long NTP_REPLY_TIMEOUT_MS = 1000;
+const int NTP_SAMPLES = 4;                      // requests; the shortest round trip wins
+const unsigned long NTP_REPLY_TIMEOUT_MS = 500;
+const unsigned long NTP_SAMPLE_GAP_MS = 50;
 
 // MQTT keepalive, in seconds. The broker declares this client dead (and
 // publishes its Last Will) after roughly 1.5 x this value, so it sets how
@@ -125,6 +127,7 @@ unsigned long tLink = 0;      // link up and address assigned by DHCP
 unsigned long tSync = 0;
 unsigned long tMqtt = 0;
 bool timeSynced = false;
+uint32_t syncRttUs = 0;           // round trip of the NTP sample that set the clock
 uint32_t registrationSeq = 0;     // 1 = first registration since boot
 int64_t lastRecvEpochMs = 0;      // clock when the last MQTT message arrived
 
@@ -161,18 +164,19 @@ static uint32_t be32(const uint8_t* b) {
     return ((uint32_t)b[0] << 24) | ((uint32_t)b[1] << 16) | ((uint32_t)b[2] << 8) | (uint32_t)b[3];
 }
 
-// Minimal NTP client over the W5500: one request, the clock is set to the
-// server's transmit timestamp plus half the round trip.
+// Minimal NTP client over the W5500: NTP_SAMPLES requests; the clock is set
+// from the reply with the shortest round trip, as the server's transmit time
+// plus half that round trip, advanced by the time elapsed since the reply.
 bool ntpSync() {
     IPAddress server;
-    if (!server.fromString(NTP_SERVER)) {
+    if (!server.fromString(NTP_SERVER) || !ntpUdp.begin(NTP_LOCAL_PORT)) {
         return false;
     }
-    if (!ntpUdp.begin(NTP_LOCAL_PORT)) {
-        return false;
-    }
-    bool ok = false;
-    for (int attempt = 0; attempt < NTP_ATTEMPTS && !ok; attempt++) {
+    bool have = false;
+    uint32_t bestRttUs = 0xFFFFFFFFUL;
+    uint32_t bestRecvUs = 0;
+    int64_t bestEpochUs = 0;
+    for (int i = 0; i < NTP_SAMPLES; i++) {
         while (ntpUdp.parsePacket() > 0) {
             ntpUdp.flush();               // drop stale replies
         }
@@ -191,25 +195,34 @@ bool ntpSync() {
                 ntpUdp.read(reply, sizeof(reply));
                 uint8_t mode = reply[0] & 0x07;
                 uint8_t stratum = reply[1];
-                if (mode == 4 && stratum > 0 && stratum < 16) {
+                uint32_t rttUs = recvUs - sentUs;
+                if (mode == 4 && stratum > 0 && stratum < 16 && rttUs < bestRttUs) {
                     uint32_t secs = be32(&reply[40]);       // transmit timestamp
                     uint32_t frac = be32(&reply[44]);
-                    int64_t us = (int64_t)(secs - 2208988800UL) * 1000000LL
-                               + (int64_t)(((uint64_t)frac * 1000000ULL) >> 32)
-                               + (int64_t)((recvUs - sentUs) / 2);
-                    struct timeval tv;
-                    tv.tv_sec = (time_t)(us / 1000000LL);
-                    tv.tv_usec = (suseconds_t)(us % 1000000LL);
-                    settimeofday(&tv, NULL);
-                    ok = true;
+                    bestEpochUs = (int64_t)(secs - 2208988800UL) * 1000000LL
+                                + (int64_t)(((uint64_t)frac * 1000000ULL) >> 32)
+                                + (int64_t)(rttUs / 2);
+                    bestRttUs = rttUs;
+                    bestRecvUs = recvUs;
+                    have = true;
                 }
                 break;
             }
             delay(1);
         }
+        delay(NTP_SAMPLE_GAP_MS);
     }
     ntpUdp.stop();
-    return ok;
+    if (!have) {
+        return false;
+    }
+    int64_t nowUs = bestEpochUs + (int64_t)(uint32_t)(micros() - bestRecvUs);
+    struct timeval tv;
+    tv.tv_sec = (time_t)(nowUs / 1000000LL);
+    tv.tv_usec = (suseconds_t)(nowUs % 1000000LL);
+    settimeofday(&tv, NULL);
+    syncRttUs = bestRttUs;
+    return true;
 }
 
 void syncClock() {
@@ -217,7 +230,11 @@ void syncClock() {
     Serial.print(NTP_SERVER);
     timeSynced = ntpSync();
     tSync = millis();
-    Serial.println(timeSynced ? " ok" : " FAILED (timing will be marked unsynced)");
+    if (timeSynced) {
+        Serial.printf(" ok (round trip %.2f ms)\n", syncRttUs / 1000.0);
+    } else {
+        Serial.println(" FAILED (timing will be marked unsynced)");
+    }
 }
 
 // ========== Setup ==========
@@ -540,6 +557,7 @@ void registerDevice() {
     timing["serial_ms"] = tSerial;
     timing["link_ms"] = tLink;
     timing["sync_ms"] = tSync;
+    timing["sync_rtt_ms"] = syncRttUs / 1000.0;
     timing["mqtt_ms"] = tMqtt;
     timing["publish_ms"] = millis();
     timing["epoch_publish_ms"] = epochString(epochMs());   // last field set before publishing
