@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-15T10:28:31",
+  "date": "2026-10-15T13:35:40",
   "catalog_version": "8f8756c70cae",
   "catalog_boards": 114,
   "class_counts": {
@@ -13,7 +13,7 @@
     "catalog": "C:\\Users\\tatic\\dev\\tesis-workspace\\PINV01-24-main\\datasets\\catalog\\catalogo_placas.csv",
     "out": "C:\\Users\\tatic\\dev\\tesis-workspace\\PINV01-24-main\\experiments\\results\\unseen_boards",
     "labeling": "hw",
-    "seeds": 3,
+    "seeds": 10,
     "samples": 2000,
     "per_board": 5,
     "models": [
