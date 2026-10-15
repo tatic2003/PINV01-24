@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-15T10:28:31",
+  "catalog_version": "8f8756c70cae",
+  "catalog_boards": 114,
+  "class_counts": {
+    "ESP32Device": 34,
+    "Microcontroller": 21,
+    "Sensor": 7,
+    "SingleBoardComputer": 45,
+    "IoTGateway": 7
+  },
+  "args": {
+    "catalog": "C:\\Users\\tatic\\dev\\tesis-workspace\\PINV01-24-main\\datasets\\catalog\\catalogo_placas.csv",
+    "out": "C:\\Users\\tatic\\dev\\tesis-workspace\\PINV01-24-main\\experiments\\results\\unseen_boards",
+    "labeling": "hw",
+    "seeds": 3,
+    "samples": 2000,
+    "per_board": 5,
+    "models": [
+      "random_forest",
+      "decision_tree"
+    ],
+    "feature_set": "resource"
+  }
+}

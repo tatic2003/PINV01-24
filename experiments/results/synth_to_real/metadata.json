@@ -1,0 +1,130 @@
+{
+  "date": "2026-10-15T10:25:11",
+  "catalog_path": "datasets\\catalog\\catalogo_placas.csv",
+  "catalog_version": "8f8756c70cae",
+  "catalog_boards": 114,
+  "real_announcements_total": 42,
+  "real_announcements_valid": 40,
+  "real_configs": [
+    "esp32-c3-38a960",
+    "esp32-c3-645ce0",
+    "esp32-c3-65beac",
+    "esp32-cam-af0bec",
+    "esp32-cam-afd340",
+    "esp32-olimex-poe-01",
+    "esp32-poecam-01",
+    "esp32-wroom32-267a68",
+    "gnss-pi5-01",
+    "sbc-opizero-01",
+    "sbc-pi5-01"
+  ],
+  "real_boards": [
+    "ai_thinker_esp32_cam",
+    "espressif_esp32_wroom_32",
+    "m5stack_unit_poe_cam_w",
+    "olimex_esp32_poe_16mb",
+    "orange_pi_zero_lts_512mb",
+    "raspberry_pi_5_8gb",
+    "waveshare_esp32_c3_zero"
+  ],
+  "args": {
+    "catalog": "C:\\Users\\tatic\\dev\\tesis-workspace\\PINV01-24-main\\datasets\\catalog\\catalogo_placas.csv",
+    "real_dir": "C:\\Users\\tatic\\dev\\tesis-workspace\\PINV01-24-main\\datasets\\real",
+    "out": "C:\\Users\\tatic\\dev\\tesis-workspace\\PINV01-24-main\\experiments\\results\\synth_to_real",
+    "seeds": 10,
+    "samples": 2000,
+    "models": [
+      "random_forest",
+      "decision_tree"
+    ],
+    "feature_set": "resource",
+    "generators": [
+      "profiles",
+      "catalog_nominal",
+      "catalog_calibrated"
+    ],
+    "labelings": [
+      "clasificador",
+      "hw",
+      "hw_unificado"
+    ]
+  },
+  "catalog_generator_full": {
+    "classes": {
+      "ESP32Device": 34,
+      "GNSSReceiver": 79,
+      "IoTGateway": 16,
+      "Microcontroller": 16,
+      "Sensor": 12,
+      "SingleBoardComputer": 36
+    },
+    "calibration": {
+      "measured_boards": [
+        "ai_thinker_esp32_cam",
+        "espressif_esp32_wroom_32",
+        "m5stack_unit_poe_cam_w",
+        "olimex_esp32_poe_16mb",
+        "orange_pi_zero_lts_512mb",
+        "raspberry_pi_5_8gb",
+        "waveshare_esp32_c3_zero"
+      ],
+      "levels": {
+        "familia/ESP32/ethernet": [
+          0.6837,
+          0.7066,
+          2
+        ],
+        "familia/ESP32/wifi": [
+          0.6139,
+          0.6225,
+          2
+        ],
+        "familia/ESP32-C3/wifi": [
+          0.7216,
+          0.7216,
+          1
+        ],
+        "familia/Orange Pi Zero/ethernet": [
+          0.9463,
+          0.9463,
+          1
+        ],
+        "familia/Raspberry Pi 5/wifi": [
+          0.9842,
+          0.9842,
+          1
+        ],
+        "group/esp32": [
+          0.6139,
+          0.7216,
+          5
+        ],
+        "group/esp32/ethernet": [
+          0.6837,
+          0.7066,
+          2
+        ],
+        "group/esp32/wifi": [
+          0.6139,
+          0.7216,
+          3
+        ],
+        "group/linux": [
+          0.9463,
+          0.9842,
+          2
+        ],
+        "group/linux/ethernet": [
+          0.9463,
+          0.9463,
+          1
+        ],
+        "group/linux/wifi": [
+          0.9842,
+          0.9842,
+          1
+        ]
+      }
+    }
+  }
+}

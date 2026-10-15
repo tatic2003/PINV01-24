@@ -1,0 +1,15 @@
+generator,labeling,model,seeds,configs,acc_mean,acc_min,acc_max,conf_mean,failures
+profiles,-,random_forest,10,11,0.9636,0.9091,1.0,0.9102,sbc-pi5-01->IoTGateway (4/10)
+profiles,-,decision_tree,10,11,0.9,0.4545,1.0,0.9872,sbc-pi5-01->IoTGateway (6/10); esp32-cam-af0bec->SingleBoardComputer (1/10); esp32-cam-afd340->SingleBoardComputer (1/10); esp32-olimex-poe-01->SingleBoardComputer (1/10); esp32-poecam-01->SingleBoardComputer (1/10); esp32-wroom32-267a68->SingleBoardComputer (1/10)
+catalog_nominal,clasificador,random_forest,10,11,0.6909,0.6364,0.7273,0.8396,esp32-c3-38a960->Microcontroller (10/10); esp32-c3-645ce0->Microcontroller (10/10); esp32-c3-65beac->Microcontroller (10/10); sbc-opizero-01->IoTGateway (4/10)
+catalog_nominal,clasificador,decision_tree,10,11,0.6909,0.6364,0.7273,0.9632,esp32-c3-38a960->Microcontroller (10/10); esp32-c3-645ce0->Microcontroller (10/10); esp32-c3-65beac->Microcontroller (10/10); sbc-opizero-01->IoTGateway (4/10)
+catalog_nominal,hw,random_forest,10,11,0.7364,0.6364,1.0,0.8261,esp32-c3-38a960->Microcontroller (9/10); esp32-c3-645ce0->Microcontroller (9/10); esp32-c3-65beac->Microcontroller (9/10); sbc-opizero-01->IoTGateway (2/10)
+catalog_nominal,hw,decision_tree,10,11,0.6545,0.6364,0.7273,0.9668,esp32-c3-38a960->Microcontroller (10/10); esp32-c3-645ce0->Microcontroller (10/10); esp32-c3-65beac->Microcontroller (10/10); sbc-opizero-01->IoTGateway (8/10)
+catalog_nominal,hw_unificado,random_forest,10,11,0.9727,0.9091,1.0,0.9394,sbc-opizero-01->IoTGateway (3/10)
+catalog_nominal,hw_unificado,decision_tree,10,11,0.9182,0.9091,1.0,0.9675,sbc-opizero-01->IoTGateway (9/10)
+catalog_calibrated,clasificador,random_forest,10,11,1.0,1.0,1.0,0.9144,
+catalog_calibrated,clasificador,decision_tree,10,11,1.0,1.0,1.0,0.9806,
+catalog_calibrated,hw,random_forest,10,11,0.9727,0.9091,1.0,0.9254,sbc-opizero-01->IoTGateway (3/10)
+catalog_calibrated,hw,decision_tree,10,11,0.9455,0.9091,1.0,0.9688,sbc-opizero-01->IoTGateway (6/10)
+catalog_calibrated,hw_unificado,random_forest,10,11,0.9727,0.9091,1.0,0.9372,sbc-opizero-01->IoTGateway (3/10)
+catalog_calibrated,hw_unificado,decision_tree,10,11,0.9364,0.9091,1.0,0.9703,sbc-opizero-01->IoTGateway (7/10)

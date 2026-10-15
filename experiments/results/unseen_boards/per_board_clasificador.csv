@@ -1,0 +1,343 @@
+seed,board_id,placa,hardware,label_true,link_example,memory_example,cpu_example,pred_rules,pred_random_forest,pred_hybrid,pred_decision_tree
+0,espressif_esp32_wroom_32e,ESP32-WROOM-32E (N4),ESP32-WROOM-32E (N4),ESP32Device,wifi,335672,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,espressif_esp32_wrover_e,ESP32-WROVER-E (N4R8),ESP32-WROVER-E (N4R8),ESP32Device,wifi,325846,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,espressif_esp32_devkitc_v4,ESP32-DevKitC V4 (ESP32-WROOM-32E),ESP32-DevKitC V4 (ESP32-WROOM-32E),ESP32Device,wifi,338181,160,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,espressif_esp32_ethernet_kit_v1_2,ESP32-Ethernet-Kit v1.2 (ESP32-WROVER-E + IP101GRI),ESP32-Ethernet-Kit v1.2 (ESP32-WROVER-E + IP101GRI),ESP32Device,ethernet,365785,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,espressif_esp32_s2_wroom,ESP32-S2-WROOM,ESP32-S2-WROOM,ESP32Device,wifi,223871,240,ESP32Device,ESP32Device,ESP32Device,Microcontroller
+0,espressif_esp32_s3_wroom_1,ESP32-S3-WROOM-1 (N4),ESP32-S3-WROOM-1 (N4),ESP32Device,wifi,374938,80,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,espressif_esp32_s3_devkitc_1,ESP32-S3-DevKitC-1 (N8R8),ESP32-S3-DevKitC-1 (N8R8),ESP32Device,wifi,357991,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,espressif_esp32_c3_devkitm_1,ESP32-C3-DevKitM-1 (ESP32-C3-MINI-1),ESP32-C3-DevKitM-1 (ESP32-C3-MINI-1),ESP32Device,wifi,295010,160,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,espressif_esp32_c6_devkitc_1,ESP32-C6-DevKitC-1 (ESP32-C6-WROOM-1),ESP32-C6-DevKitC-1 (ESP32-C6-WROOM-1),ESP32Device,wifi,330041,160,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,espressif_esp32_h2_devkitm_1,"ESP32-H2-DevKitM-1 (ESP32-H2-MINI-1, N4)","ESP32-H2-DevKitM-1 (ESP32-H2-MINI-1, N4)",ESP32Device,zigbee,210025,96,ESP32Device,Microcontroller,ESP32Device,Microcontroller
+0,olimex_esp32_poe,Olimex ESP32-POE (ESP32-WROOM-32E-N4),Olimex ESP32-POE (ESP32-WROOM-32E-N4),ESP32Device,ethernet,369333,160,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,olimex_esp32_poe_16mb,Olimex ESP32-POE-16MB (ESP32-WROOM-32E-N16),Olimex ESP32-POE-16MB (ESP32-WROOM-32E-N16),ESP32Device,ethernet,364040,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,olimex_esp32_poe_wrover,"Olimex ESP32-POE-WROVER (ESP32-WROVER-E, 8 MB PSRAM)","Olimex ESP32-POE-WROVER (ESP32-WROVER-E, 8 MB PSRAM)",ESP32Device,wifi,338139,160,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,olimex_esp32_poe_iso,Olimex ESP32-POE-ISO (ESP32-WROOM-32E-N4),Olimex ESP32-POE-ISO (ESP32-WROOM-32E-N4),ESP32Device,wifi,322041,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,olimex_esp32_gateway,Olimex ESP32-GATEWAY (ESP32-WROOM-32E),Olimex ESP32-GATEWAY (ESP32-WROOM-32E),ESP32Device,ethernet,381433,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,olimex_esp32_evb,Olimex ESP32-EVB (ESP32-WROOM-32E),Olimex ESP32-EVB (ESP32-WROOM-32E),ESP32Device,ethernet,366995,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,m5stack_core_basic,"M5Stack Core Basic (ESP32, 16 MB)","M5Stack Core Basic (ESP32, 16 MB)",ESP32Device,wifi,341100,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,m5stack_core2,"M5Stack Core2 (ESP32-D0WDQ6-V3, 16 MB + 8 MB PSRAM)","M5Stack Core2 (ESP32-D0WDQ6-V3, 16 MB + 8 MB PSRAM)",ESP32Device,wifi,344398,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,m5stack_cores3,"M5Stack CoreS3 (ESP32-S3, 16 MB + 8 MB PSRAM)","M5Stack CoreS3 (ESP32-S3, 16 MB + 8 MB PSRAM)",ESP32Device,wifi,388167,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,m5stack_atom_lite,"M5Stack Atom Lite (ESP32-PICO-D4, 4 MB)","M5Stack Atom Lite (ESP32-PICO-D4, 4 MB)",ESP32Device,wifi,316933,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,m5stack_atoms3,"M5Stack AtomS3 (ESP32-S3, 8 MB)","M5Stack AtomS3 (ESP32-S3, 8 MB)",ESP32Device,wifi,381433,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,m5stack_m5stickc_plus2,"M5StickC PLUS2 (ESP32-PICO-V3-02, 8 MB + 2 MB PSRAM)","M5StickC PLUS2 (ESP32-PICO-V3-02, 8 MB + 2 MB PSRAM)",ESP32Device,wifi,345291,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,m5stack_unit_poe_cam_w,"M5Stack Unit PoE CAM-W (ESP32-D0WDQ6-V3, 16 MB + 8 MB PSRAM)",ESP32-PoECAM,ESP32Device,wifi,313834,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,arduino_nano_esp32,"Arduino Nano ESP32 (ESP32-S3 / NORA-W106, 16 MB + 8 MB PSRAM)","Arduino Nano ESP32 (ESP32-S3 / NORA-W106, 16 MB + 8 MB PSRAM)",ESP32Device,wifi,313618,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,seeed_studio_xiao_esp32c3,Seeed Studio XIAO ESP32C3,Seeed Studio XIAO ESP32C3,ESP32Device,wifi,288336,160,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,seeed_studio_xiao_esp32s3,Seeed Studio XIAO ESP32S3 (8 MB + 8 MB PSRAM),Seeed Studio XIAO ESP32S3 (8 MB + 8 MB PSRAM),ESP32Device,wifi,308619,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,seeed_studio_xiao_esp32c6,Seeed Studio XIAO ESP32C6,Seeed Studio XIAO ESP32C6,ESP32Device,zigbee,338988,160,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,heltec_wifi_lora_32_v3,Heltec WiFi LoRa 32 V3 (ESP32-S3FN8 + SX1262),Heltec WiFi LoRa 32 V3 (ESP32-S3FN8 + SX1262),ESP32Device,lora,390101,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,lilygo_t_beam,LilyGO T-Beam (ESP32 + LoRa + GPS),LilyGO T-Beam (ESP32 + LoRa + GPS),ESP32Device,wifi,324303,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,wireless_tag_wt32_eth01,Wireless-Tag WT32-ETH01 (ESP32 + LAN8720A),Wireless-Tag WT32-ETH01 (ESP32 + LAN8720A),ESP32Device,wifi,317667,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,ai_thinker_esp32_cam,Ai-Thinker ESP32-CAM (ESP32-S + OV2640),Ai-Thinker ESP32-CAM (ESP32-S + OV2640),ESP32Device,wifi,326880,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,adafruit_feather_esp32_v2,Adafruit Feather ESP32 V2 (8 MB + 2 MB PSRAM),Adafruit Feather ESP32 V2 (8 MB + 2 MB PSRAM),ESP32Device,wifi,347748,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,arduino_uno_r3,Arduino UNO R3 (ATmega328P),Arduino UNO R3 (ATmega328P),Microcontroller,serial,1183,16,Microcontroller,Microcontroller,Microcontroller,Microcontroller
+0,arduino_nano,Arduino Nano (ATmega328P),Arduino Nano (ATmega328P),Microcontroller,serial,1312,16,Microcontroller,Microcontroller,Microcontroller,Microcontroller
+0,arduino_mega_2560_rev3,Arduino Mega 2560 Rev3 (ATmega2560),Arduino Mega 2560 Rev3 (ATmega2560),Microcontroller,serial,6198,16,Microcontroller,Microcontroller,Microcontroller,Microcontroller
+0,arduino_due,Arduino Due (SAM3X8E),Arduino Due (SAM3X8E),Microcontroller,serial,59619,84,Microcontroller,Microcontroller,Microcontroller,Microcontroller
+0,arduino_uno_r4_minima,Arduino UNO R4 Minima (Renesas RA4M1),Arduino UNO R4 Minima (Renesas RA4M1),Microcontroller,serial,25120,48,Microcontroller,Sensor,Sensor,Sensor
+0,arduino_uno_r4_wifi,Arduino UNO R4 WiFi (RA4M1 + ESP32-S3),Arduino UNO R4 WiFi (RA4M1 + ESP32-S3),Microcontroller,wifi,19981,48,ESP32Device,Microcontroller,ESP32Device,Microcontroller
+0,arduino_nano_every,Arduino Nano Every (ATmega4809),Arduino Nano Every (ATmega4809),Microcontroller,serial,3460,20,Microcontroller,Microcontroller,Microcontroller,Microcontroller
+0,arduino_nano_33_iot,Arduino Nano 33 IoT (SAMD21 + NINA-W102),Arduino Nano 33 IoT (SAMD21 + NINA-W102),Microcontroller,wifi,24724,48,Microcontroller,Microcontroller,Microcontroller,Microcontroller
+0,arduino_nano_33_ble_sense,Arduino Nano 33 BLE Sense (nRF52840),Arduino Nano 33 BLE Sense (nRF52840),Sensor,bluetooth,252837,64,Microcontroller,Sensor,Sensor,Sensor
+0,arduino_mkr_wan_1310,Arduino MKR WAN 1310 (SAMD21 + Murata LoRa),Arduino MKR WAN 1310 (SAMD21 + Murata LoRa),Sensor,lora,28529,48,Microcontroller,Sensor,Sensor,Sensor
+0,arduino_giga_r1_wifi,Arduino GIGA R1 WiFi (STM32H747XI),Arduino GIGA R1 WiFi (STM32H747XI),Microcontroller,wifi,864397,480,Microcontroller,IoTGateway,IoTGateway,Microcontroller
+0,raspberry_pi_pico,Raspberry Pi Pico (RP2040),Raspberry Pi Pico (RP2040),Microcontroller,serial,190122,133,SingleBoardComputer,ESP32Device,SingleBoardComputer,Microcontroller
+0,raspberry_pi_pico_w,Raspberry Pi Pico W (RP2040 + CYW43439),Raspberry Pi Pico W (RP2040 + CYW43439),Microcontroller,wifi,235896,133,SingleBoardComputer,Microcontroller,SingleBoardComputer,Microcontroller
+0,raspberry_pi_pico_2,Raspberry Pi Pico 2 (RP2350),Raspberry Pi Pico 2 (RP2350),Microcontroller,serial,483851,150,SingleBoardComputer,Microcontroller,SingleBoardComputer,Microcontroller
+0,raspberry_pi_pico_2_w,Raspberry Pi Pico 2 W (RP2350 + CYW43439),Raspberry Pi Pico 2 W (RP2350 + CYW43439),Microcontroller,wifi,484129,150,SingleBoardComputer,ESP32Device,SingleBoardComputer,Microcontroller
+0,st_nucleo_f401re,ST NUCLEO-F401RE (STM32F401RE),ST NUCLEO-F401RE (STM32F401RE),Microcontroller,serial,86655,84,Microcontroller,Microcontroller,Microcontroller,Microcontroller
+0,pjrc_teensy_4_1,PJRC Teensy 4.1 (i.MX RT1062),PJRC Teensy 4.1 (i.MX RT1062),Microcontroller,serial,624883,600,Microcontroller,IoTGateway,IoTGateway,Microcontroller
+0,nordic_nrf52840_dk,Nordic nRF52840 DK,Nordic nRF52840 DK,Sensor,zigbee,198575,64,Microcontroller,Sensor,Sensor,Sensor
+0,ti_launchxl_cc26x2r1,TI LAUNCHXL-CC26X2R1 (CC2652R),TI LAUNCHXL-CC26X2R1 (CC2652R),Sensor,zigbee,66228,48,Microcontroller,Microcontroller,Microcontroller,Microcontroller
+0,heltec_cubecell_htcc_ab01,Heltec CubeCell HTCC-AB01 (ASR6501),Heltec CubeCell HTCC-AB01 (ASR6501),Sensor,lora,15762,48,Microcontroller,Sensor,Sensor,Sensor
+0,dragino_lsn50v2,Dragino LSN50v2 (STM32L072),Dragino LSN50v2 (STM32L072),Sensor,lora,15987,32,Microcontroller,Sensor,Sensor,Sensor
+0,raspberry_pi_zero_w_512mb,"Raspberry Pi Zero W (BCM2835, 512 MB)","Raspberry Pi Zero W (BCM2835, 512 MB)",SingleBoardComputer,wifi,513051392,1000,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,raspberry_pi_zero_2_w_512mb,"Raspberry Pi Zero 2 W (RP3A0, 512 MB)","Raspberry Pi Zero 2 W (RP3A0, 512 MB)",SingleBoardComputer,wifi,530825549,1000,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,raspberry_pi_2_model_b_1gb,Raspberry Pi 2 Model B (1 GB),Raspberry Pi 2 Model B (1 GB),SingleBoardComputer,ethernet,996245500,900,SingleBoardComputer,IoTGateway,SingleBoardComputer,IoTGateway
+0,raspberry_pi_3_model_b_1gb,Raspberry Pi 3 Model B (1 GB),Raspberry Pi 3 Model B (1 GB),SingleBoardComputer,ethernet,1008471633,1200,SingleBoardComputer,IoTGateway,SingleBoardComputer,IoTGateway
+0,raspberry_pi_3_model_b_plus_1gb,Raspberry Pi 3 Model B+ (1 GB),Raspberry Pi 3 Model B+ (1 GB),SingleBoardComputer,ethernet,976332967,1400,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,raspberry_pi_3_model_a_plus_512mb,Raspberry Pi 3 Model A+ (512 MB),Raspberry Pi 3 Model A+ (512 MB),SingleBoardComputer,wifi,515501868,1400,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,IoTGateway
+0,raspberry_pi_4_model_b_1gb,Raspberry Pi 4 Model B (1 GB),Raspberry Pi 4 Model B (1 GB),SingleBoardComputer,wifi,1018141504,1500,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,raspberry_pi_4_model_b_2gb,Raspberry Pi 4 Model B (2 GB),Raspberry Pi 4 Model B (2 GB),SingleBoardComputer,wifi,2126994596,1500,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,raspberry_pi_4_model_b_4gb,Raspberry Pi 4 Model B (4 GB),Raspberry Pi 4 Model B (4 GB),SingleBoardComputer,wifi,4238524801,1500,SingleBoardComputer,IoTGateway,SingleBoardComputer,IoTGateway
+0,raspberry_pi_4_model_b_8gb,Raspberry Pi 4 Model B (8 GB),Raspberry Pi 4 Model B (8 GB),SingleBoardComputer,wifi,8346462547,1500,SingleBoardComputer,IoTGateway,SingleBoardComputer,IoTGateway
+0,raspberry_pi_400_4gb,Raspberry Pi 400 (4 GB),Raspberry Pi 400 (4 GB),SingleBoardComputer,ethernet,4022475662,1800,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,raspberry_pi_5_2gb,Raspberry Pi 5 (2 GB),Raspberry Pi 5 (2 GB),SingleBoardComputer,wifi,2112191143,2400,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,raspberry_pi_5_4gb,Raspberry Pi 5 (4 GB),Raspberry Pi 5 (4 GB),SingleBoardComputer,ethernet,4055934645,2400,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,raspberry_pi_5_8gb,Raspberry Pi 5 (8 GB),Raspberry Pi 5 (8 GB),SingleBoardComputer,wifi,8454012928,2400,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,raspberry_pi_5_16gb,Raspberry Pi 5 (16 GB),Raspberry Pi 5 (16 GB),SingleBoardComputer,wifi,17021837142,2400,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,raspberry_pi_compute_module_4_8gb,"Raspberry Pi Compute Module 4 (8 GB, wireless, Lite: CM4108000)","Raspberry Pi Compute Module 4 (8 GB, wireless, Lite: CM4108000)",SingleBoardComputer,ethernet,7932050824,1500,SingleBoardComputer,IoTGateway,SingleBoardComputer,IoTGateway
+0,orange_pi_zero_lts_512mb,"Orange Pi Zero LTS (H2+, 512 MB)","Orange Pi Zero LTS (H2+, 512 MB)",SingleBoardComputer,wifi,507038757,1296,ESP32Device,SingleBoardComputer,SingleBoardComputer,IoTGateway
+0,orange_pi_zero_2_1gb,"Orange Pi Zero 2 (H616, 1 GB)","Orange Pi Zero 2 (H616, 1 GB)",SingleBoardComputer,ethernet,1047983368,1500,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,IoTGateway
+0,orange_pi_zero_3_1gb,"Orange Pi Zero 3 (H618, 1 GB)","Orange Pi Zero 3 (H618, 1 GB)",SingleBoardComputer,wifi,1051450864,1500,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,orange_pi_5_4gb,"Orange Pi 5 (RK3588S, 4 GB)","Orange Pi 5 (RK3588S, 4 GB)",SingleBoardComputer,ethernet,4117652752,2400,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,friendlyelec_nanopi_neo_512mb,"FriendlyElec NanoPi NEO (H3, 512 MB)","FriendlyElec NanoPi NEO (H3, 512 MB)",SingleBoardComputer,ethernet,499361177,1200,ESP32Device,IoTGateway,IoTGateway,IoTGateway
+0,banana_pi_bpi_m4_zero_2gb,"Banana Pi BPI-M4 Zero (H618, 2 GB)","Banana Pi BPI-M4 Zero (H618, 2 GB)",SingleBoardComputer,wifi,2090035844,1500,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,IoTGateway
+0,beagleboard_beaglebone_black_512mb,"BeagleBone Black (AM3358, 512 MB)","BeagleBone Black (AM3358, 512 MB)",SingleBoardComputer,ethernet,491591469,1000,ESP32Device,IoTGateway,IoTGateway,IoTGateway
+0,beagleboard_beaglebone_ai_64_4gb,"BeagleBone AI-64 (TDA4VM, 4 GB)","BeagleBone AI-64 (TDA4VM, 4 GB)",SingleBoardComputer,ethernet,4246448025,2000,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,hardkernel_odroid_c4_4gb,"Hardkernel ODROID-C4 (S905X3, 4 GB)","Hardkernel ODROID-C4 (S905X3, 4 GB)",SingleBoardComputer,ethernet,4078427252,2016,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,nvidia_jetson_nano_devkit_4gb,NVIDIA Jetson Nano Developer Kit (4 GB),NVIDIA Jetson Nano Developer Kit (4 GB),SingleBoardComputer,ethernet,4126280407,1430,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,IoTGateway
+0,nvidia_jetson_xavier_nx_8gb,NVIDIA Jetson Xavier NX (8 GB),NVIDIA Jetson Xavier NX (8 GB),SingleBoardComputer,ethernet,8319564001,1900,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,nvidia_jetson_orin_nano_4gb,NVIDIA Jetson Orin Nano (4 GB),NVIDIA Jetson Orin Nano (4 GB),SingleBoardComputer,ethernet,3926865149,1510,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,nvidia_jetson_orin_nano_8gb,NVIDIA Jetson Orin Nano (8 GB),NVIDIA Jetson Orin Nano (8 GB),SingleBoardComputer,ethernet,7748173419,1510,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,nvidia_jetson_orin_nx_16gb,NVIDIA Jetson Orin NX (16 GB),NVIDIA Jetson Orin NX (16 GB),SingleBoardComputer,ethernet,17010975537,2000,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,nvidia_jetson_agx_orin_64gb,NVIDIA Jetson AGX Orin (64 GB),NVIDIA Jetson AGX Orin (64 GB),SingleBoardComputer,ethernet,65956264971,2200,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,seeed_reterminal_4gb,"Seeed reTerminal (CM4, 4 GB)","Seeed reTerminal (CM4, 4 GB)",IoTGateway,wifi,4252482343,1500,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,seeed_reterminal_dm,Seeed reTerminal DM (CM4),Seeed reTerminal DM (CM4),IoTGateway,wifi,8081624470,1500,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,seeed_sensecap_m2_multi_platform,Seeed SenseCAP M2 Multi-Platform LoRaWAN Gateway (MT7628),Seeed SenseCAP M2 Multi-Platform LoRaWAN Gateway (MT7628),IoTGateway,wifi,132881693,580,IoTGateway,IoTGateway,IoTGateway,IoTGateway
+0,kunbus_revpi_connect_4_8gb,Kunbus RevPi Connect 4 (8 GB),Kunbus RevPi Connect 4 (8 GB),IoTGateway,ethernet,7726489885,1500,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,kunbus_revpi_connect_s_1gb,"Kunbus RevPi Connect S (CM4S, 1 GB)","Kunbus RevPi Connect S (CM4S, 1 GB)",IoTGateway,ethernet,1014277216,1500,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,kunbus_revpi_core_3_plus_1gb,"Kunbus RevPi Core 3+ (CM3+, 1 GB)","Kunbus RevPi Core 3+ (CM3+, 1 GB)",IoTGateway,ethernet,1055212779,1200,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,moxa_uc_2101_lx,Moxa UC-2101-LX,Moxa UC-2101-LX,IoTGateway,ethernet,263729670,600,ESP32Device,IoTGateway,IoTGateway,IoTGateway
+0,moxa_uc_8112_lx,Moxa UC-8112-LX,Moxa UC-8112-LX,IoTGateway,ethernet,516814138,1000,ESP32Device,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,moxa_uc_8220,Moxa UC-8200 series (UC-8220),Moxa UC-8200 series (UC-8220),IoTGateway,ethernet,2002150217,1000,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,teltonika_rut955,Teltonika RUT955,Teltonika RUT955,IoTGateway,wifi,128915498,550,ESP32Device,IoTGateway,IoTGateway,IoTGateway
+0,teltonika_rutx11,Teltonika RUTX11,Teltonika RUTX11,IoTGateway,cellular,245369607,717,ESP32Device,IoTGateway,IoTGateway,IoTGateway
+0,teltonika_rut241,Teltonika RUT241,Teltonika RUT241,IoTGateway,wifi,131946826,580,ESP32Device,IoTGateway,IoTGateway,IoTGateway
+0,dragino_lps8,Dragino LPS8 (AR9331),Dragino LPS8 (AR9331),IoTGateway,lora,60710046,400,ESP32Device,IoTGateway,IoTGateway,IoTGateway
+0,dragino_lps8v2,Dragino LPS8v2 (Cortex-A7),Dragino LPS8v2 (Cortex-A7),IoTGateway,lora,516711045,1200,ESP32Device,IoTGateway,IoTGateway,SingleBoardComputer
+0,milesight_ug65,Milesight UG65,Milesight UG65,IoTGateway,wifi,534393433,1500,ESP32Device,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,advantech_ecu_1251_v2,Advantech ECU-1251 V2 (Cortex-A9),Advantech ECU-1251 V2 (Cortex-A9),IoTGateway,ethernet,2032540028,600,SingleBoardComputer,IoTGateway,IoTGateway,IoTGateway
+0,waveshare_esp32_c3_zero,Waveshare ESP32-C3-Zero (ESP32-C3FH4),Waveshare ESP32-C3-Zero (ESP32-C3FH4),ESP32Device,wifi,295580,160,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,espressif_esp32_wroom_32,"ESP32-WROOM-32 (módulo clásico, NRND)","ESP32-WROOM-32 (módulo clásico, NRND)",ESP32Device,wifi,331488,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+0,ai_thinker_esp_12f,"Ai-Thinker ESP-12F (ESP8266EX, 4 MB)","Ai-Thinker ESP-12F (ESP8266EX, 4 MB)",Microcontroller,wifi,129334,160,Microcontroller,ESP32Device,ESP32Device,ESP32Device
+0,orange_pi_one_512mb,"Orange Pi One (H3, 512 MB)","Orange Pi One (H3, 512 MB)",SingleBoardComputer,ethernet,482639474,1200,ESP32Device,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,orange_pi_zero_lts_256mb,"Orange Pi Zero LTS (H2+, 256 MB)","Orange Pi Zero LTS (H2+, 256 MB)",SingleBoardComputer,ethernet,259902929,1200,ESP32Device,IoTGateway,IoTGateway,SingleBoardComputer
+0,friendlyelec_nanopi_neo_256mb,"FriendlyElec NanoPi NEO (H3, 256 MB)","FriendlyElec NanoPi NEO (H3, 256 MB)",SingleBoardComputer,ethernet,263221351,1200,ESP32Device,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,friendlyelec_nanopi_neo2_512mb,"FriendlyElec NanoPi NEO2 (H5, 512 MB)","FriendlyElec NanoPi NEO2 (H5, 512 MB)",SingleBoardComputer,ethernet,496354343,1008,ESP32Device,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,banana_pi_bpi_m2_zero_512mb,"Banana Pi BPI-M2 Zero (H3/H2+, 512 MB)","Banana Pi BPI-M2 Zero (H3/H2+, 512 MB)",SingleBoardComputer,wifi,527562986,1000,ESP32Device,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+0,dragino_lsn50v2_s31,Dragino LSN50v2-S31 (STM32L072CZT6),Dragino LSN50v2-S31 (STM32L072CZT6),Sensor,lora,15012,32,Microcontroller,Sensor,Sensor,Sensor
+0,dragino_lgt_92,Dragino LGT-92 LoRaWAN GPS Tracker (STM32L072),Dragino LGT-92 LoRaWAN GPS Tracker (STM32L072),Sensor,lora,16027,32,Microcontroller,Sensor,Sensor,Sensor
+0,dragino_lt_22222_l,Dragino LT-22222-L LoRa I/O Controller (STM32L072),Dragino LT-22222-L LoRa I/O Controller (STM32L072),Sensor,lora,14014,32,Microcontroller,Sensor,Sensor,Sensor
+0,seeed_sensecap_s2100,Seeed SenseCAP S2100 LoRaWAN Data Logger (Wio-E5 / STM32WLE5JC),Seeed SenseCAP S2100 LoRaWAN Data Logger (Wio-E5 / STM32WLE5JC),Sensor,lora,49893,48,Microcontroller,Sensor,Sensor,Sensor
+0,seeed_sensecap_s2107,Seeed SenseCAP S2107 LoRaWAN Temperature Sensor PT1000 (Wio-E5 / STM32WLE5JC),Seeed SenseCAP S2107 LoRaWAN Temperature Sensor PT1000 (Wio-E5 / STM32WLE5JC),Sensor,lora,36336,48,Sensor,Sensor,Sensor,Sensor
+0,seeed_sensecap_t1000_e,Seeed SenseCAP Card Tracker T1000-E (nRF52840 + LR1110),Seeed SenseCAP Card Tracker T1000-E (nRF52840 + LR1110),Sensor,lora,245318,64,Microcontroller,Sensor,Sensor,Sensor
+1,espressif_esp32_wroom_32e,ESP32-WROOM-32E (N4),ESP32-WROOM-32E (N4),ESP32Device,wifi,339080,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,espressif_esp32_wrover_e,ESP32-WROVER-E (N4R8),ESP32-WROVER-E (N4R8),ESP32Device,wifi,313281,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,espressif_esp32_devkitc_v4,ESP32-DevKitC V4 (ESP32-WROOM-32E),ESP32-DevKitC V4 (ESP32-WROOM-32E),ESP32Device,wifi,333842,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,espressif_esp32_ethernet_kit_v1_2,ESP32-Ethernet-Kit v1.2 (ESP32-WROVER-E + IP101GRI),ESP32-Ethernet-Kit v1.2 (ESP32-WROVER-E + IP101GRI),ESP32Device,wifi,335433,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,espressif_esp32_s2_wroom,ESP32-S2-WROOM,ESP32-S2-WROOM,ESP32Device,wifi,244251,240,ESP32Device,Microcontroller,ESP32Device,Microcontroller
+1,espressif_esp32_s3_wroom_1,ESP32-S3-WROOM-1 (N4),ESP32-S3-WROOM-1 (N4),ESP32Device,wifi,368003,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,espressif_esp32_s3_devkitc_1,ESP32-S3-DevKitC-1 (N8R8),ESP32-S3-DevKitC-1 (N8R8),ESP32Device,wifi,346897,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,espressif_esp32_c3_devkitm_1,ESP32-C3-DevKitM-1 (ESP32-C3-MINI-1),ESP32-C3-DevKitM-1 (ESP32-C3-MINI-1),ESP32Device,wifi,310346,160,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,espressif_esp32_c6_devkitc_1,ESP32-C6-DevKitC-1 (ESP32-C6-WROOM-1),ESP32-C6-DevKitC-1 (ESP32-C6-WROOM-1),ESP32Device,wifi,319985,160,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,espressif_esp32_h2_devkitm_1,"ESP32-H2-DevKitM-1 (ESP32-H2-MINI-1, N4)","ESP32-H2-DevKitM-1 (ESP32-H2-MINI-1, N4)",ESP32Device,zigbee,242470,96,ESP32Device,Microcontroller,ESP32Device,ESP32Device
+1,olimex_esp32_poe,Olimex ESP32-POE (ESP32-WROOM-32E-N4),Olimex ESP32-POE (ESP32-WROOM-32E-N4),ESP32Device,wifi,315551,80,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,olimex_esp32_poe_16mb,Olimex ESP32-POE-16MB (ESP32-WROOM-32E-N16),Olimex ESP32-POE-16MB (ESP32-WROOM-32E-N16),ESP32Device,ethernet,364040,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,olimex_esp32_poe_wrover,"Olimex ESP32-POE-WROVER (ESP32-WROVER-E, 8 MB PSRAM)","Olimex ESP32-POE-WROVER (ESP32-WROVER-E, 8 MB PSRAM)",ESP32Device,ethernet,352144,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,olimex_esp32_poe_iso,Olimex ESP32-POE-ISO (ESP32-WROOM-32E-N4),Olimex ESP32-POE-ISO (ESP32-WROOM-32E-N4),ESP32Device,wifi,347498,160,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,olimex_esp32_gateway,Olimex ESP32-GATEWAY (ESP32-WROOM-32E),Olimex ESP32-GATEWAY (ESP32-WROOM-32E),ESP32Device,ethernet,366716,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,olimex_esp32_evb,Olimex ESP32-EVB (ESP32-WROOM-32E),Olimex ESP32-EVB (ESP32-WROOM-32E),ESP32Device,wifi,342751,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,m5stack_core_basic,"M5Stack Core Basic (ESP32, 16 MB)","M5Stack Core Basic (ESP32, 16 MB)",ESP32Device,wifi,347610,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,m5stack_core2,"M5Stack Core2 (ESP32-D0WDQ6-V3, 16 MB + 8 MB PSRAM)","M5Stack Core2 (ESP32-D0WDQ6-V3, 16 MB + 8 MB PSRAM)",ESP32Device,wifi,336255,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,m5stack_cores3,"M5Stack CoreS3 (ESP32-S3, 16 MB + 8 MB PSRAM)","M5Stack CoreS3 (ESP32-S3, 16 MB + 8 MB PSRAM)",ESP32Device,wifi,372836,160,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,m5stack_atom_lite,"M5Stack Atom Lite (ESP32-PICO-D4, 4 MB)","M5Stack Atom Lite (ESP32-PICO-D4, 4 MB)",ESP32Device,wifi,335675,160,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,m5stack_atoms3,"M5Stack AtomS3 (ESP32-S3, 8 MB)","M5Stack AtomS3 (ESP32-S3, 8 MB)",ESP32Device,wifi,363378,160,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,m5stack_m5stickc_plus2,"M5StickC PLUS2 (ESP32-PICO-V3-02, 8 MB + 2 MB PSRAM)","M5StickC PLUS2 (ESP32-PICO-V3-02, 8 MB + 2 MB PSRAM)",ESP32Device,wifi,340510,160,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,m5stack_unit_poe_cam_w,"M5Stack Unit PoE CAM-W (ESP32-D0WDQ6-V3, 16 MB + 8 MB PSRAM)",ESP32-PoECAM,ESP32Device,ethernet,376268,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,arduino_nano_esp32,"Arduino Nano ESP32 (ESP32-S3 / NORA-W106, 16 MB + 8 MB PSRAM)","Arduino Nano ESP32 (ESP32-S3 / NORA-W106, 16 MB + 8 MB PSRAM)",ESP32Device,wifi,315413,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,seeed_studio_xiao_esp32c3,Seeed Studio XIAO ESP32C3,Seeed Studio XIAO ESP32C3,ESP32Device,wifi,287939,160,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,seeed_studio_xiao_esp32s3,Seeed Studio XIAO ESP32S3 (8 MB + 8 MB PSRAM),Seeed Studio XIAO ESP32S3 (8 MB + 8 MB PSRAM),ESP32Device,wifi,339009,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,seeed_studio_xiao_esp32c6,Seeed Studio XIAO ESP32C6,Seeed Studio XIAO ESP32C6,ESP32Device,zigbee,328519,160,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,heltec_wifi_lora_32_v3,Heltec WiFi LoRa 32 V3 (ESP32-S3FN8 + SX1262),Heltec WiFi LoRa 32 V3 (ESP32-S3FN8 + SX1262),ESP32Device,wifi,349264,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,lilygo_t_beam,LilyGO T-Beam (ESP32 + LoRa + GPS),LilyGO T-Beam (ESP32 + LoRa + GPS),ESP32Device,wifi,343731,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,wireless_tag_wt32_eth01,Wireless-Tag WT32-ETH01 (ESP32 + LAN8720A),Wireless-Tag WT32-ETH01 (ESP32 + LAN8720A),ESP32Device,ethernet,365692,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,ai_thinker_esp32_cam,Ai-Thinker ESP32-CAM (ESP32-S + OV2640),Ai-Thinker ESP32-CAM (ESP32-S + OV2640),ESP32Device,wifi,326880,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,adafruit_feather_esp32_v2,Adafruit Feather ESP32 V2 (8 MB + 2 MB PSRAM),Adafruit Feather ESP32 V2 (8 MB + 2 MB PSRAM),ESP32Device,wifi,311750,160,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,arduino_uno_r3,Arduino UNO R3 (ATmega328P),Arduino UNO R3 (ATmega328P),Microcontroller,serial,1938,16,Microcontroller,Microcontroller,Microcontroller,Microcontroller
+1,arduino_nano,Arduino Nano (ATmega328P),Arduino Nano (ATmega328P),Microcontroller,serial,1901,16,Microcontroller,Microcontroller,Microcontroller,Microcontroller
+1,arduino_mega_2560_rev3,Arduino Mega 2560 Rev3 (ATmega2560),Arduino Mega 2560 Rev3 (ATmega2560),Microcontroller,serial,5258,16,Microcontroller,Microcontroller,Microcontroller,Microcontroller
+1,arduino_due,Arduino Due (SAM3X8E),Arduino Due (SAM3X8E),Microcontroller,serial,71962,84,Microcontroller,Microcontroller,Microcontroller,Microcontroller
+1,arduino_uno_r4_minima,Arduino UNO R4 Minima (Renesas RA4M1),Arduino UNO R4 Minima (Renesas RA4M1),Microcontroller,serial,27444,48,Microcontroller,Sensor,Sensor,Sensor
+1,arduino_uno_r4_wifi,Arduino UNO R4 WiFi (RA4M1 + ESP32-S3),Arduino UNO R4 WiFi (RA4M1 + ESP32-S3),Microcontroller,wifi,24814,48,ESP32Device,Microcontroller,ESP32Device,Microcontroller
+1,arduino_nano_every,Arduino Nano Every (ATmega4809),Arduino Nano Every (ATmega4809),Microcontroller,serial,5668,20,Microcontroller,Microcontroller,Microcontroller,Microcontroller
+1,arduino_nano_33_iot,Arduino Nano 33 IoT (SAMD21 + NINA-W102),Arduino Nano 33 IoT (SAMD21 + NINA-W102),Microcontroller,wifi,21607,48,Microcontroller,Microcontroller,Microcontroller,Microcontroller
+1,arduino_nano_33_ble_sense,Arduino Nano 33 BLE Sense (nRF52840),Arduino Nano 33 BLE Sense (nRF52840),Sensor,bluetooth,237733,64,Microcontroller,Sensor,Sensor,Sensor
+1,arduino_mkr_wan_1310,Arduino MKR WAN 1310 (SAMD21 + Murata LoRa),Arduino MKR WAN 1310 (SAMD21 + Murata LoRa),Sensor,lora,19724,48,Microcontroller,Sensor,Sensor,Sensor
+1,arduino_giga_r1_wifi,Arduino GIGA R1 WiFi (STM32H747XI),Arduino GIGA R1 WiFi (STM32H747XI),Microcontroller,wifi,912146,480,Microcontroller,IoTGateway,IoTGateway,Microcontroller
+1,raspberry_pi_pico,Raspberry Pi Pico (RP2040),Raspberry Pi Pico (RP2040),Microcontroller,serial,258489,133,SingleBoardComputer,ESP32Device,SingleBoardComputer,Microcontroller
+1,raspberry_pi_pico_w,Raspberry Pi Pico W (RP2040 + CYW43439),Raspberry Pi Pico W (RP2040 + CYW43439),Microcontroller,wifi,144154,133,SingleBoardComputer,Microcontroller,SingleBoardComputer,Microcontroller
+1,raspberry_pi_pico_2,Raspberry Pi Pico 2 (RP2350),Raspberry Pi Pico 2 (RP2350),Microcontroller,serial,364136,150,SingleBoardComputer,ESP32Device,SingleBoardComputer,Microcontroller
+1,raspberry_pi_pico_2_w,Raspberry Pi Pico 2 W (RP2350 + CYW43439),Raspberry Pi Pico 2 W (RP2350 + CYW43439),Microcontroller,wifi,283838,150,SingleBoardComputer,ESP32Device,SingleBoardComputer,Microcontroller
+1,st_nucleo_f401re,ST NUCLEO-F401RE (STM32F401RE),ST NUCLEO-F401RE (STM32F401RE),Microcontroller,serial,75187,84,Microcontroller,Microcontroller,Microcontroller,Microcontroller
+1,pjrc_teensy_4_1,PJRC Teensy 4.1 (i.MX RT1062),PJRC Teensy 4.1 (i.MX RT1062),Microcontroller,serial,706454,600,Microcontroller,IoTGateway,IoTGateway,Microcontroller
+1,nordic_nrf52840_dk,Nordic nRF52840 DK,Nordic nRF52840 DK,Sensor,zigbee,215378,64,Microcontroller,Sensor,Sensor,ESP32Device
+1,ti_launchxl_cc26x2r1,TI LAUNCHXL-CC26X2R1 (CC2652R),TI LAUNCHXL-CC26X2R1 (CC2652R),Sensor,zigbee,49639,48,Microcontroller,Microcontroller,Microcontroller,Microcontroller
+1,heltec_cubecell_htcc_ab01,Heltec CubeCell HTCC-AB01 (ASR6501),Heltec CubeCell HTCC-AB01 (ASR6501),Sensor,lora,11445,48,Microcontroller,Sensor,Sensor,Sensor
+1,dragino_lsn50v2,Dragino LSN50v2 (STM32L072),Dragino LSN50v2 (STM32L072),Sensor,lora,12377,32,Microcontroller,Sensor,Sensor,Sensor
+1,raspberry_pi_zero_w_512mb,"Raspberry Pi Zero W (BCM2835, 512 MB)","Raspberry Pi Zero W (BCM2835, 512 MB)",SingleBoardComputer,wifi,534919406,1000,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,raspberry_pi_zero_2_w_512mb,"Raspberry Pi Zero 2 W (RP3A0, 512 MB)","Raspberry Pi Zero 2 W (RP3A0, 512 MB)",SingleBoardComputer,wifi,512710668,1000,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,raspberry_pi_2_model_b_1gb,Raspberry Pi 2 Model B (1 GB),Raspberry Pi 2 Model B (1 GB),SingleBoardComputer,ethernet,1047934830,900,SingleBoardComputer,IoTGateway,SingleBoardComputer,SingleBoardComputer
+1,raspberry_pi_3_model_b_1gb,Raspberry Pi 3 Model B (1 GB),Raspberry Pi 3 Model B (1 GB),SingleBoardComputer,wifi,1009731107,1200,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,raspberry_pi_3_model_b_plus_1gb,Raspberry Pi 3 Model B+ (1 GB),Raspberry Pi 3 Model B+ (1 GB),SingleBoardComputer,wifi,1038800662,1400,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,IoTGateway
+1,raspberry_pi_3_model_a_plus_512mb,Raspberry Pi 3 Model A+ (512 MB),Raspberry Pi 3 Model A+ (512 MB),SingleBoardComputer,wifi,531269007,1400,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,IoTGateway
+1,raspberry_pi_4_model_b_1gb,Raspberry Pi 4 Model B (1 GB),Raspberry Pi 4 Model B (1 GB),SingleBoardComputer,ethernet,1019088593,1500,SingleBoardComputer,IoTGateway,SingleBoardComputer,IoTGateway
+1,raspberry_pi_4_model_b_2gb,Raspberry Pi 4 Model B (2 GB),Raspberry Pi 4 Model B (2 GB),SingleBoardComputer,ethernet,2109782081,1500,SingleBoardComputer,IoTGateway,SingleBoardComputer,IoTGateway
+1,raspberry_pi_4_model_b_4gb,Raspberry Pi 4 Model B (4 GB),Raspberry Pi 4 Model B (4 GB),SingleBoardComputer,ethernet,3938021284,1500,SingleBoardComputer,IoTGateway,SingleBoardComputer,IoTGateway
+1,raspberry_pi_4_model_b_8gb,Raspberry Pi 4 Model B (8 GB),Raspberry Pi 4 Model B (8 GB),SingleBoardComputer,ethernet,7820649452,1500,SingleBoardComputer,IoTGateway,SingleBoardComputer,IoTGateway
+1,raspberry_pi_400_4gb,Raspberry Pi 400 (4 GB),Raspberry Pi 400 (4 GB),SingleBoardComputer,ethernet,4027221279,1800,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,raspberry_pi_5_2gb,Raspberry Pi 5 (2 GB),Raspberry Pi 5 (2 GB),SingleBoardComputer,wifi,2020755524,2400,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,raspberry_pi_5_4gb,Raspberry Pi 5 (4 GB),Raspberry Pi 5 (4 GB),SingleBoardComputer,wifi,4051815176,2400,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,raspberry_pi_5_8gb,Raspberry Pi 5 (8 GB),Raspberry Pi 5 (8 GB),SingleBoardComputer,wifi,8454012928,2400,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,raspberry_pi_5_16gb,Raspberry Pi 5 (16 GB),Raspberry Pi 5 (16 GB),SingleBoardComputer,ethernet,17069900522,2400,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,raspberry_pi_compute_module_4_8gb,"Raspberry Pi Compute Module 4 (8 GB, wireless, Lite: CM4108000)","Raspberry Pi Compute Module 4 (8 GB, wireless, Lite: CM4108000)",SingleBoardComputer,wifi,8446248367,1500,SingleBoardComputer,IoTGateway,SingleBoardComputer,IoTGateway
+1,orange_pi_zero_lts_512mb,"Orange Pi Zero LTS (H2+, 512 MB)","Orange Pi Zero LTS (H2+, 512 MB)",SingleBoardComputer,ethernet,508035072,1296,ESP32Device,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,orange_pi_zero_2_1gb,"Orange Pi Zero 2 (H616, 1 GB)","Orange Pi Zero 2 (H616, 1 GB)",SingleBoardComputer,ethernet,1008341844,1500,SingleBoardComputer,IoTGateway,IoTGateway,IoTGateway
+1,orange_pi_zero_3_1gb,"Orange Pi Zero 3 (H618, 1 GB)","Orange Pi Zero 3 (H618, 1 GB)",SingleBoardComputer,wifi,1015119647,1500,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,orange_pi_5_4gb,"Orange Pi 5 (RK3588S, 4 GB)","Orange Pi 5 (RK3588S, 4 GB)",SingleBoardComputer,ethernet,4215486414,2400,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,friendlyelec_nanopi_neo_512mb,"FriendlyElec NanoPi NEO (H3, 512 MB)","FriendlyElec NanoPi NEO (H3, 512 MB)",SingleBoardComputer,ethernet,527190870,1200,ESP32Device,IoTGateway,IoTGateway,IoTGateway
+1,banana_pi_bpi_m4_zero_2gb,"Banana Pi BPI-M4 Zero (H618, 2 GB)","Banana Pi BPI-M4 Zero (H618, 2 GB)",SingleBoardComputer,ethernet,1996858751,1500,SingleBoardComputer,IoTGateway,IoTGateway,SingleBoardComputer
+1,beagleboard_beaglebone_black_512mb,"BeagleBone Black (AM3358, 512 MB)","BeagleBone Black (AM3358, 512 MB)",SingleBoardComputer,ethernet,508070215,1000,ESP32Device,IoTGateway,IoTGateway,SingleBoardComputer
+1,beagleboard_beaglebone_ai_64_4gb,"BeagleBone AI-64 (TDA4VM, 4 GB)","BeagleBone AI-64 (TDA4VM, 4 GB)",SingleBoardComputer,ethernet,3940408582,2000,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,hardkernel_odroid_c4_4gb,"Hardkernel ODROID-C4 (S905X3, 4 GB)","Hardkernel ODROID-C4 (S905X3, 4 GB)",SingleBoardComputer,ethernet,4266900535,2016,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,nvidia_jetson_nano_devkit_4gb,NVIDIA Jetson Nano Developer Kit (4 GB),NVIDIA Jetson Nano Developer Kit (4 GB),SingleBoardComputer,ethernet,3907797389,1430,SingleBoardComputer,IoTGateway,SingleBoardComputer,IoTGateway
+1,nvidia_jetson_xavier_nx_8gb,NVIDIA Jetson Xavier NX (8 GB),NVIDIA Jetson Xavier NX (8 GB),SingleBoardComputer,ethernet,8092901991,1900,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,nvidia_jetson_orin_nano_4gb,NVIDIA Jetson Orin Nano (4 GB),NVIDIA Jetson Orin Nano (4 GB),SingleBoardComputer,ethernet,4021236280,1510,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,nvidia_jetson_orin_nano_8gb,NVIDIA Jetson Orin Nano (8 GB),NVIDIA Jetson Orin Nano (8 GB),SingleBoardComputer,ethernet,7819067677,1510,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,nvidia_jetson_orin_nx_16gb,NVIDIA Jetson Orin NX (16 GB),NVIDIA Jetson Orin NX (16 GB),SingleBoardComputer,ethernet,16178609498,2000,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,nvidia_jetson_agx_orin_64gb,NVIDIA Jetson AGX Orin (64 GB),NVIDIA Jetson AGX Orin (64 GB),SingleBoardComputer,ethernet,62273350454,2200,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,seeed_reterminal_4gb,"Seeed reTerminal (CM4, 4 GB)","Seeed reTerminal (CM4, 4 GB)",IoTGateway,wifi,4259386251,1500,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,seeed_reterminal_dm,Seeed reTerminal DM (CM4),Seeed reTerminal DM (CM4),IoTGateway,wifi,8190732581,1500,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,seeed_sensecap_m2_multi_platform,Seeed SenseCAP M2 Multi-Platform LoRaWAN Gateway (MT7628),Seeed SenseCAP M2 Multi-Platform LoRaWAN Gateway (MT7628),IoTGateway,ethernet,129172161,580,IoTGateway,IoTGateway,IoTGateway,IoTGateway
+1,kunbus_revpi_connect_4_8gb,Kunbus RevPi Connect 4 (8 GB),Kunbus RevPi Connect 4 (8 GB),IoTGateway,ethernet,7753880478,1500,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,kunbus_revpi_connect_s_1gb,"Kunbus RevPi Connect S (CM4S, 1 GB)","Kunbus RevPi Connect S (CM4S, 1 GB)",IoTGateway,ethernet,981382323,1500,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,kunbus_revpi_core_3_plus_1gb,"Kunbus RevPi Core 3+ (CM3+, 1 GB)","Kunbus RevPi Core 3+ (CM3+, 1 GB)",IoTGateway,ethernet,989221111,1200,ESP32Device,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,moxa_uc_2101_lx,Moxa UC-2101-LX,Moxa UC-2101-LX,IoTGateway,ethernet,255616392,600,ESP32Device,IoTGateway,IoTGateway,IoTGateway
+1,moxa_uc_8112_lx,Moxa UC-8112-LX,Moxa UC-8112-LX,IoTGateway,ethernet,487402321,1000,ESP32Device,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,moxa_uc_8220,Moxa UC-8200 series (UC-8220),Moxa UC-8200 series (UC-8220),IoTGateway,ethernet,1967414358,1000,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,teltonika_rut955,Teltonika RUT955,Teltonika RUT955,IoTGateway,wifi,130946591,550,ESP32Device,IoTGateway,IoTGateway,IoTGateway
+1,teltonika_rutx11,Teltonika RUTX11,Teltonika RUTX11,IoTGateway,wifi,252453926,717,ESP32Device,IoTGateway,IoTGateway,IoTGateway
+1,teltonika_rut241,Teltonika RUT241,Teltonika RUT241,IoTGateway,cellular,126148729,580,ESP32Device,IoTGateway,IoTGateway,IoTGateway
+1,dragino_lps8,Dragino LPS8 (AR9331),Dragino LPS8 (AR9331),IoTGateway,lora,63475849,400,ESP32Device,Microcontroller,Microcontroller,IoTGateway
+1,dragino_lps8v2,Dragino LPS8v2 (Cortex-A7),Dragino LPS8v2 (Cortex-A7),IoTGateway,lora,529898029,1200,ESP32Device,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,milesight_ug65,Milesight UG65,Milesight UG65,IoTGateway,ethernet,532738430,1500,ESP32Device,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,advantech_ecu_1251_v2,Advantech ECU-1251 V2 (Cortex-A9),Advantech ECU-1251 V2 (Cortex-A9),IoTGateway,ethernet,2130791316,600,SingleBoardComputer,IoTGateway,IoTGateway,IoTGateway
+1,waveshare_esp32_c3_zero,Waveshare ESP32-C3-Zero (ESP32-C3FH4),Waveshare ESP32-C3-Zero (ESP32-C3FH4),ESP32Device,wifi,295580,160,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,espressif_esp32_wroom_32,"ESP32-WROOM-32 (módulo clásico, NRND)","ESP32-WROOM-32 (módulo clásico, NRND)",ESP32Device,wifi,331488,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+1,ai_thinker_esp_12f,"Ai-Thinker ESP-12F (ESP8266EX, 4 MB)","Ai-Thinker ESP-12F (ESP8266EX, 4 MB)",Microcontroller,wifi,153111,160,Microcontroller,ESP32Device,ESP32Device,ESP32Device
+1,orange_pi_one_512mb,"Orange Pi One (H3, 512 MB)","Orange Pi One (H3, 512 MB)",SingleBoardComputer,ethernet,501789125,1200,ESP32Device,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,orange_pi_zero_lts_256mb,"Orange Pi Zero LTS (H2+, 256 MB)","Orange Pi Zero LTS (H2+, 256 MB)",SingleBoardComputer,wifi,263106696,1200,ESP32Device,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,friendlyelec_nanopi_neo_256mb,"FriendlyElec NanoPi NEO (H3, 256 MB)","FriendlyElec NanoPi NEO (H3, 256 MB)",SingleBoardComputer,ethernet,248188638,1200,ESP32Device,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+1,friendlyelec_nanopi_neo2_512mb,"FriendlyElec NanoPi NEO2 (H5, 512 MB)","FriendlyElec NanoPi NEO2 (H5, 512 MB)",SingleBoardComputer,ethernet,521548994,1008,ESP32Device,SingleBoardComputer,SingleBoardComputer,IoTGateway
+1,banana_pi_bpi_m2_zero_512mb,"Banana Pi BPI-M2 Zero (H3/H2+, 512 MB)","Banana Pi BPI-M2 Zero (H3/H2+, 512 MB)",SingleBoardComputer,wifi,507931012,1000,ESP32Device,SingleBoardComputer,SingleBoardComputer,IoTGateway
+1,dragino_lsn50v2_s31,Dragino LSN50v2-S31 (STM32L072CZT6),Dragino LSN50v2-S31 (STM32L072CZT6),Sensor,lora,17046,32,Microcontroller,Sensor,Sensor,Sensor
+1,dragino_lgt_92,Dragino LGT-92 LoRaWAN GPS Tracker (STM32L072),Dragino LGT-92 LoRaWAN GPS Tracker (STM32L072),Sensor,lora,19353,32,Microcontroller,Sensor,Sensor,Sensor
+1,dragino_lt_22222_l,Dragino LT-22222-L LoRa I/O Controller (STM32L072),Dragino LT-22222-L LoRa I/O Controller (STM32L072),Sensor,lora,13187,32,Microcontroller,Sensor,Sensor,Sensor
+1,seeed_sensecap_s2100,Seeed SenseCAP S2100 LoRaWAN Data Logger (Wio-E5 / STM32WLE5JC),Seeed SenseCAP S2100 LoRaWAN Data Logger (Wio-E5 / STM32WLE5JC),Sensor,lora,40733,48,Microcontroller,Sensor,Sensor,Sensor
+1,seeed_sensecap_s2107,Seeed SenseCAP S2107 LoRaWAN Temperature Sensor PT1000 (Wio-E5 / STM32WLE5JC),Seeed SenseCAP S2107 LoRaWAN Temperature Sensor PT1000 (Wio-E5 / STM32WLE5JC),Sensor,lora,47731,48,Sensor,Sensor,Sensor,Sensor
+1,seeed_sensecap_t1000_e,Seeed SenseCAP Card Tracker T1000-E (nRF52840 + LR1110),Seeed SenseCAP Card Tracker T1000-E (nRF52840 + LR1110),Sensor,lora,229482,64,Microcontroller,Sensor,Sensor,Sensor
+2,espressif_esp32_wroom_32e,ESP32-WROOM-32E (N4),ESP32-WROOM-32E (N4),ESP32Device,wifi,344283,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,espressif_esp32_wrover_e,ESP32-WROVER-E (N4R8),ESP32-WROVER-E (N4R8),ESP32Device,wifi,314051,80,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,espressif_esp32_devkitc_v4,ESP32-DevKitC V4 (ESP32-WROOM-32E),ESP32-DevKitC V4 (ESP32-WROOM-32E),ESP32Device,wifi,336153,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,espressif_esp32_ethernet_kit_v1_2,ESP32-Ethernet-Kit v1.2 (ESP32-WROVER-E + IP101GRI),ESP32-Ethernet-Kit v1.2 (ESP32-WROVER-E + IP101GRI),ESP32Device,wifi,334928,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,espressif_esp32_s2_wroom,ESP32-S2-WROOM,ESP32-S2-WROOM,ESP32Device,wifi,229604,240,ESP32Device,Microcontroller,ESP32Device,Microcontroller
+2,espressif_esp32_s3_wroom_1,ESP32-S3-WROOM-1 (N4),ESP32-S3-WROOM-1 (N4),ESP32Device,wifi,328750,160,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,espressif_esp32_s3_devkitc_1,ESP32-S3-DevKitC-1 (N8R8),ESP32-S3-DevKitC-1 (N8R8),ESP32Device,wifi,387993,160,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,espressif_esp32_c3_devkitm_1,ESP32-C3-DevKitM-1 (ESP32-C3-MINI-1),ESP32-C3-DevKitM-1 (ESP32-C3-MINI-1),ESP32Device,wifi,307969,160,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,espressif_esp32_c6_devkitc_1,ESP32-C6-DevKitC-1 (ESP32-C6-WROOM-1),ESP32-C6-DevKitC-1 (ESP32-C6-WROOM-1),ESP32Device,zigbee,312126,120,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,espressif_esp32_h2_devkitm_1,"ESP32-H2-DevKitM-1 (ESP32-H2-MINI-1, N4)","ESP32-H2-DevKitM-1 (ESP32-H2-MINI-1, N4)",ESP32Device,zigbee,209613,96,ESP32Device,Microcontroller,ESP32Device,Microcontroller
+2,olimex_esp32_poe,Olimex ESP32-POE (ESP32-WROOM-32E-N4),Olimex ESP32-POE (ESP32-WROOM-32E-N4),ESP32Device,wifi,323921,80,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,olimex_esp32_poe_16mb,Olimex ESP32-POE-16MB (ESP32-WROOM-32E-N16),Olimex ESP32-POE-16MB (ESP32-WROOM-32E-N16),ESP32Device,ethernet,364040,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,olimex_esp32_poe_wrover,"Olimex ESP32-POE-WROVER (ESP32-WROVER-E, 8 MB PSRAM)","Olimex ESP32-POE-WROVER (ESP32-WROVER-E, 8 MB PSRAM)",ESP32Device,wifi,322302,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,olimex_esp32_poe_iso,Olimex ESP32-POE-ISO (ESP32-WROOM-32E-N4),Olimex ESP32-POE-ISO (ESP32-WROOM-32E-N4),ESP32Device,ethernet,350807,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,olimex_esp32_gateway,Olimex ESP32-GATEWAY (ESP32-WROOM-32E),Olimex ESP32-GATEWAY (ESP32-WROOM-32E),ESP32Device,ethernet,371682,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,olimex_esp32_evb,Olimex ESP32-EVB (ESP32-WROOM-32E),Olimex ESP32-EVB (ESP32-WROOM-32E),ESP32Device,wifi,322106,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,m5stack_core_basic,"M5Stack Core Basic (ESP32, 16 MB)","M5Stack Core Basic (ESP32, 16 MB)",ESP32Device,wifi,340407,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,m5stack_core2,"M5Stack Core2 (ESP32-D0WDQ6-V3, 16 MB + 8 MB PSRAM)","M5Stack Core2 (ESP32-D0WDQ6-V3, 16 MB + 8 MB PSRAM)",ESP32Device,wifi,342419,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,m5stack_cores3,"M5Stack CoreS3 (ESP32-S3, 16 MB + 8 MB PSRAM)","M5Stack CoreS3 (ESP32-S3, 16 MB + 8 MB PSRAM)",ESP32Device,wifi,332001,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,m5stack_atom_lite,"M5Stack Atom Lite (ESP32-PICO-D4, 4 MB)","M5Stack Atom Lite (ESP32-PICO-D4, 4 MB)",ESP32Device,wifi,318252,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,m5stack_atoms3,"M5Stack AtomS3 (ESP32-S3, 8 MB)","M5Stack AtomS3 (ESP32-S3, 8 MB)",ESP32Device,wifi,388565,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,m5stack_m5stickc_plus2,"M5StickC PLUS2 (ESP32-PICO-V3-02, 8 MB + 2 MB PSRAM)","M5StickC PLUS2 (ESP32-PICO-V3-02, 8 MB + 2 MB PSRAM)",ESP32Device,wifi,328993,160,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,m5stack_unit_poe_cam_w,"M5Stack Unit PoE CAM-W (ESP32-D0WDQ6-V3, 16 MB + 8 MB PSRAM)",ESP32-PoECAM,ESP32Device,wifi,314389,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,arduino_nano_esp32,"Arduino Nano ESP32 (ESP32-S3 / NORA-W106, 16 MB + 8 MB PSRAM)","Arduino Nano ESP32 (ESP32-S3 / NORA-W106, 16 MB + 8 MB PSRAM)",ESP32Device,wifi,311279,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,seeed_studio_xiao_esp32c3,Seeed Studio XIAO ESP32C3,Seeed Studio XIAO ESP32C3,ESP32Device,wifi,297067,160,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,seeed_studio_xiao_esp32s3,Seeed Studio XIAO ESP32S3 (8 MB + 8 MB PSRAM),Seeed Studio XIAO ESP32S3 (8 MB + 8 MB PSRAM),ESP32Device,wifi,360416,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,seeed_studio_xiao_esp32c6,Seeed Studio XIAO ESP32C6,Seeed Studio XIAO ESP32C6,ESP32Device,zigbee,384488,160,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,heltec_wifi_lora_32_v3,Heltec WiFi LoRa 32 V3 (ESP32-S3FN8 + SX1262),Heltec WiFi LoRa 32 V3 (ESP32-S3FN8 + SX1262),ESP32Device,lora,375893,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,lilygo_t_beam,LilyGO T-Beam (ESP32 + LoRa + GPS),LilyGO T-Beam (ESP32 + LoRa + GPS),ESP32Device,wifi,334184,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,wireless_tag_wt32_eth01,Wireless-Tag WT32-ETH01 (ESP32 + LAN8720A),Wireless-Tag WT32-ETH01 (ESP32 + LAN8720A),ESP32Device,wifi,321435,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,ai_thinker_esp32_cam,Ai-Thinker ESP32-CAM (ESP32-S + OV2640),Ai-Thinker ESP32-CAM (ESP32-S + OV2640),ESP32Device,wifi,326880,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,adafruit_feather_esp32_v2,Adafruit Feather ESP32 V2 (8 MB + 2 MB PSRAM),Adafruit Feather ESP32 V2 (8 MB + 2 MB PSRAM),ESP32Device,wifi,325464,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,arduino_uno_r3,Arduino UNO R3 (ATmega328P),Arduino UNO R3 (ATmega328P),Microcontroller,serial,1614,16,Microcontroller,Microcontroller,Microcontroller,Microcontroller
+2,arduino_nano,Arduino Nano (ATmega328P),Arduino Nano (ATmega328P),Microcontroller,serial,1395,16,Microcontroller,Microcontroller,Microcontroller,Microcontroller
+2,arduino_mega_2560_rev3,Arduino Mega 2560 Rev3 (ATmega2560),Arduino Mega 2560 Rev3 (ATmega2560),Microcontroller,serial,6155,16,Microcontroller,Microcontroller,Microcontroller,Microcontroller
+2,arduino_due,Arduino Due (SAM3X8E),Arduino Due (SAM3X8E),Microcontroller,serial,56213,84,Microcontroller,Microcontroller,Microcontroller,Microcontroller
+2,arduino_uno_r4_minima,Arduino UNO R4 Minima (Renesas RA4M1),Arduino UNO R4 Minima (Renesas RA4M1),Microcontroller,serial,28707,48,Microcontroller,Sensor,Sensor,Sensor
+2,arduino_uno_r4_wifi,Arduino UNO R4 WiFi (RA4M1 + ESP32-S3),Arduino UNO R4 WiFi (RA4M1 + ESP32-S3),Microcontroller,wifi,25878,48,ESP32Device,Microcontroller,ESP32Device,Microcontroller
+2,arduino_nano_every,Arduino Nano Every (ATmega4809),Arduino Nano Every (ATmega4809),Microcontroller,serial,6080,20,Microcontroller,Microcontroller,Microcontroller,Microcontroller
+2,arduino_nano_33_iot,Arduino Nano 33 IoT (SAMD21 + NINA-W102),Arduino Nano 33 IoT (SAMD21 + NINA-W102),Microcontroller,wifi,19568,48,Microcontroller,Microcontroller,Microcontroller,Microcontroller
+2,arduino_nano_33_ble_sense,Arduino Nano 33 BLE Sense (nRF52840),Arduino Nano 33 BLE Sense (nRF52840),Sensor,bluetooth,132107,64,Microcontroller,Sensor,Sensor,Sensor
+2,arduino_mkr_wan_1310,Arduino MKR WAN 1310 (SAMD21 + Murata LoRa),Arduino MKR WAN 1310 (SAMD21 + Murata LoRa),Sensor,lora,21063,48,Microcontroller,Sensor,Sensor,Sensor
+2,arduino_giga_r1_wifi,Arduino GIGA R1 WiFi (STM32H747XI),Arduino GIGA R1 WiFi (STM32H747XI),Microcontroller,wifi,754699,480,Microcontroller,IoTGateway,IoTGateway,Microcontroller
+2,raspberry_pi_pico,Raspberry Pi Pico (RP2040),Raspberry Pi Pico (RP2040),Microcontroller,serial,179900,133,SingleBoardComputer,Microcontroller,SingleBoardComputer,Microcontroller
+2,raspberry_pi_pico_w,Raspberry Pi Pico W (RP2040 + CYW43439),Raspberry Pi Pico W (RP2040 + CYW43439),Microcontroller,wifi,238159,133,SingleBoardComputer,Microcontroller,SingleBoardComputer,Microcontroller
+2,raspberry_pi_pico_2,Raspberry Pi Pico 2 (RP2350),Raspberry Pi Pico 2 (RP2350),Microcontroller,serial,294974,150,SingleBoardComputer,ESP32Device,SingleBoardComputer,Microcontroller
+2,raspberry_pi_pico_2_w,Raspberry Pi Pico 2 W (RP2350 + CYW43439),Raspberry Pi Pico 2 W (RP2350 + CYW43439),Microcontroller,wifi,396085,150,SingleBoardComputer,ESP32Device,SingleBoardComputer,Microcontroller
+2,st_nucleo_f401re,ST NUCLEO-F401RE (STM32F401RE),ST NUCLEO-F401RE (STM32F401RE),Microcontroller,serial,90566,84,Microcontroller,Microcontroller,Microcontroller,Microcontroller
+2,pjrc_teensy_4_1,PJRC Teensy 4.1 (i.MX RT1062),PJRC Teensy 4.1 (i.MX RT1062),Microcontroller,serial,949483,600,Microcontroller,IoTGateway,IoTGateway,Microcontroller
+2,nordic_nrf52840_dk,Nordic nRF52840 DK,Nordic nRF52840 DK,Sensor,zigbee,147816,64,Microcontroller,Sensor,Sensor,Microcontroller
+2,ti_launchxl_cc26x2r1,TI LAUNCHXL-CC26X2R1 (CC2652R),TI LAUNCHXL-CC26X2R1 (CC2652R),Sensor,zigbee,60740,48,Microcontroller,Microcontroller,Microcontroller,Microcontroller
+2,heltec_cubecell_htcc_ab01,Heltec CubeCell HTCC-AB01 (ASR6501),Heltec CubeCell HTCC-AB01 (ASR6501),Sensor,lora,14469,48,Microcontroller,Sensor,Sensor,Sensor
+2,dragino_lsn50v2,Dragino LSN50v2 (STM32L072),Dragino LSN50v2 (STM32L072),Sensor,lora,17130,32,Microcontroller,Sensor,Sensor,Sensor
+2,raspberry_pi_zero_w_512mb,"Raspberry Pi Zero W (BCM2835, 512 MB)","Raspberry Pi Zero W (BCM2835, 512 MB)",SingleBoardComputer,wifi,515375787,1000,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+2,raspberry_pi_zero_2_w_512mb,"Raspberry Pi Zero 2 W (RP3A0, 512 MB)","Raspberry Pi Zero 2 W (RP3A0, 512 MB)",SingleBoardComputer,wifi,526805024,1000,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+2,raspberry_pi_2_model_b_1gb,Raspberry Pi 2 Model B (1 GB),Raspberry Pi 2 Model B (1 GB),SingleBoardComputer,ethernet,1037197026,900,SingleBoardComputer,IoTGateway,SingleBoardComputer,SingleBoardComputer
+2,raspberry_pi_3_model_b_1gb,Raspberry Pi 3 Model B (1 GB),Raspberry Pi 3 Model B (1 GB),SingleBoardComputer,wifi,1007162045,1200,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+2,raspberry_pi_3_model_b_plus_1gb,Raspberry Pi 3 Model B+ (1 GB),Raspberry Pi 3 Model B+ (1 GB),SingleBoardComputer,wifi,1025287292,1400,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+2,raspberry_pi_3_model_a_plus_512mb,Raspberry Pi 3 Model A+ (512 MB),Raspberry Pi 3 Model A+ (512 MB),SingleBoardComputer,wifi,536645269,1400,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,IoTGateway
+2,raspberry_pi_4_model_b_1gb,Raspberry Pi 4 Model B (1 GB),Raspberry Pi 4 Model B (1 GB),SingleBoardComputer,wifi,1043955636,1500,SingleBoardComputer,IoTGateway,SingleBoardComputer,IoTGateway
+2,raspberry_pi_4_model_b_2gb,Raspberry Pi 4 Model B (2 GB),Raspberry Pi 4 Model B (2 GB),SingleBoardComputer,wifi,2030913438,1500,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+2,raspberry_pi_4_model_b_4gb,Raspberry Pi 4 Model B (4 GB),Raspberry Pi 4 Model B (4 GB),SingleBoardComputer,wifi,4141244271,1500,SingleBoardComputer,IoTGateway,SingleBoardComputer,IoTGateway
+2,raspberry_pi_4_model_b_8gb,Raspberry Pi 4 Model B (8 GB),Raspberry Pi 4 Model B (8 GB),SingleBoardComputer,ethernet,8226278412,1500,SingleBoardComputer,IoTGateway,SingleBoardComputer,IoTGateway
+2,raspberry_pi_400_4gb,Raspberry Pi 400 (4 GB),Raspberry Pi 400 (4 GB),SingleBoardComputer,wifi,4117364978,1800,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+2,raspberry_pi_5_2gb,Raspberry Pi 5 (2 GB),Raspberry Pi 5 (2 GB),SingleBoardComputer,ethernet,2046903615,2400,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+2,raspberry_pi_5_4gb,Raspberry Pi 5 (4 GB),Raspberry Pi 5 (4 GB),SingleBoardComputer,ethernet,3990791634,2400,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+2,raspberry_pi_5_8gb,Raspberry Pi 5 (8 GB),Raspberry Pi 5 (8 GB),SingleBoardComputer,ethernet,7857540014,2400,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+2,raspberry_pi_5_16gb,Raspberry Pi 5 (16 GB),Raspberry Pi 5 (16 GB),SingleBoardComputer,ethernet,16593333118,2400,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+2,raspberry_pi_compute_module_4_8gb,"Raspberry Pi Compute Module 4 (8 GB, wireless, Lite: CM4108000)","Raspberry Pi Compute Module 4 (8 GB, wireless, Lite: CM4108000)",SingleBoardComputer,wifi,8352954573,1500,SingleBoardComputer,IoTGateway,SingleBoardComputer,IoTGateway
+2,orange_pi_zero_lts_512mb,"Orange Pi Zero LTS (H2+, 512 MB)","Orange Pi Zero LTS (H2+, 512 MB)",SingleBoardComputer,ethernet,508035072,1296,ESP32Device,SingleBoardComputer,SingleBoardComputer,IoTGateway
+2,orange_pi_zero_2_1gb,"Orange Pi Zero 2 (H616, 1 GB)","Orange Pi Zero 2 (H616, 1 GB)",SingleBoardComputer,wifi,1021419005,1500,SingleBoardComputer,IoTGateway,IoTGateway,IoTGateway
+2,orange_pi_zero_3_1gb,"Orange Pi Zero 3 (H618, 1 GB)","Orange Pi Zero 3 (H618, 1 GB)",SingleBoardComputer,ethernet,1063683080,1500,SingleBoardComputer,IoTGateway,IoTGateway,IoTGateway
+2,orange_pi_5_4gb,"Orange Pi 5 (RK3588S, 4 GB)","Orange Pi 5 (RK3588S, 4 GB)",SingleBoardComputer,ethernet,4080632712,2400,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+2,friendlyelec_nanopi_neo_512mb,"FriendlyElec NanoPi NEO (H3, 512 MB)","FriendlyElec NanoPi NEO (H3, 512 MB)",SingleBoardComputer,ethernet,521907129,1200,ESP32Device,IoTGateway,IoTGateway,IoTGateway
+2,banana_pi_bpi_m4_zero_2gb,"Banana Pi BPI-M4 Zero (H618, 2 GB)","Banana Pi BPI-M4 Zero (H618, 2 GB)",SingleBoardComputer,wifi,2121914497,1500,SingleBoardComputer,IoTGateway,IoTGateway,SingleBoardComputer
+2,beagleboard_beaglebone_black_512mb,"BeagleBone Black (AM3358, 512 MB)","BeagleBone Black (AM3358, 512 MB)",SingleBoardComputer,ethernet,533169447,1000,ESP32Device,IoTGateway,IoTGateway,IoTGateway
+2,beagleboard_beaglebone_ai_64_4gb,"BeagleBone AI-64 (TDA4VM, 4 GB)","BeagleBone AI-64 (TDA4VM, 4 GB)",SingleBoardComputer,ethernet,3864067980,2000,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+2,hardkernel_odroid_c4_4gb,"Hardkernel ODROID-C4 (S905X3, 4 GB)","Hardkernel ODROID-C4 (S905X3, 4 GB)",SingleBoardComputer,ethernet,3897599565,2016,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+2,nvidia_jetson_nano_devkit_4gb,NVIDIA Jetson Nano Developer Kit (4 GB),NVIDIA Jetson Nano Developer Kit (4 GB),SingleBoardComputer,ethernet,4127872669,1430,SingleBoardComputer,IoTGateway,SingleBoardComputer,IoTGateway
+2,nvidia_jetson_xavier_nx_8gb,NVIDIA Jetson Xavier NX (8 GB),NVIDIA Jetson Xavier NX (8 GB),SingleBoardComputer,ethernet,8519307979,1900,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+2,nvidia_jetson_orin_nano_4gb,NVIDIA Jetson Orin Nano (4 GB),NVIDIA Jetson Orin Nano (4 GB),SingleBoardComputer,ethernet,4177982785,1510,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+2,nvidia_jetson_orin_nano_8gb,NVIDIA Jetson Orin Nano (8 GB),NVIDIA Jetson Orin Nano (8 GB),SingleBoardComputer,ethernet,8317597783,1510,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+2,nvidia_jetson_orin_nx_16gb,NVIDIA Jetson Orin NX (16 GB),NVIDIA Jetson Orin NX (16 GB),SingleBoardComputer,ethernet,16812937828,2000,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+2,nvidia_jetson_agx_orin_64gb,NVIDIA Jetson AGX Orin (64 GB),NVIDIA Jetson AGX Orin (64 GB),SingleBoardComputer,ethernet,65133426276,2200,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+2,seeed_reterminal_4gb,"Seeed reTerminal (CM4, 4 GB)","Seeed reTerminal (CM4, 4 GB)",IoTGateway,ethernet,4045253978,1500,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+2,seeed_reterminal_dm,Seeed reTerminal DM (CM4),Seeed reTerminal DM (CM4),IoTGateway,ethernet,8382739177,1500,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,IoTGateway
+2,seeed_sensecap_m2_multi_platform,Seeed SenseCAP M2 Multi-Platform LoRaWAN Gateway (MT7628),Seeed SenseCAP M2 Multi-Platform LoRaWAN Gateway (MT7628),IoTGateway,ethernet,124981596,580,IoTGateway,IoTGateway,IoTGateway,IoTGateway
+2,kunbus_revpi_connect_4_8gb,Kunbus RevPi Connect 4 (8 GB),Kunbus RevPi Connect 4 (8 GB),IoTGateway,ethernet,7790274049,1500,SingleBoardComputer,IoTGateway,IoTGateway,IoTGateway
+2,kunbus_revpi_connect_s_1gb,"Kunbus RevPi Connect S (CM4S, 1 GB)","Kunbus RevPi Connect S (CM4S, 1 GB)",IoTGateway,ethernet,1007960613,1500,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+2,kunbus_revpi_core_3_plus_1gb,"Kunbus RevPi Core 3+ (CM3+, 1 GB)","Kunbus RevPi Core 3+ (CM3+, 1 GB)",IoTGateway,ethernet,1008771865,1200,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+2,moxa_uc_2101_lx,Moxa UC-2101-LX,Moxa UC-2101-LX,IoTGateway,ethernet,244619426,600,ESP32Device,IoTGateway,IoTGateway,IoTGateway
+2,moxa_uc_8112_lx,Moxa UC-8112-LX,Moxa UC-8112-LX,IoTGateway,ethernet,498853182,1000,ESP32Device,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+2,moxa_uc_8220,Moxa UC-8200 series (UC-8220),Moxa UC-8200 series (UC-8220),IoTGateway,ethernet,1955351152,1000,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer,IoTGateway
+2,teltonika_rut955,Teltonika RUT955,Teltonika RUT955,IoTGateway,cellular,122694342,550,ESP32Device,IoTGateway,IoTGateway,IoTGateway
+2,teltonika_rutx11,Teltonika RUTX11,Teltonika RUTX11,IoTGateway,wifi,258274786,717,ESP32Device,IoTGateway,IoTGateway,IoTGateway
+2,teltonika_rut241,Teltonika RUT241,Teltonika RUT241,IoTGateway,cellular,121569022,580,ESP32Device,IoTGateway,IoTGateway,IoTGateway
+2,dragino_lps8,Dragino LPS8 (AR9331),Dragino LPS8 (AR9331),IoTGateway,ethernet,65882016,400,ESP32Device,IoTGateway,IoTGateway,IoTGateway
+2,dragino_lps8v2,Dragino LPS8v2 (Cortex-A7),Dragino LPS8v2 (Cortex-A7),IoTGateway,wifi,530219723,1200,ESP32Device,IoTGateway,IoTGateway,SingleBoardComputer
+2,milesight_ug65,Milesight UG65,Milesight UG65,IoTGateway,lora,528028928,1500,ESP32Device,IoTGateway,IoTGateway,IoTGateway
+2,advantech_ecu_1251_v2,Advantech ECU-1251 V2 (Cortex-A9),Advantech ECU-1251 V2 (Cortex-A9),IoTGateway,ethernet,2106711901,600,SingleBoardComputer,IoTGateway,IoTGateway,IoTGateway
+2,waveshare_esp32_c3_zero,Waveshare ESP32-C3-Zero (ESP32-C3FH4),Waveshare ESP32-C3-Zero (ESP32-C3FH4),ESP32Device,wifi,295580,160,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,espressif_esp32_wroom_32,"ESP32-WROOM-32 (módulo clásico, NRND)","ESP32-WROOM-32 (módulo clásico, NRND)",ESP32Device,wifi,331488,240,ESP32Device,ESP32Device,ESP32Device,ESP32Device
+2,ai_thinker_esp_12f,"Ai-Thinker ESP-12F (ESP8266EX, 4 MB)","Ai-Thinker ESP-12F (ESP8266EX, 4 MB)",Microcontroller,wifi,102780,160,Microcontroller,ESP32Device,ESP32Device,ESP32Device
+2,orange_pi_one_512mb,"Orange Pi One (H3, 512 MB)","Orange Pi One (H3, 512 MB)",SingleBoardComputer,ethernet,502511785,1200,ESP32Device,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+2,orange_pi_zero_lts_256mb,"Orange Pi Zero LTS (H2+, 256 MB)","Orange Pi Zero LTS (H2+, 256 MB)",SingleBoardComputer,ethernet,249275725,1200,ESP32Device,IoTGateway,IoTGateway,IoTGateway
+2,friendlyelec_nanopi_neo_256mb,"FriendlyElec NanoPi NEO (H3, 256 MB)","FriendlyElec NanoPi NEO (H3, 256 MB)",SingleBoardComputer,ethernet,262390227,1200,ESP32Device,IoTGateway,IoTGateway,SingleBoardComputer
+2,friendlyelec_nanopi_neo2_512mb,"FriendlyElec NanoPi NEO2 (H5, 512 MB)","FriendlyElec NanoPi NEO2 (H5, 512 MB)",SingleBoardComputer,ethernet,515850687,1008,ESP32Device,IoTGateway,IoTGateway,IoTGateway
+2,banana_pi_bpi_m2_zero_512mb,"Banana Pi BPI-M2 Zero (H3/H2+, 512 MB)","Banana Pi BPI-M2 Zero (H3/H2+, 512 MB)",SingleBoardComputer,wifi,523975229,1000,ESP32Device,SingleBoardComputer,SingleBoardComputer,SingleBoardComputer
+2,dragino_lsn50v2_s31,Dragino LSN50v2-S31 (STM32L072CZT6),Dragino LSN50v2-S31 (STM32L072CZT6),Sensor,lora,20380,32,Microcontroller,Sensor,Sensor,Sensor
+2,dragino_lgt_92,Dragino LGT-92 LoRaWAN GPS Tracker (STM32L072),Dragino LGT-92 LoRaWAN GPS Tracker (STM32L072),Sensor,lora,15348,32,Microcontroller,Sensor,Sensor,Sensor
+2,dragino_lt_22222_l,Dragino LT-22222-L LoRa I/O Controller (STM32L072),Dragino LT-22222-L LoRa I/O Controller (STM32L072),Sensor,lora,13005,32,Microcontroller,Sensor,Sensor,Sensor
+2,seeed_sensecap_s2100,Seeed SenseCAP S2100 LoRaWAN Data Logger (Wio-E5 / STM32WLE5JC),Seeed SenseCAP S2100 LoRaWAN Data Logger (Wio-E5 / STM32WLE5JC),Sensor,lora,39798,48,Microcontroller,Sensor,Sensor,Sensor
+2,seeed_sensecap_s2107,Seeed SenseCAP S2107 LoRaWAN Temperature Sensor PT1000 (Wio-E5 / STM32WLE5JC),Seeed SenseCAP S2107 LoRaWAN Temperature Sensor PT1000 (Wio-E5 / STM32WLE5JC),Sensor,lora,50922,48,Sensor,Sensor,Sensor,Sensor
+2,seeed_sensecap_t1000_e,Seeed SenseCAP Card Tracker T1000-E (nRF52840 + LR1110),Seeed SenseCAP Card Tracker T1000-E (nRF52840 + LR1110),Sensor,lora,215542,64,Microcontroller,Sensor,Sensor,Sensor

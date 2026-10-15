@@ -1,0 +1,5 @@
+method,acc_mean,acc_min,acc_max,macro_recall,recall_ESP32Device,recall_IoTGateway,recall_Microcontroller,recall_Sensor,recall_SingleBoardComputer
+rules,0.6579,0.6579,0.6579,0.5222,1.0,0.062,0.688,0.083,0.778
+random_forest,0.7544,0.7281,0.7895,0.7332,0.951,0.5,0.604,0.917,0.694
+decision_tree,0.7778,0.7719,0.7895,0.773,0.951,0.521,0.875,0.861,0.657
+hybrid,0.7982,0.7895,0.8158,0.7432,1.0,0.5,0.438,0.917,0.861
