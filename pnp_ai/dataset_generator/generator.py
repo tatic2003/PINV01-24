@@ -227,6 +227,14 @@ class SyntheticDatasetGenerator:
         if seed is not None:
             random.seed(seed)
 
+        # Separate stream for the GNSS receiver fields (fix quality, position,
+        # satellites, HDOP). Drawing them from the module RNG would shift every
+        # draw that follows, so all earlier datasets for a given seed - and the
+        # results computed from them - would change. With their own stream, the
+        # rest of a dataset is identical to the one generated before these
+        # fields existed.
+        self._gnss_rng = random.Random(seed)
+
         self.profiles = DEVICE_PROFILES
         self.contexts = ITS_CONTEXTS
         self.locations = DEPLOYMENT_LOCATIONS
@@ -303,6 +311,8 @@ class SyntheticDatasetGenerator:
 
         if profile.capabilities:
             device['capabilities'] = list(profile.capabilities)
+            if set(profile.capabilities) & {'gnss', 'gps'}:
+                device.update(self._generate_gnss_fields())
 
         # Calculate free memory (60-95% of total typically free at registration)
         device['memory_free'] = int(device['memory_total'] * random.uniform(0.6, 0.95))
@@ -312,6 +322,31 @@ class SyntheticDatasetGenerator:
         device['last_seen'] = (reg_time + timedelta(seconds=random.randint(0, 60))).isoformat()
 
         return device
+
+    def _generate_gnss_fields(self) -> Dict[str, Any]:
+        """
+        Receiver state a GNSS device announces, as devices/gnss_agent.py does.
+
+        The SHACL shape iot:GNSSReceiverShape requires fix_quality and, when
+        there is a fix (fix_quality >= 1), a latitude and a longitude. Without
+        these fields every synthetic receiver typed as GNSSReceiver would fail
+        validation because of the generator, not because of the announcement.
+        Positions are a public reference point (centre of Asuncion), jittered,
+        like the agent's default privacy mode.
+        """
+        rng = self._gnss_rng
+        fix = rng.choices([0, 1, 2], weights=[0.3, 0.6, 0.1])[0]
+        fields: Dict[str, Any] = {'fix_quality': fix, 'update_rate_hz': 1}
+        if fix >= 1:
+            fields.update(
+                latitude=round(-25.2637 + rng.uniform(-1e-3, 1e-3), 6),
+                longitude=round(-57.5759 + rng.uniform(-1e-3, 1e-3), 6),
+                satellites_used=rng.randint(4, 12),
+                hdop=round(rng.uniform(0.7, 2.5), 2),
+            )
+        else:
+            fields['satellites_used'] = rng.randint(0, 3)
+        return fields
 
     def _generate_timestamp(self, days_back: int = 30) -> str:
         """Generate a random timestamp within the last N days."""
