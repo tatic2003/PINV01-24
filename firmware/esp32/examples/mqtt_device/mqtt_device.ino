@@ -13,11 +13,30 @@
  * 3. Check MQTT_BROKER below (IP of the Raspberry Pi 5 running Mosquitto)
  * 4. Upload to ESP32
  * 5. Monitor serial output (115200 baud)
+ *
+ * Onboarding-latency instrumentation
+ * ----------------------------------
+ * After the WiFi link comes up, the board synchronizes its clock by SNTP
+ * against NTP_SERVER (the Raspberry Pi 5, whose clock is disciplined by the
+ * GPS PPS signal). Every registration then carries a "timing" block with the
+ * millis() value of each boot stage (setup, serial wait, link up, clock
+ * synchronized, MQTT connected, publish) and the wall-clock time of the
+ * publication. The MQTT->HTTP bridge removes the block before forwarding the
+ * announcement, so the server sees the usual registration.
+ *
+ * The "time_probe" command answers with the board's clock at reception and
+ * at reply, so experiments/clock_probe.py can estimate the offset of this
+ * board's clock with respect to the Pi (NTP-style four timestamps).
+ *
+ * The SNTP step exists only for the measurement; it is reported as a separate
+ * stage so it can be excluded from the onboarding time.
  */
 
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
+#include <time.h>
+#include <sys/time.h>
 
 // ========== Configuration ==========
 
@@ -28,6 +47,12 @@
 // MQTT Broker (Raspberry Pi)
 const char* MQTT_BROKER = "192.168.0.21";  // Raspberry Pi 5 (Mosquitto)
 const uint16_t MQTT_PORT = 1883;
+
+// NTP server for the onboarding-latency measurement: the Pi 5 itself
+// (chrony must allow the LAN: "allow 192.168.0.0/24" in chrony.conf).
+const char* NTP_SERVER = "192.168.0.21";
+const unsigned long NTP_TIMEOUT_MS = 15000;     // give up after this long
+const time_t VALID_EPOCH = 1700000000;          // any time before 2023 = not synced
 
 // MQTT keepalive, in seconds. The broker declares this client dead (and
 // publishes its Last Will) after roughly 1.5 x this value, so it sets how
@@ -74,18 +99,59 @@ bool registered = false;
 unsigned long lastHeartbeat = 0;
 const unsigned long HEARTBEAT_INTERVAL = 30000;  // 30 seconds
 
+// Onboarding timing (millis() at each boot stage; 0 = not reached yet)
+unsigned long tSetup = 0;
+unsigned long tSerial = 0;
+unsigned long tLink = 0;
+unsigned long tSync = 0;
+unsigned long tMqtt = 0;
+bool timeSynced = false;
+uint32_t registrationSeq = 0;     // 1 = first registration since boot
+int64_t lastRecvEpochMs = 0;      // clock when the last MQTT message arrived
+
+// ========== Clock helpers ==========
+
+// Wall-clock time in milliseconds since the epoch (0 before SNTP sync).
+int64_t epochMs() {
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return (int64_t)tv.tv_sec * 1000LL + (int64_t)(tv.tv_usec / 1000);
+}
+
+// 64-bit values travel as strings: the JSON library may not keep all the
+// digits of a 13-digit millisecond timestamp as a number.
+String epochString(int64_t value) {
+    char buf[24];
+    snprintf(buf, sizeof(buf), "%lld", (long long)value);
+    return String(buf);
+}
+
+void syncClock() {
+    Serial.print("Synchronizing clock with ");
+    Serial.print(NTP_SERVER);
+    configTime(0, 0, NTP_SERVER);   // UTC, no daylight saving
+    unsigned long start = millis();
+    while (time(nullptr) < VALID_EPOCH && millis() - start < NTP_TIMEOUT_MS) {
+        delay(10);
+    }
+    timeSynced = time(nullptr) >= VALID_EPOCH;
+    tSync = millis();
+    Serial.println(timeSynced ? " ok" : " FAILED (timing will be marked unsynced)");
+}
+
 // ========== Setup ==========
 
 void setup() {
+    tSetup = millis();
     Serial.begin(115200);
     delay(1000);
+    tSerial = millis();
 
     Serial.println("\n========================================");
     Serial.println(" IoT-ITS MQTT Device Example");
     Serial.println(" Project: PINV01-24 - FIUNA");
     Serial.println("========================================\n");
 
-    
     // Unique, stable device id from the factory MAC (eFuse)
     uint64_t mac = ESP.getEfuseMac();
     char suffix[7];
@@ -103,6 +169,11 @@ void setup() {
 
     // Connect to WiFi
     connectWiFi();
+
+    // Synchronize the clock (measurement only)
+    if (WiFi.status() == WL_CONNECTED) {
+        syncClock();
+    }
 
     // Setup MQTT
     mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
@@ -203,6 +274,7 @@ void connectMQTT() {
         }
 
         if (connected) {
+            tMqtt = millis();
             Serial.println(" connected!");
             Serial.print("Last Will registered on: ");
             Serial.println(topicState);
@@ -230,6 +302,9 @@ void connectMQTT() {
 }
 
 void mqttCallback(char* topic, byte* payload, unsigned int length) {
+    // Clock at reception, before any parsing (used by time_probe)
+    lastRecvEpochMs = epochMs();
+
     // Parse incoming message
     StaticJsonDocument<512> doc;
     DeserializationError error = deserializeJson(doc, payload, length);
@@ -253,14 +328,31 @@ void handleCommand(JsonDocument& doc) {
     const char* command = doc["command"];
     JsonObject params = doc["params"];
 
+    if (!command) {
+        return;
+    }
+
     Serial.print("Received command: ");
     Serial.println(command);
 
-    StaticJsonDocument<256> response;
+    StaticJsonDocument<384> response;
     response["command"] = command;
     response["device_id"] = DEVICE_ID;
 
-    if (strcmp(command, "ping") == 0) {
+    if (strcmp(command, "time_probe") == 0) {
+        // Four-timestamp clock probe: t1 (sender's clock at send) is echoed,
+        // t2 = this board's clock at reception, t3 = this board's clock at
+        // reply. The sender adds t4 at reception of the reply.
+        const char* t1 = params["t1"] | "";
+        const char* probeId = params["probe_id"] | "";
+        response["t1"] = String(t1);
+        response["probe_id"] = String(probeId);
+        response["t2"] = epochString(lastRecvEpochMs);
+        response["synced"] = timeSynced;
+        response["status"] = "ok";
+        response["t3"] = epochString(epochMs());   // last, just before sending
+    }
+    else if (strcmp(command, "ping") == 0) {
         response["status"] = "pong";
     }
     else if (strcmp(command, "restart") == 0) {
@@ -304,7 +396,7 @@ void sendResponse(JsonDocument& doc) {
 void registerDevice() {
     Serial.println("Registering device via MQTT...");
 
-    StaticJsonDocument<512> doc;
+    StaticJsonDocument<896> doc;
     doc["id"] = DEVICE_ID;
     doc["hardware"] = HARDWARE_TYPE;
     doc["ip"] = WiFi.localIP().toString();
@@ -322,10 +414,23 @@ void registerDevice() {
     doc["memory_free"] = ESP.getFreeHeap();
     doc["cpu_freq_mhz"] = ESP.getCpuFreqMHz();
 
-    char buffer[512];
-    serializeJson(doc, buffer);
+    // Measurement block (removed by the bridge before it reaches the server)
+    registrationSeq++;
+    JsonObject timing = doc.createNestedObject("timing");
+    timing["seq"] = registrationSeq;
+    timing["synced"] = timeSynced;
+    timing["setup_ms"] = tSetup;
+    timing["serial_ms"] = tSerial;
+    timing["link_ms"] = tLink;
+    timing["sync_ms"] = tSync;
+    timing["mqtt_ms"] = tMqtt;
+    timing["publish_ms"] = millis();
+    timing["epoch_publish_ms"] = epochString(epochMs());   // last field set before publishing
 
-    if (mqttClient.publish(topicRegister.c_str(), buffer)) {
+    char buffer[896];
+    size_t n = serializeJson(doc, buffer, sizeof(buffer));
+
+    if (n > 0 && mqttClient.publish(topicRegister.c_str(), buffer)) {
         Serial.println("Registration message sent");
         registered = true;
         lastHeartbeat = millis();
@@ -397,14 +502,21 @@ void connectWiFi() {
     WiFi.mode(WIFI_STA);
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
+    // Polled every 50 ms (15 s in total, as before) so that the link-up time
+    // recorded for the onboarding measurement has a 50 ms resolution.
     int attempts = 0;
-    while (WiFi.status() != WL_CONNECTED && attempts < 30) {
-        delay(500);
-        Serial.print(".");
+    while (WiFi.status() != WL_CONNECTED && attempts < 300) {
+        delay(50);
+        if (attempts % 10 == 0) {
+            Serial.print(".");
+        }
         attempts++;
     }
 
     if (WiFi.status() == WL_CONNECTED) {
+        if (tLink == 0) {
+            tLink = millis();   // first link since boot
+        }
         Serial.println("\nWiFi connected!");
         Serial.print("IP Address: ");
         Serial.println(WiFi.localIP());

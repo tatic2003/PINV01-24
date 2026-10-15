@@ -18,6 +18,13 @@ What the board announces (same rule as gnss_agent.host_resources):
   hardware      = /proc/device-tree/model (override with --hardware)
 No "capabilities" field: a plain SBC does not declare GNSS.
 
+For the onboarding-latency experiment every announcement also carries a
+"timing" block (agent start, MQTT connection and publication, as epoch ms of
+the system clock, plus the seconds since the OS booted). The MQTT->HTTP bridge
+removes it before forwarding, so the server sees the usual announcement. The
+system clock must be synchronized (chrony against the Pi 5) for these marks to
+be comparable with the bridge's; --no-timing leaves the block out.
+
 The file is self-contained (only needs paho-mqtt), so it can be copied as is
 to a board that does not have the repository, such as the Orange Pi.
 
@@ -113,7 +120,21 @@ def detect_link(iface):
     return ""
 
 
+def epoch_ms():
+    return round(time.time() * 1000.0, 3)
+
+
+def uptime_s():
+    """Seconds since the OS booted, or None where /proc/uptime does not exist."""
+    try:
+        with open("/proc/uptime") as f:
+            return round(float(f.read().split()[0]), 2)
+    except (OSError, ValueError, IndexError):
+        return None
+
+
 def main():
+    agent_start = epoch_ms()
     default_id = "sbc-" + socket.gethostname().split(".")[0].lower()
     ap = argparse.ArgumentParser(description="Linux board agent for IoT-ITS")
     ap.add_argument("--device-id", default=default_id, help=f"default: {default_id}")
@@ -127,6 +148,8 @@ def main():
     ap.add_argument("--keepalive", type=int, default=15)
     ap.add_argument("--heartbeat", type=float, default=30.0)
     ap.add_argument("--once", action="store_true", help="announce once, then disconnect and exit")
+    ap.add_argument("--no-timing", action="store_true",
+                    help="do not add the 'timing' block used by the onboarding-latency experiment")
     args = ap.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
@@ -143,13 +166,22 @@ def main():
     client = build_client(f"linux-{args.device_id}")
     client.will_set(t_state, json.dumps({"device_id": args.device_id, "state": "inactive", "reason": "lwt"}),
                     qos=1, retain=True)
-    connected = {"ok": False}
+    connected = {"ok": False, "seq": 0, "mqtt_epoch_ms": None}
 
     def announce():
         msg = {"id": args.device_id, "hardware": hardware, "ip": local_ip(),
                "location": args.location, "link_type": link or None, "protocol": "mqtt",
                "connection_type": link or "mqtt", **host_resources()}
         msg = {k: v for k, v in msg.items() if v is not None}
+        if not args.no_timing:
+            connected["seq"] += 1
+            msg["timing"] = {
+                "seq": connected["seq"],
+                "agent_start_epoch_ms": agent_start,
+                "mqtt_epoch_ms": connected["mqtt_epoch_ms"],
+                "uptime_s": uptime_s(),
+                "epoch_publish_ms": epoch_ms(),   # last: as close to the publish as possible
+            }
         info = client.publish(t_register, json.dumps(msg), qos=1)
         client.publish(t_state, json.dumps({"device_id": args.device_id, "state": "active"}), qos=1, retain=True)
         log.info("announced %s: hardware=%r link=%s (%s) mem=%s free=%s cpu=%s MHz",
@@ -161,6 +193,7 @@ def main():
         # rc is an int (paho 1.x) or a ReasonCode (paho 2.x); both compare with 0.
         if rc == 0:
             connected["ok"] = True
+            connected["mqtt_epoch_ms"] = epoch_ms()
             announce()   # like the ESP32 firmware: register again after every reconnection
         else:
             log.error("broker refused the connection (rc=%s)", rc)

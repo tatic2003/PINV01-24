@@ -28,9 +28,19 @@
  *   2. Upload (Upload Speed 115200 is the safest through jumper wires).
  *   3. Open the Serial Monitor at 115200 baud.
  *
- * NOTE: GPIO0 doubles as the board's LED pin and as the download-mode pin.
- * After uploading, remove the wire that ties G0 to GND and power-cycle the
- * board, otherwise it boots back into download mode instead of running.
+ *
+ * Onboarding-latency instrumentation
+ * ----------------------------------
+ * After DHCP, the board sets its clock from NTP_SERVER (the Raspberry Pi 5,
+ * disciplined by the GPS PPS signal). The W5500 has its own TCP/IP stack,
+ * outside the ESP32's network stack, so the ESP-IDF SNTP client cannot reach
+ * it: a minimal NTP request is sent over EthernetUDP instead, and the clock is
+ * set to the server's transmit time plus half the round trip. Every
+ * registration then carries a "timing" block (millis() of each boot stage and
+ * the wall-clock time of the publication), which the MQTT->HTTP bridge
+ * removes before forwarding. The "time_probe" command answers with the
+ * board's clock at reception and at reply (experiments/clock_probe.py).
+ * The NTP step exists only for the measurement and is reported separately.
  */
 
 #include <SPI.h>
@@ -38,6 +48,8 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include "esp_system.h"
+#include <time.h>
+#include <sys/time.h>
 // esp_read_mac / ESP_MAC_ETH live in esp_mac.h on ESP32 Arduino core 3.x
 // (ESP-IDF 5); on core 2.x they come with esp_system.h and this file is absent.
 #if __has_include("esp_mac.h")
@@ -49,6 +61,13 @@
 // MQTT Broker (the machine running Mosquitto, on the same LAN)
 const char* MQTT_BROKER = "192.168.0.21";  // <-- verify: IP of your broker
 const uint16_t MQTT_PORT = 1883;
+
+// NTP server for the onboarding-latency measurement: the Pi 5 itself
+// (chrony must allow the LAN: "allow 192.168.0.0/24").
+const char* NTP_SERVER = "192.168.0.21";
+const uint16_t NTP_LOCAL_PORT = 8123;
+const int NTP_ATTEMPTS = 5;
+const unsigned long NTP_REPLY_TIMEOUT_MS = 1000;
 
 // MQTT keepalive, in seconds. The broker declares this client dead (and
 // publishes its Last Will) after roughly 1.5 x this value, so it sets how
@@ -80,6 +99,7 @@ const int ETH_SCK_PIN  = 23;
 
 EthernetClient ethClient;
 PubSubClient mqttClient(ethClient);
+EthernetUDP ntpUdp;
 
 uint8_t macAddress[6];
 
@@ -98,6 +118,16 @@ const unsigned long HEARTBEAT_INTERVAL = 30000;  // 30 seconds
 unsigned long lastConnectAttempt = 0;
 const unsigned long RECONNECT_INTERVAL = 5000;   // 5 seconds
 
+// Onboarding timing (millis() at each boot stage; 0 = not reached yet)
+unsigned long tSetup = 0;
+unsigned long tSerial = 0;
+unsigned long tLink = 0;      // link up and address assigned by DHCP
+unsigned long tSync = 0;
+unsigned long tMqtt = 0;
+bool timeSynced = false;
+uint32_t registrationSeq = 0;     // 1 = first registration since boot
+int64_t lastRecvEpochMs = 0;      // clock when the last MQTT message arrived
+
 // ========== Helpers ==========
 
 bool linkIsUp() {
@@ -110,11 +140,93 @@ String ipToString(const IPAddress& ip) {
     return String(buf);
 }
 
+// ========== Clock ==========
+
+// Wall-clock time in milliseconds since the epoch (0 before the NTP step).
+int64_t epochMs() {
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return (int64_t)tv.tv_sec * 1000LL + (int64_t)(tv.tv_usec / 1000);
+}
+
+// 64-bit values travel as strings: the JSON library may not keep all the
+// digits of a 13-digit millisecond timestamp as a number.
+String epochString(int64_t value) {
+    char buf[24];
+    snprintf(buf, sizeof(buf), "%lld", (long long)value);
+    return String(buf);
+}
+
+static uint32_t be32(const uint8_t* b) {
+    return ((uint32_t)b[0] << 24) | ((uint32_t)b[1] << 16) | ((uint32_t)b[2] << 8) | (uint32_t)b[3];
+}
+
+// Minimal NTP client over the W5500: one request, the clock is set to the
+// server's transmit timestamp plus half the round trip.
+bool ntpSync() {
+    IPAddress server;
+    if (!server.fromString(NTP_SERVER)) {
+        return false;
+    }
+    if (!ntpUdp.begin(NTP_LOCAL_PORT)) {
+        return false;
+    }
+    bool ok = false;
+    for (int attempt = 0; attempt < NTP_ATTEMPTS && !ok; attempt++) {
+        while (ntpUdp.parsePacket() > 0) {
+            ntpUdp.flush();               // drop stale replies
+        }
+        uint8_t request[48] = {0};
+        request[0] = 0x23;                // LI = 0, version 4, mode 3 (client)
+        uint32_t sentUs = micros();
+        ntpUdp.beginPacket(server, 123);
+        ntpUdp.write(request, sizeof(request));
+        ntpUdp.endPacket();
+
+        unsigned long start = millis();
+        while (millis() - start < NTP_REPLY_TIMEOUT_MS) {
+            if (ntpUdp.parsePacket() >= 48) {
+                uint32_t recvUs = micros();
+                uint8_t reply[48];
+                ntpUdp.read(reply, sizeof(reply));
+                uint8_t mode = reply[0] & 0x07;
+                uint8_t stratum = reply[1];
+                if (mode == 4 && stratum > 0 && stratum < 16) {
+                    uint32_t secs = be32(&reply[40]);       // transmit timestamp
+                    uint32_t frac = be32(&reply[44]);
+                    int64_t us = (int64_t)(secs - 2208988800UL) * 1000000LL
+                               + (int64_t)(((uint64_t)frac * 1000000ULL) >> 32)
+                               + (int64_t)((recvUs - sentUs) / 2);
+                    struct timeval tv;
+                    tv.tv_sec = (time_t)(us / 1000000LL);
+                    tv.tv_usec = (suseconds_t)(us % 1000000LL);
+                    settimeofday(&tv, NULL);
+                    ok = true;
+                }
+                break;
+            }
+            delay(1);
+        }
+    }
+    ntpUdp.stop();
+    return ok;
+}
+
+void syncClock() {
+    Serial.print("Synchronizing clock with ");
+    Serial.print(NTP_SERVER);
+    timeSynced = ntpSync();
+    tSync = millis();
+    Serial.println(timeSynced ? " ok" : " FAILED (timing will be marked unsynced)");
+}
+
 // ========== Setup ==========
 
 void setup() {
+    tSetup = millis();
     Serial.begin(115200);
     delay(1000);
+    tSerial = millis();
 
     Serial.println("\n========================================");
     Serial.println(" IoT-ITS MQTT Device - PoE CAM-W (Ethernet)");
@@ -123,6 +235,11 @@ void setup() {
 
     buildTopics();
     connectEthernet();
+
+    // Synchronize the clock (measurement only)
+    if (Ethernet.localIP() != IPAddress(0, 0, 0, 0)) {
+        syncClock();
+    }
 
     mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
     mqttClient.setCallback(mqttCallback);
@@ -209,9 +326,13 @@ void connectEthernet() {
     // Wait for a cable. Without a link there is nothing to configure.
     Serial.print("Waiting for Ethernet link");
     unsigned long start = millis();
+    // Polled every 50 ms (was 500 ms) so the link-up time has a 50 ms resolution.
+    int dots = 0;
     while (!linkIsUp() && millis() - start < 30000) {
-        Serial.print(".");
-        delay(500);
+        if (dots++ % 10 == 0) {
+            Serial.print(".");
+        }
+        delay(50);
     }
     Serial.println();
 
@@ -231,6 +352,9 @@ void connectEthernet() {
     if (Ethernet.localIP() == IPAddress(0, 0, 0, 0)) {
         Serial.println("DHCP failed. Is the cable connected to the router?");
     } else {
+        if (tLink == 0) {
+            tLink = millis();   // first address since boot
+        }
         Serial.print("IP address: ");
         Serial.println(ipToString(Ethernet.localIP()));
     }
@@ -279,6 +403,7 @@ void connectMQTT() {
     }
 
     if (connected) {
+        tMqtt = millis();
         Serial.println(" connected!");
         Serial.print("Last Will registered on: ");
         Serial.println(topicState);
@@ -298,6 +423,9 @@ void connectMQTT() {
 }
 
 void mqttCallback(char* topic, byte* payload, unsigned int length) {
+    // Clock at reception, before any parsing (used by time_probe)
+    lastRecvEpochMs = epochMs();
+
     StaticJsonDocument<512> doc;
     DeserializationError error = deserializeJson(doc, payload, length);
 
@@ -327,11 +455,23 @@ void handleCommand(JsonDocument& doc) {
     Serial.print("Received command: ");
     Serial.println(command);
 
-    StaticJsonDocument<256> response;
+    StaticJsonDocument<384> response;
     response["command"] = command;
     response["device_id"] = DEVICE_ID;
 
-    if (strcmp(command, "ping") == 0) {
+    if (strcmp(command, "time_probe") == 0) {
+        // Four-timestamp clock probe: t1 (sender's clock at send) is echoed,
+        // t2 = this board's clock at reception, t3 = at reply.
+        const char* t1 = params["t1"] | "";
+        const char* probeId = params["probe_id"] | "";
+        response["t1"] = String(t1);
+        response["probe_id"] = String(probeId);
+        response["t2"] = epochString(lastRecvEpochMs);
+        response["synced"] = timeSynced;
+        response["status"] = "ok";
+        response["t3"] = epochString(epochMs());   // last, just before sending
+    }
+    else if (strcmp(command, "ping") == 0) {
         response["status"] = "pong";
     }
     else if (strcmp(command, "restart") == 0) {
@@ -375,7 +515,7 @@ void sendResponse(JsonDocument& doc) {
 void registerDevice() {
     Serial.println("Registering device via MQTT...");
 
-    StaticJsonDocument<512> doc;
+    StaticJsonDocument<896> doc;
     doc["id"] = DEVICE_ID;
     doc["hardware"] = HARDWARE_TYPE;
     doc["ip"] = ipToString(Ethernet.localIP());
@@ -391,10 +531,23 @@ void registerDevice() {
     doc["memory_free"] = ESP.getFreeHeap();
     doc["cpu_freq_mhz"] = ESP.getCpuFreqMHz();
 
-    char buffer[512];
-    serializeJson(doc, buffer);
+    // Measurement block (removed by the bridge before it reaches the server)
+    registrationSeq++;
+    JsonObject timing = doc.createNestedObject("timing");
+    timing["seq"] = registrationSeq;
+    timing["synced"] = timeSynced;
+    timing["setup_ms"] = tSetup;
+    timing["serial_ms"] = tSerial;
+    timing["link_ms"] = tLink;
+    timing["sync_ms"] = tSync;
+    timing["mqtt_ms"] = tMqtt;
+    timing["publish_ms"] = millis();
+    timing["epoch_publish_ms"] = epochString(epochMs());   // last field set before publishing
 
-    if (mqttClient.publish(topicRegister.c_str(), buffer)) {
+    char buffer[896];
+    size_t n = serializeJson(doc, buffer, sizeof(buffer));
+
+    if (n > 0 && mqttClient.publish(topicRegister.c_str(), buffer)) {
         Serial.println("Registration message sent");
         registered = true;
         lastHeartbeat = millis();

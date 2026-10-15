@@ -7,6 +7,7 @@ Project: PINV01-24 - FIUNA
 
 import logging
 import sys
+import time
 from pathlib import Path
 from datetime import datetime
 from flask import Flask, jsonify, request, g
@@ -188,6 +189,12 @@ def _register_routes(app: Flask):
         Register a new device.
         Compatible with ESP32 JSON announcements.
         """
+        # Wall-clock arrival (epoch ms) and a monotonic start for the stage
+        # timings returned to the caller. They let the bridge separate the
+        # HTTP transport from the server's own work in the onboarding latency.
+        recv_epoch_ms = time.time() * 1000.0
+        t_start = time.perf_counter()
+
         data = request.get_json()
         if not data:
             return jsonify({'error': 'No JSON data provided'}), 400
@@ -195,9 +202,11 @@ def _register_routes(app: Flask):
         app.logger.info(f"Device registration: {data.get('id', data.get('device_id', 'unknown'))}")
 
         # Classify the device
+        t0 = time.perf_counter()
         classification = app.classifier.classify(data)
         # Safety net for models that predate the GNSSReceiver class.
         classification = apply_capability_rules(data, classification, _known_classes(app.classifier))
+        t_classify_ms = (time.perf_counter() - t0) * 1000.0
 
         # The classification is what types the device in the ontology, but only
         # when the classifier is confident enough. Below the threshold we do not
@@ -216,16 +225,19 @@ def _register_routes(app: Flask):
                 f"training distribution."
             )
 
-        # Register with semantic layer
+        # Register with semantic layer (lightweight validation + RDF graph)
+        t0 = time.perf_counter()
         result = app.semantic_manager.register_device(
             data,
             device_type=None if low_confidence else classification.device_type
         )
+        t_semantic_ms = (time.perf_counter() - t0) * 1000.0
 
         if not result['success']:
             return jsonify(result), 400
 
         # Log to BlockDAG
+        t0 = time.perf_counter()
         if app.dag:
             device_id = data.get('id') or data.get('device_id')
             app.dag.add_event('device_register', {
@@ -234,6 +246,7 @@ def _register_routes(app: Flask):
                 'ip': data.get('ip') or data.get('ip_address', ''),
                 'classification': classification.to_dict()
             })
+        t_dag_ms = (time.perf_counter() - t0) * 1000.0
 
         return jsonify({
             'status': 'registered',
@@ -242,7 +255,16 @@ def _register_routes(app: Flask):
             # True when the classifier was below the configured threshold, so
             # the device was typed generically instead of by its prediction.
             'low_confidence': low_confidence,
-            'confidence_threshold': threshold
+            'confidence_threshold': threshold,
+            # Stage timings of this request, in milliseconds. 'total' runs from
+            # the start of the handler to just before the response is built.
+            'server_recv_epoch_ms': round(recv_epoch_ms, 3),
+            'timing_ms': {
+                'classify': round(t_classify_ms, 3),
+                'semantic': round(t_semantic_ms, 3),
+                'dag': round(t_dag_ms, 3),
+                'total': round((time.perf_counter() - t_start) * 1000.0, 3),
+            }
         })
 
     @app.route('/api/devices', methods=['GET'])
