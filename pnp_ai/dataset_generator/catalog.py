@@ -193,11 +193,14 @@ def load_catalog(path: Optional[str] = None) -> Catalog:
     Read the catalog CSV.
 
     Rows without nominal RAM are skipped (the validator only allows that with
-    confianza=baja). The version is a hash of the file bytes, so every result
-    can say exactly which catalog produced it.
+    confianza=baja). The version is a hash of the file contents, so every
+    result can say exactly which catalog produced it. Line endings are
+    normalized before hashing: git on Windows checks the file out with CRLF
+    and on Linux with LF, and the same catalog must have the same version on
+    both.
     """
     p = Path(path) if path else DEFAULT_CATALOG_PATH
-    raw = p.read_bytes()
+    raw = p.read_bytes().replace(b'\r\n', b'\n')
     version = hashlib.sha256(raw).hexdigest()[:12]
 
     boards = []
