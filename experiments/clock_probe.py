@@ -52,7 +52,7 @@ CSV_COLUMNS = ["session", "device_id", "probe_id", "t1_ms", "t2_ms", "t3_ms", "t
 def build_client(client_id):
     """Create an MQTT client on paho 1.x or 2.x."""
     try:
-        return mqtt.Client(mqtt.CallbackAPIVersion.VERSION1, client_id=client_id)
+        return mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id=client_id)
     except AttributeError:
         return mqtt.Client(client_id=client_id)
 

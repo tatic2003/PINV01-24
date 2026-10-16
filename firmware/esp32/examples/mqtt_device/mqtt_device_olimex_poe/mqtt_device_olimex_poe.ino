@@ -336,6 +336,8 @@ bool connectMQTT() {
     Serial.printf("[MQTT] Failed, rc=%d\n", mqtt.state());
     return false;
   }
+  // Disable Nagle on the connected socket so the announce is sent at once
+  netClient.setNoDelay(true);
   tMqtt = millis();
   Serial.println("[MQTT] Connected");
   mqtt.subscribe(topicCommand.c_str(), 1);

@@ -355,6 +355,7 @@ void connectMQTT() {
         }
 
         if (connected) {
+            wifiClient.setNoDelay(true);   // test: disable Nagle on the connected socket
             tMqtt = millis();
             Serial.println(" connected!");
             Serial.print("Last Will registered on: ");
