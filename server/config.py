@@ -37,6 +37,10 @@ class Config:
     classifier_confidence_threshold: float = 0.6
     auto_train: bool = True
     training_samples: int = 500
+    # 'profiles' = SyntheticDatasetGenerator (hand-written profiles, 5 classes);
+    # 'catalog'  = CatalogDatasetGenerator (real-board catalog, calibrated memory,
+    #              labeling 'clasificador', includes Microcontroller).
+    training_source: str = "profiles"
 
     # BlockDAG
     enable_dag: bool = True
@@ -73,6 +77,8 @@ class Config:
             log_level=os.getenv('ITS_LOG_LEVEL', 'INFO'),
             classifier_type=os.getenv('ITS_CLASSIFIER', 'rule_based'),
             classifier_feature_set=os.getenv('ITS_FEATURE_SET', 'resource+name'),
+            training_source=os.getenv('ITS_TRAINING_SOURCE', 'profiles'),
+            training_samples=int(os.getenv('ITS_TRAINING_SAMPLES', '500')),
             enable_dag=os.getenv('ITS_ENABLE_DAG', 'true').lower() == 'true',
             dag_key_file=os.getenv('ITS_DAG_KEY_FILE') or None,
             dag_trusted_keys_file=os.getenv('ITS_DAG_TRUSTED_KEYS_FILE') or None,
@@ -96,6 +102,7 @@ class Config:
             'classifier_confidence_threshold': self.classifier_confidence_threshold,
             'auto_train': self.auto_train,
             'training_samples': self.training_samples,
+            'training_source': self.training_source,
             'enable_dag': self.enable_dag,
             'dag_sync_interval': self.dag_sync_interval,
             'max_dag_events': self.max_dag_events,

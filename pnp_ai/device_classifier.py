@@ -798,7 +798,8 @@ def train_classifier_from_synthetic_data(
     num_samples: int = 1000,
     model_type: str = 'decision_tree',
     feature_set: str = DEFAULT_FEATURE_SET,
-    seed: int = 42
+    seed: int = 42,
+    generator=None
 ) -> Tuple[DeviceClassifier, Dict[str, Any]]:
     """
     Convenience function to train a classifier using synthetic data.
@@ -812,6 +813,9 @@ def train_classifier_from_synthetic_data(
         model_type: Type of model to train
         feature_set: Which features to train on, see pnp_ai.features
         seed: Seed for the synthetic generator, for reproducibility
+        generator: Generator to sample the training announcements from, for
+            example a CatalogDatasetGenerator. Default: the profile generator
+            (SyntheticDatasetGenerator) seeded with ``seed``.
 
     Returns:
         Tuple of (trained classifier, training metrics)
@@ -824,7 +828,8 @@ def train_classifier_from_synthetic_data(
     # classifier itself. Note this deliberately does NOT use
     # generate_classification_dataset(), which also returns oracle role
     # features that no device announces when it registers.
-    generator = SyntheticDatasetGenerator(seed=seed)
+    if generator is None:
+        generator = SyntheticDatasetGenerator(seed=seed)
     devices = generator.generate_dataset(num_samples)
     devices = generator.generate_anomalies(devices, 0.1)
 
@@ -834,5 +839,7 @@ def train_classifier_from_synthetic_data(
     metrics = classifier.train(features, labels)
     metrics['feature_set'] = feature_set
     metrics['feature_names'] = list(classifier.feature_names)
+    describe = getattr(generator, 'describe', None)
+    metrics['training_source'] = describe().get('source', 'catalog') if describe else 'profiles'
 
     return classifier, metrics

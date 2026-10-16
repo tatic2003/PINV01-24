@@ -89,16 +89,31 @@ def _init_components(app: Flask, config: Config):
         feature_set=config.classifier_feature_set
     )
     if config.auto_train and config.classifier_type != 'rule_based':
-        app.logger.info(f"Training classifier with {config.training_samples} samples...")
+        app.logger.info(
+            f"Training classifier with {config.training_samples} samples "
+            f"(source: {config.training_source})..."
+        )
         try:
             from pnp_ai.device_classifier import train_classifier_from_synthetic_data
+            generator = None
+            if config.training_source == 'catalog':
+                from pnp_ai.dataset_generator.catalog import CatalogDatasetGenerator
+                generator = CatalogDatasetGenerator(seed=42, labeling='clasificador', calibrated=True)
+                app.logger.info(f"Catalog version {generator.catalog.version}, "
+                                f"{len(generator.catalog.boards)} boards")
+            elif config.training_source != 'profiles':
+                raise ValueError(f"unknown training source {config.training_source!r} "
+                                 "(expected 'profiles' or 'catalog')")
             app.classifier, metrics = train_classifier_from_synthetic_data(
                 config.training_samples,
                 config.classifier_type,
-                feature_set=config.classifier_feature_set
+                feature_set=config.classifier_feature_set,
+                generator=generator
             )
             app.logger.info(
                 f"Classifier trained (accuracy: {metrics.get('accuracy', 'N/A')}, "
+                f"source: {metrics.get('training_source')}, "
+                f"classes: {_known_classes(app.classifier)}, "
                 f"feature_set: {metrics.get('feature_set')}, "
                 f"features: {metrics.get('feature_names')})"
             )
@@ -165,7 +180,9 @@ def _register_routes(app: Flask):
             'devices_count': stats.get('total', 0) if isinstance(stats, dict) else 0,
             'classifier': {
                 'type': config.classifier_type,
-                'trained': app.classifier.is_trained
+                'trained': app.classifier.is_trained,
+                'training_source': config.training_source,
+                'classes': [str(c) for c in _known_classes(app.classifier)]
             },
             'timestamp': datetime.utcnow().isoformat()
         }

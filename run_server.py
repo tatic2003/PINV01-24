@@ -79,6 +79,20 @@ Examples:
              '(default: resource+name)'
     )
     parser.add_argument(
+        '--training-source',
+        choices=['profiles', 'catalog'],
+        default='profiles',
+        help='Training data for the ML classifier: "profiles" = hand-written '
+             'synthetic profiles (5 classes); "catalog" = real-board catalog '
+             'with calibrated memory, as in the paper (default: profiles)'
+    )
+    parser.add_argument(
+        '--training-samples',
+        type=int,
+        default=500,
+        help='Training announcements for the ML classifier (default: 500)'
+    )
+    parser.add_argument(
         '--no-dag',
         action='store_true',
         help='Disable BlockDAG event logging'
@@ -128,6 +142,8 @@ def main():
             debug=args.debug,
             classifier_type=args.classifier,
             classifier_feature_set=args.feature_set,
+            training_source=args.training_source,
+            training_samples=args.training_samples,
             enable_dag=not args.no_dag,
             dag_key_file=args.dag_key_file or os.getenv('ITS_DAG_KEY_FILE') or None,
             dag_trusted_keys_file=(
