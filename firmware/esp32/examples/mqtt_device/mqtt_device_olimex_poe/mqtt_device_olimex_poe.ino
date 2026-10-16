@@ -46,7 +46,11 @@ const int NTP_SAMPLES = 4;                  // requests; the shortest round trip
 const unsigned long NTP_REPLY_TIMEOUT_MS = 500;
 const unsigned long NTP_SAMPLE_GAP_MS = 50;
 
-const char* DEVICE_ID     = "esp32-olimex-poe-01";
+// Device id = DEVICE_ID_BASE + "-" + last 3 bytes of the factory MAC, built in
+// setup(). Same scheme as the Wi-Fi sketches: stable and unique per chip.
+const char* DEVICE_ID_BASE = "esp32-olimex-poe";
+String deviceIdStr;
+const char* DEVICE_ID = "";
 const char* HARDWARE_TYPE = "ESP32-PoE-Olimex";   // contains 'esp32'
 const char* LOCATION      = "Lab-Test";
 const char* LINK_TYPE     = "ethernet";
@@ -352,7 +356,17 @@ void setup() {
   delay(500);
   tSerial = millis();
   Serial.println("\n=== Olimex ESP32-PoE | MQTT over Ethernet ===");
-
+  // Unique, stable device id from the factory MAC (eFuse)
+  uint64_t mac = ESP.getEfuseMac();
+  char suffix[7];
+  snprintf(suffix, sizeof(suffix), "%02x%02x%02x",
+           (unsigned)((mac >> 24) & 0xFF),
+           (unsigned)((mac >> 32) & 0xFF),
+           (unsigned)((mac >> 40) & 0xFF));
+  deviceIdStr = String(DEVICE_ID_BASE) + "-" + suffix;
+  DEVICE_ID = deviceIdStr.c_str();
+  Serial.printf("Device ID: %s\n", DEVICE_ID);
+  
   buildTopics();
   WiFi.onEvent(onNetEvent);
   ETH.begin(ETH_PHY_TYPE_OLX, ETH_PHY_ADDR_OLX, ETH_PHY_MDC_OLX,

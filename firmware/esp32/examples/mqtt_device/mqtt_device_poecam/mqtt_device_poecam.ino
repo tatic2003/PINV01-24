@@ -80,7 +80,11 @@ const char* MQTT_USER = nullptr;  // Set if authentication required
 const char* MQTT_PASS = nullptr;
 
 // Device info
-const char* DEVICE_ID     = "esp32-poecam-01";
+// Device id = DEVICE_ID_BASE + "-" + last 3 bytes of the factory MAC, built in
+// setup(). Same scheme as the Wi-Fi sketches: stable and unique per chip.
+const char* DEVICE_ID_BASE = "esp32-poecam";
+String deviceIdStr;
+const char* DEVICE_ID = "";
 const char* HARDWARE_TYPE = "ESP32-PoECAM";   // contains "esp32" -> ESP32Device
 const char* LOCATION      = "Lab-Test";
 
@@ -250,6 +254,18 @@ void setup() {
     Serial.println(" Project: PINV01-24 - FIUNA");
     Serial.println("========================================\n");
 
+        // Unique, stable device id from the factory MAC (eFuse)
+    uint64_t mac = ESP.getEfuseMac();
+    char suffix[7];
+    snprintf(suffix, sizeof(suffix), "%02x%02x%02x",
+             (unsigned)((mac >> 24) & 0xFF),
+             (unsigned)((mac >> 32) & 0xFF),
+             (unsigned)((mac >> 40) & 0xFF));
+    deviceIdStr = String(DEVICE_ID_BASE) + "-" + suffix;
+    DEVICE_ID = deviceIdStr.c_str();
+    Serial.print("Device ID: ");
+    Serial.println(DEVICE_ID);
+    
     buildTopics();
     connectEthernet();
 
