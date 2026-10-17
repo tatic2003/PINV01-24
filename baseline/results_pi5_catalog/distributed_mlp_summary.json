@@ -1,0 +1,22 @@
+{
+  "architecture": "distributed",
+  "feature_set": "resource",
+  "training_source": "catalog",
+  "dag_signed": true,
+  "model": "mlp",
+  "num_nodes": 3,
+  "num_events": 100,
+  "num_repetitions": 30,
+  "latency_mean_ms": 9.226893782991434,
+  "latency_std_ms": 5.222090777278186,
+  "latency_p50_ms": 8.618434999789315,
+  "latency_p95_ms": 10.168922000048042,
+  "latency_p99_ms": 17.12694299976647,
+  "throughput_events_per_s": 108.37883512253804,
+  "shacl_overhead_mean_ms": 8.205567072664962,
+  "classification_mean_ms": 0.758461626665697,
+  "dag_overhead_mean_ms": 0.26040879266580913,
+  "shacl_conformance_rate": 1.0,
+  "classification_accuracy": 0.775,
+  "generated_at": "2026-10-17T15:42:58.797045"
+}

@@ -1,0 +1,21 @@
+{
+  "num_events": 100,
+  "num_repetitions": 30,
+  "model_type": "mlp",
+  "latency_mean_ms": 8.783042898002199,
+  "latency_std_ms": 4.091175808366677,
+  "latency_p50_ms": 8.260243999757222,
+  "latency_p95_ms": 9.819560999858368,
+  "latency_p99_ms": 15.66189300001497,
+  "throughput_events_per_s": 113.85575723733072,
+  "shacl_overhead_mean_ms": 7.943606244667232,
+  "shacl_overhead_std_ms": 4.093991034429812,
+  "shacl_conformance_rate": 1.0,
+  "classification_mean_ms": 0.7784179169993877,
+  "classification_std_ms": 0.042034486882560375,
+  "classification_accuracy": 0.775,
+  "generated_at": "2026-10-17T15:45:18.373535",
+  "architecture": "centralized_baseline",
+  "feature_set": "resource",
+  "training_source": "catalog"
+}

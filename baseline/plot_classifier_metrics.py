@@ -1,26 +1,27 @@
 """
 PnP-AI Classifier Metrics Comparison
 =====================================================
-Trains all four classifiers (DT, RF, SVM, MLP) on the same
-synthetic dataset under identical conditions and generates
-four publication-ready figures:
+Trains DT, RF, SVM and MLP exactly as the server and the baseline benchmark do
+(train_classifier_from_synthetic_data: same generator, same feature extractor,
+same hyper-parameters, same 80/20 split with random_state=42) and evaluates
+each model on that held-out 20 %. The reported accuracy therefore equals the
+'classification_accuracy' written by the baseline benchmark for the same
+--training-source / --samples / --feature-set; the script checks this.
 
-  Fig A — Accuracy & F1-macro bar chart (test set)
-  Fig B — Per-class F1-score grouped bar chart
-  Fig C — Inference latency vs accuracy scatter
-  Fig D — Confusion matrices (2x2 grid)
+Figures:
+  Fig A - Accuracy & F1-macro bar chart (test split)
+  Fig B - Per-class F1-score grouped bar chart
+  Fig C - Inference latency vs accuracy scatter
+  Fig D - Normalized confusion matrices
 
-Usage:
+Usage (article settings are the defaults: catalog, 2000 samples, resource):
     cd PINV01-24-main
-    python baseline/plot_classifier_metrics.py [--samples 1000] [--output-dir baseline/results]
+    python baseline/plot_classifier_metrics.py --output-dir baseline/results_pi5_2026-10-17_catalog
 
-Output:
-    baseline/results/
-        clsf_fig_a_accuracy_f1.png
-        clsf_fig_b_perclass_f1.png
-        clsf_fig_c_latency_accuracy.png
-        clsf_fig_d_confusion_matrices.png
-        clsf_metrics_summary.json
+Output (in --output-dir), each figure as .png and .pdf:
+    clsf_fig_a_accuracy_f1, clsf_fig_b_perclass_f1,
+    clsf_fig_c_latency_accuracy, clsf_fig_d_confusion_matrices,
+    clsf_metrics_summary.json
 
 Project: PINV01-24 - FIUNA
 """
@@ -37,18 +38,14 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
     accuracy_score, f1_score, classification_report, confusion_matrix
 )
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.svm import LinearSVC
-from sklearn.calibration import CalibratedClassifierCV
-from sklearn.neural_network import MLPClassifier
 
-from pnp_ai.dataset_generator import SyntheticDatasetGenerator
+from pnp_ai.device_classifier import train_classifier_from_synthetic_data
+from pnp_ai.features import FEATURE_SETS, FEATURE_SET_RESOURCE, features_to_vector
+from baseline.central_baseline import TRAINING_SOURCES, make_generator
 
 # ── Styling ─────────────────────────────────────────────────────────────────
 
@@ -59,75 +56,78 @@ MODEL_STYLES = {
     'MLP':           {'color': '#2980b9', 'short': 'MLP'},
 }
 
-FEATURE_NAMES = [
-    'memory_total_mb', 'memory_free_pct', 'cpu_freq_mhz',
-    'is_wifi', 'is_ethernet', 'is_gateway_role',
-    'is_sensor_role', 'is_edge_ai_role'
-]
+MODEL_TYPES = {
+    'dt':  ('Decision Tree', 'decision_tree'),
+    'rf':  ('Random Forest', 'random_forest'),
+    'svm': ('SVM', 'svm'),
+    'mlp': ('MLP', 'mlp'),
+}
 
-# ── Data preparation ─────────────────────────────────────────────────────────
 
-def prepare_data(num_samples: int, seed: int = 42):
-    gen = SyntheticDatasetGenerator(seed=seed)
-    features, labels = gen.generate_classification_dataset(num_samples)
+def save_fig(fig, output_path: Path):
+    for ext in ('.png', '.pdf'):
+        fig.savefig(output_path.with_suffix(ext), dpi=300, bbox_inches='tight')
+    plt.close(fig)
 
-    X = np.array([[f[k] for k in FEATURE_NAMES] for f in features])
-    le = LabelEncoder()
-    y = le.fit_transform(labels)
 
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
+# ── Training and evaluation (same path as the server) ────────────────────────
 
-    X_train, X_test, y_train, y_test = train_test_split(
-        X_scaled, y, test_size=0.2, random_state=seed, stratify=y
+def held_out_split(clf, training_source, num_samples, seed):
+    """
+    Rebuild the 80/20 split that DeviceClassifier.train() used internally.
+
+    A fresh generator with the same seed yields the same announcements, and
+    the classifier's own extractor and fitted scaler give the same matrix.
+    """
+    gen = make_generator(training_source, seed)
+    devices = gen.generate_dataset(num_samples)
+    devices = gen.generate_anomalies(devices, 0.1)
+    X = np.array([features_to_vector(clf._extract_features(d), clf.feature_names)
+                  for d in devices])
+    y = clf.label_encoder.transform([d['device_type'] for d in devices])
+    X_scaled = clf.scaler.transform(X)
+    _, X_test, _, y_test = train_test_split(
+        X_scaled, y, test_size=0.2, random_state=42, stratify=y
     )
-    return X_train, X_test, y_train, y_test, le.classes_
+    return X_test, y_test
 
 
-def build_models(seed: int = 42):
-    return {
-        'Decision Tree': DecisionTreeClassifier(
-            max_depth=10, min_samples_split=5, random_state=seed
-        ),
-        'Random Forest': RandomForestClassifier(
-            n_estimators=50, max_depth=10, min_samples_split=5,
-            random_state=seed, n_jobs=1
-        ),
-        'SVM': CalibratedClassifierCV(
-            LinearSVC(C=0.5, max_iter=5000, random_state=seed),
-            method='sigmoid', cv=3
-        ),
-        'MLP': MLPClassifier(
-            hidden_layer_sizes=(64, 32), activation='relu', solver='adam',
-            max_iter=500, random_state=seed,
-            early_stopping=True, validation_fraction=0.1
-        ),
-    }
-
-
-def train_and_evaluate(models, X_train, X_test, y_train, y_test, classes):
+def train_and_evaluate(models, training_source, num_samples, feature_set, seed):
     results = {}
-    for name, model in models.items():
+    for key in models:
+        name, model_type = MODEL_TYPES[key]
         print(f"  Training {name}...", end=' ', flush=True)
 
         t0 = time.perf_counter()
-        model.fit(X_train, y_train)
+        clf, metrics = train_classifier_from_synthetic_data(
+            num_samples=num_samples, model_type=model_type,
+            feature_set=feature_set, seed=seed,
+            generator=make_generator(training_source, seed)
+        )
         train_ms = (time.perf_counter() - t0) * 1000
 
-        # Inference latency: average over 100 single-sample predictions
+        X_test, y_test = held_out_split(clf, training_source, num_samples, seed)
+        classes = [str(c) for c in clf.label_encoder.classes_]
+
+        # Inference latency: mean over 100 single-sample predictions
         sample = X_test[:1]
+        clf.model.predict(sample)  # warm-up
         t0 = time.perf_counter()
         for _ in range(100):
-            model.predict(sample)
-        infer_ms = (time.perf_counter() - t0) * 10   # mean per prediction in ms
+            clf.model.predict(sample)
+        infer_ms = (time.perf_counter() - t0) * 10
 
-        y_pred = model.predict(X_test)
+        y_pred = clf.model.predict(X_test)
         acc = accuracy_score(y_test, y_pred)
+        if abs(acc - metrics['accuracy']) > 1e-9:
+            raise RuntimeError(f"{name}: rebuilt split gives accuracy {acc:.4f}, "
+                               f"training reported {metrics['accuracy']:.4f}")
         f1m = f1_score(y_test, y_pred, average='macro')
         report = classification_report(
-            y_test, y_pred, target_names=classes, output_dict=True
+            y_test, y_pred, labels=range(len(classes)), target_names=classes,
+            output_dict=True, zero_division=0
         )
-        cm = confusion_matrix(y_test, y_pred)
+        cm = confusion_matrix(y_test, y_pred, labels=range(len(classes)))
 
         results[name] = {
             'accuracy':      acc,
@@ -136,13 +136,18 @@ def train_and_evaluate(models, X_train, X_test, y_train, y_test, classes):
             'infer_ms':      infer_ms,
             'report':        report,
             'cm':            cm,
-            'classes':       list(classes),
+            'classes':       classes,
             'y_pred':        y_pred,
             'y_test':        y_test,
         }
         print(f"acc={acc:.4f}  f1={f1m:.4f}  infer={infer_ms:.3f}ms")
 
     return results
+
+
+def lower_ylim(values):
+    """Lowest 0.05 step below the smallest value (at most 0.0)."""
+    return max(0.0, np.floor((min(values) - 0.03) * 20) / 20)
 
 
 # ── Fig A — Accuracy & F1-macro ──────────────────────────────────────────────
@@ -169,18 +174,13 @@ def plot_accuracy_f1(results, output_path):
 
     ax.set_xticks(x)
     ax.set_xticklabels(names)
-    ax.set_ylim(0.85, 1.02)
+    ax.set_ylim(lower_ylim(accs + f1s), 1.02)
     ax.set_ylabel('Score')
-    ax.set_title('PnP-AI Classifier — Accuracy and F1-macro (test set)')
     ax.legend()
     ax.grid(axis='y', alpha=0.3)
-    ax.axhline(y=0.95, color='gray', linestyle='--', linewidth=0.8, alpha=0.6)
-    ax.text(len(names)-0.5, 0.951, '0.95 threshold', fontsize=8,
-            color='gray', va='bottom')
 
     plt.tight_layout()
-    plt.savefig(output_path, dpi=150, bbox_inches='tight')
-    plt.close()
+    save_fig(fig, output_path)
     print(f"  [fig A] saved → {output_path}")
 
 
@@ -198,9 +198,11 @@ def plot_perclass_f1(results, output_path):
     offsets = np.linspace(-(n-1)*w/2, (n-1)*w/2, n)
 
     fig, ax = plt.subplots(figsize=(10, 4))
+    all_f1 = []
 
     for i, name in enumerate(names):
         f1s = [results[name]['report'].get(c, {}).get('f1-score', 0) for c in cls_keys]
+        all_f1 += f1s
         ax.bar(x + offsets[i], f1s, w,
                label=name,
                color=MODEL_STYLES[name]['color'],
@@ -208,15 +210,13 @@ def plot_perclass_f1(results, output_path):
 
     ax.set_xticks(x)
     ax.set_xticklabels(cls_keys, rotation=20, ha='right')
-    ax.set_ylim(0.7, 1.02)
+    ax.set_ylim(lower_ylim(all_f1), 1.02)
     ax.set_ylabel('F1-score')
-    ax.set_title('PnP-AI Classifier — Per-class F1-score (test set)')
     ax.legend()
     ax.grid(axis='y', alpha=0.3)
 
     plt.tight_layout()
-    plt.savefig(output_path, dpi=150, bbox_inches='tight')
-    plt.close()
+    save_fig(fig, output_path)
     print(f"  [fig B] saved → {output_path}")
 
 
@@ -237,18 +237,12 @@ def plot_latency_accuracy(results, output_path):
 
     ax.set_xlabel('Mean inference latency (ms / sample)')
     ax.set_ylabel('Accuracy (test set)')
-    ax.set_title('PnP-AI — Accuracy vs Inference Latency')
     ax.grid(alpha=0.3)
     ax.legend(loc='lower right')
 
-    # Annotate ideal region
-    ax.axhline(y=0.95, color='gray', linestyle='--', linewidth=0.7, alpha=0.5)
-    ax.text(ax.get_xlim()[0], 0.951, '0.95', fontsize=8,
-            color='gray', va='bottom')
 
     plt.tight_layout()
-    plt.savefig(output_path, dpi=150, bbox_inches='tight')
-    plt.close()
+    save_fig(fig, output_path)
     print(f"  [fig C] saved → {output_path}")
 
 
@@ -259,8 +253,12 @@ def plot_confusion_matrices(results, output_path):
     classes = results[names[0]]['classes']
     n_classes = len(classes)
 
-    fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+    ncols = 2 if len(names) > 1 else 1
+    nrows = int(np.ceil(len(names) / ncols))
+    fig, axes = plt.subplots(nrows, ncols, figsize=(6 * ncols, 5 * nrows), squeeze=False)
     axes = axes.flatten()
+    for ax in axes[len(names):]:
+        ax.axis('off')
 
     for ax, name in zip(axes, names):
         cm = results[name]['cm'].astype(float)
@@ -289,18 +287,15 @@ def plot_confusion_matrices(results, output_path):
                         ha='center', va='center', fontsize=7,
                         color='white' if cm_norm[i, j] > thresh else 'black')
 
-    fig.suptitle('PnP-AI — Normalized Confusion Matrices (test set)',
-                 fontsize=12, y=1.01)
     plt.tight_layout()
-    plt.savefig(output_path, dpi=150, bbox_inches='tight')
-    plt.close()
+    save_fig(fig, output_path)
     print(f"  [fig D] saved → {output_path}")
 
 
 # ── Summary JSON ─────────────────────────────────────────────────────────────
 
-def save_summary(results, output_path):
-    summary = {}
+def save_summary(results, output_path, meta):
+    summary = {'_meta': meta}
     for name, r in results.items():
         per_class = {
             cls: {
@@ -328,6 +323,8 @@ def save_summary(results, output_path):
     print(f"  {'Model':<16} {'Accuracy':>9} {'F1-macro':>9} {'Infer (ms)':>11}")
     print(f"  {'-'*60}")
     for name, s in summary.items():
+        if name == '_meta':
+            continue
         print(f"  {name:<16} {s['accuracy']:>9.4f} {s['f1_macro']:>9.4f} {s['infer_ms']:>11.4f}")
     print(f"{'='*65}")
 
@@ -336,30 +333,45 @@ def save_summary(results, output_path):
 
 def main():
     parser = argparse.ArgumentParser(
-        description='ARGENCON 2026 — PnP-AI classifier metrics comparison'
+        description='PnP-AI classifier metrics comparison (same training path as the server)'
     )
-    parser.add_argument('--samples',    type=int, default=1000)
-    parser.add_argument('--seed',       type=int, default=42)
+    parser.add_argument('--samples', type=int, default=2000,
+                        help='training announcements (article/server: 2000)')
+    parser.add_argument('--seed', type=int, default=42)
+    parser.add_argument('--training-source', choices=TRAINING_SOURCES, default='catalog',
+                        help='article/server: catalog')
+    parser.add_argument('--feature-set', choices=FEATURE_SETS, default=FEATURE_SET_RESOURCE,
+                        help='article/server: resource')
+    parser.add_argument('--models', nargs='+', choices=list(MODEL_TYPES),
+                        default=list(MODEL_TYPES))
     parser.add_argument('--output-dir', type=str, default='baseline/results')
     args = parser.parse_args()
 
     out = Path(args.output_dir)
     out.mkdir(parents=True, exist_ok=True)
 
-    print(f"\n[1/3] Preparing data ({args.samples} samples, seed={args.seed})...")
-    X_train, X_test, y_train, y_test, classes = prepare_data(args.samples, args.seed)
-    print(f"      Train: {len(X_train)}  Test: {len(X_test)}  Classes: {list(classes)}")
+    print(f"\n[1/2] Training and evaluating {args.models} "
+          f"(source={args.training_source}, samples={args.samples}, "
+          f"features={args.feature_set}, seed={args.seed})...")
+    results = train_and_evaluate(args.models, args.training_source, args.samples,
+                                 args.feature_set, args.seed)
+    first = next(iter(results.values()))
+    print(f"      Test split: {len(first['y_test'])}  Classes: {first['classes']}")
 
-    print(f"\n[2/3] Training and evaluating 4 classifiers...")
-    models  = build_models(args.seed)
-    results = train_and_evaluate(models, X_train, X_test, y_train, y_test, classes)
-
-    print(f"\n[3/3] Generating figures...")
+    print(f"\n[2/2] Generating figures...")
     plot_accuracy_f1(results,         out / 'clsf_fig_a_accuracy_f1.png')
     plot_perclass_f1(results,         out / 'clsf_fig_b_perclass_f1.png')
     plot_latency_accuracy(results,    out / 'clsf_fig_c_latency_accuracy.png')
     plot_confusion_matrices(results,  out / 'clsf_fig_d_confusion_matrices.png')
-    save_summary(results,             out / 'clsf_metrics_summary.json')
+    meta = {
+        'training_source': args.training_source,
+        'samples': args.samples,
+        'test_split': len(first['y_test']),
+        'feature_set': args.feature_set,
+        'seed': args.seed,
+        'classes': first['classes'],
+    }
+    save_summary(results, out / 'clsf_metrics_summary.json', meta)
 
     print(f"\nDone. All outputs in: {out.resolve()}")
 
