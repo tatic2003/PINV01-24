@@ -33,6 +33,8 @@ from pnp_ai.dataset_generator import SyntheticDatasetGenerator
 from semantic_layer.rdf_store import RDFStore
 from semantic_layer.validator import SHACLValidator
 from blockdag.dag import BlockDAG
+from blockdag import signing
+from baseline.central_baseline import make_generator
 
 import numpy as np
 
@@ -70,7 +72,8 @@ class EdgeNode:
     """
 
     def __init__(self, node_id: str, model_type: str, training_samples: int = 1000,
-                 feature_set: str = 'resource'):
+                 feature_set: str = 'resource', training_source: str = 'profiles',
+                 sign: bool = False, seed: int = 42):
         self.node_id = node_id
         self.model_type = model_type
         self.feature_set = feature_set
@@ -79,15 +82,18 @@ class EdgeNode:
         self.classifier, train_metrics = train_classifier_from_synthetic_data(
             num_samples=training_samples,
             model_type=model_type,
-            feature_set=feature_set
+            feature_set=feature_set,
+            generator=make_generator(training_source, seed)
         )
         self._train_accuracy = train_metrics.get('accuracy', 0.0)
 
         # SHACL validator
         self.validator = SHACLValidator()
 
-        # BlockDAG — each node has its own instance
-        self.dag = BlockDAG(node_id=node_id)
+        # BlockDAG — each node has its own instance. With sign=True every node
+        # it creates is signed with Ed25519, as the server does with --dag-key-file.
+        self.dag = BlockDAG(node_id=node_id,
+                            signing_key=signing.generate_private_key() if sign else None)
 
         # Feature names (set on first inference)
         self._feature_names = None
@@ -179,7 +185,9 @@ def run_distributed_benchmark(
     training_samples: int = 1000,
     seed: int = 42,
     output_dir: str = 'baseline/results',
-    feature_set: str = 'resource'
+    feature_set: str = 'resource',
+    training_source: str = 'profiles',
+    sign: bool = False
 ) -> List[DistributedEventRecord]:
 
     out_dir = Path(output_dir)
@@ -188,6 +196,7 @@ def run_distributed_benchmark(
     print(f"\n{'='*55}")
     print(f"  Running distributed benchmark — {model_type}")
     print(f"  Nodes: {num_nodes} | Events/rep: {num_events} | Reps: {num_repetitions}")
+    print(f"  Training source: {training_source} | DAG signing: {'on' if sign else 'off'}")
     print(f"{'='*55}")
 
     # Initialize nodes
@@ -197,13 +206,16 @@ def run_distributed_benchmark(
             node_id=f"edge-node-{i+1:02d}",
             model_type=model_type,
             training_samples=training_samples,
-            feature_set=feature_set
+            feature_set=feature_set,
+            training_source=training_source,
+            sign=sign,
+            seed=seed
         )
         for i in range(num_nodes)
     ]
     print(f"  Nodes ready (accuracy={nodes[0]._train_accuracy:.4f})")
 
-    generator = SyntheticDatasetGenerator(seed=seed)
+    generator = make_generator(training_source, seed)
     all_records: List[DistributedEventRecord] = []
 
     for rep in range(num_repetitions):
@@ -276,6 +288,8 @@ def run_distributed_benchmark(
     summary = {
         'architecture': 'distributed',
         'feature_set': feature_set,
+        'training_source': training_source,
+        'dag_signed': sign,
         'model': model_type,
         'num_nodes': num_nodes,
         'num_events': num_events,
@@ -326,6 +340,12 @@ if __name__ == '__main__':
     parser.add_argument('--feature-set', choices=['resource', 'resource+name'],
                         default='resource',
                         help="Classifier features (default: resource, observable only)")
+    parser.add_argument('--training-source', choices=['profiles', 'catalog'],
+                        default='profiles',
+                        help="Training data and benchmark events: 'profiles' (5 classes) or "
+                             "'catalog' (real-board catalog, as in the paper). Default: profiles")
+    parser.add_argument('--sign', action='store_true',
+                        help='Sign every DAG node with Ed25519, as the server does with --dag-key-file')
     parser.add_argument('--output-dir', type=str, default='baseline/results',
                         help='Output directory (default: baseline/results)')
     args = parser.parse_args()
@@ -342,7 +362,9 @@ if __name__ == '__main__':
             training_samples=args.training_samples,
             seed=args.seed,
             output_dir=args.output_dir,
-            feature_set=args.feature_set
+            feature_set=args.feature_set,
+            training_source=args.training_source,
+            sign=args.sign
         )
 
     print("\n✓ Done. Now run 'python baseline/run_benchmark.py' to generate comparison figures.")

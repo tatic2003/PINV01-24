@@ -285,7 +285,8 @@ def run(args):
             model_type=model,
             training_samples=args.training_samples,
             seed=args.seed,
-            feature_set=args.feature_set
+            feature_set=args.feature_set,
+            training_source=args.training_source
         )
 
         results = baseline.run_benchmark(
@@ -320,6 +321,7 @@ def run(args):
             'shacl_conformance_rate': results.shacl_conformance_rate,
             'classification_mean_ms': results.classification_mean_ms,
             'classification_accuracy': results.classification_accuracy,
+            'training_source': args.training_source,
         }
 
     # -----------------------------------------------------------------------
@@ -420,6 +422,10 @@ if __name__ == '__main__':
     parser.add_argument('--feature-set', choices=['resource', 'resource+name'],
                         default='resource',
                         help="Classifier features (default: resource, observable only)")
+    parser.add_argument('--training-source', choices=['profiles', 'catalog'],
+                        default='profiles',
+                        help="Training data and benchmark events: 'profiles' (5 classes) or "
+                             "'catalog' (real-board catalog, as in the paper). Default: profiles")
     parser.add_argument('--output-dir', type=str, default='baseline/results',
                         help='Output directory (default: baseline/results)')
     args = parser.parse_args()

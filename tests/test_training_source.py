@@ -46,3 +46,33 @@ def test_profiles_source_unchanged():
 def test_unknown_source_fails_loudly():
     with pytest.raises(RuntimeError):
         _app('nope')
+
+
+def test_catalog_gnss_samples_pass_shacl():
+    """Composed GNSS receivers and GPS-named boards carry the fields the shape requires."""
+    from pnp_ai.dataset_generator.catalog import CatalogDatasetGenerator
+    from semantic_layer.rdf_store import RDFStore
+    from semantic_layer.validator import SHACLValidator
+
+    gen = CatalogDatasetGenerator(seed=42, labeling='clasificador', calibrated=True)
+    validator = SHACLValidator()
+    checked = 0
+    for device in gen.generate_dataset(300):
+        name = device['hardware_type'].lower()
+        if device['device_type'] != 'GNSSReceiver' and 'gps' not in name and 'gnss' not in name:
+            continue
+        assert 'fix_quality' in device
+        store = RDFStore(load_ontology=False)
+        store.register_device(device)
+        assert validator.validate(store.graph).is_valid, device['device_id']
+        checked += 1
+    assert checked > 0
+
+
+def test_baseline_generator_sources():
+    from baseline.central_baseline import make_generator
+    from pnp_ai.dataset_generator.catalog import CatalogDatasetGenerator
+    assert isinstance(make_generator('catalog', 1), CatalogDatasetGenerator)
+    assert not isinstance(make_generator('profiles', 1), CatalogDatasetGenerator)
+    with pytest.raises(ValueError):
+        make_generator('nope', 1)

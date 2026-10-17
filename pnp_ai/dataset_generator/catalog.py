@@ -408,6 +408,17 @@ class CatalogDatasetGenerator(SyntheticDatasetGenerator):
         }
         if capabilities:
             device['capabilities'] = list(capabilities)
+        # Receiver state (fix quality, position, satellites, HDOP) for every
+        # board that carries a GNSS receiver: the composed GNSS receivers and
+        # boards whose name already says GPS/GNSS (e.g. LilyGO T-Beam), which
+        # the RDF store types as GNSSReceiver by name. The SHACL shape requires
+        # these fields; without them those samples fail validation because of
+        # the generator. Drawn from the parent's separate GNSS stream, so every
+        # other field of the dataset is the same as before (none of these
+        # fields is a classifier feature).
+        name = device['hardware_type'].lower()
+        if label == GNSS_LABEL or 'gps' in name or 'gnss' in name:
+            device.update(self._generate_gnss_fields())
         return device
 
     def _compose_gnss(self) -> Dict[str, Any]:

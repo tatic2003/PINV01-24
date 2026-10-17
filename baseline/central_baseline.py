@@ -35,6 +35,27 @@ from semantic_layer.validator import SHACLValidator
 from semantic_layer.rdf_store import RDFStore
 
 
+TRAINING_SOURCES = ('profiles', 'catalog')
+
+
+def make_generator(training_source: str, seed: int):
+    """
+    Device generator for training and for the benchmark events.
+
+    'profiles' = SyntheticDatasetGenerator (hand-written profiles, 5 classes).
+    'catalog'  = CatalogDatasetGenerator over the real-board catalog, calibrated
+                 memory, labeling 'clasificador' (6 classes, with
+                 Microcontroller): the same data the server uses with
+                 --training-source catalog and the paper reports.
+    """
+    if training_source == 'profiles':
+        return SyntheticDatasetGenerator(seed=seed)
+    if training_source == 'catalog':
+        from pnp_ai.dataset_generator.catalog import CatalogDatasetGenerator
+        return CatalogDatasetGenerator(seed=seed, labeling='clasificador', calibrated=True)
+    raise ValueError(f"unknown training source {training_source!r}; expected one of {TRAINING_SOURCES}")
+
+
 # ---------------------------------------------------------------------------
 # Data structures
 # ---------------------------------------------------------------------------
@@ -106,7 +127,8 @@ class CentralizedBaseline:
         model_type: str = 'decision_tree',
         training_samples: int = 1000,
         seed: int = 42,
-        feature_set: str = 'resource'
+        feature_set: str = 'resource',
+        training_source: str = 'profiles'
     ):
         self.model_type = model_type
         self.seed = seed
@@ -114,16 +136,19 @@ class CentralizedBaseline:
         # 'resource+name' also uses hardware-name flags and is circular with
         # the rule-based baseline; keep it only for comparison.
         self.feature_set = feature_set
+        self.training_source = training_source
         self._log: List[Dict[str, Any]] = []   # Simulated centralized event log
 
-        print(f"[Baseline] Initializing centralized node (model={model_type})")
+        print(f"[Baseline] Initializing centralized node (model={model_type}, "
+              f"training source={training_source})")
 
         # Train PnP-AI classifier
         t0 = time.perf_counter()
         self.classifier, train_metrics = train_classifier_from_synthetic_data(
             num_samples=training_samples,
             model_type=model_type,
-            feature_set=feature_set
+            feature_set=feature_set,
+            generator=make_generator(training_source, seed)
         )
         self._train_accuracy = train_metrics.get('accuracy', 0.0)
         print(f"[Baseline] Classifier trained in {(time.perf_counter()-t0)*1000:.1f} ms "
@@ -280,7 +305,7 @@ class CentralizedBaseline:
         print(f"\n[Baseline] Starting benchmark: {num_events} events × "
               f"{num_repetitions} repetitions (warmup={warmup_events})")
 
-        generator = SyntheticDatasetGenerator(seed=seed)
+        generator = make_generator(self.training_source, seed)
         all_records: List[EventRecord] = []
 
         for rep in range(num_repetitions):
@@ -399,6 +424,7 @@ class CentralizedBaseline:
         summary['generated_at'] = datetime.utcnow().isoformat()
         summary['architecture'] = 'centralized_baseline'
         summary['feature_set'] = self.feature_set
+        summary['training_source'] = self.training_source
 
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(summary, f, indent=2)
