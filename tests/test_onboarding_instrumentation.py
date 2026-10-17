@@ -251,3 +251,27 @@ class TestAnalysis:
         assert total["n"] == 1                       # seq == 2 dropped
         assert total["clock_bound_ms"] == 3.0 + self.an.RESOLUTION_MS
         assert (out / "fig_onboarding_stages.pdf").exists()
+
+
+def test_analysis_serial_agent_stages(tmp_path):
+    """Serial-board rows get their USB stages from the agent CSV, joined on the publish time."""
+    import pandas as pd
+    from experiments.analyze_onboarding import compute_stages, add_serial_agent
+
+    bridge = pd.DataFrame([{
+        "session": "uno", "device_id": "mcu-uno-01", "hardware": "Arduino Uno R3 (ATmega328P)",
+        "seq": "1", "synced": "", "setup_ms": "0", "epoch_publish_ms": "1000.5",
+        "agent_start_epoch_ms": "0", "mqtt_epoch_ms": "20", "arrival_epoch_ms": "1001.0",
+        "callback_epoch_ms": "1001.1", "http_status": "200", "http_rtt_ms": "10",
+        "srv_classify_ms": "6", "srv_semantic_ms": "0.6", "srv_dag_ms": "0.4", "srv_total_ms": "7.5",
+    }])
+    agent = tmp_path / "agent.csv"
+    agent.write_text("device_id,usb_seen_epoch_ms,serial_open_epoch_ms,announce_rx_epoch_ms,epoch_publish_ms\n"
+                     "mcu-uno-01,0,18,1000.45,1000.5\n")
+    st = add_serial_agent(compute_stages(bridge), bridge, [str(agent)])
+    row = st.iloc[0]
+    assert row["device_type"] == "Arduino Uno R3"
+    assert row["usb_to_open"] == 18
+    assert abs(row["board_boot"] - 982.45) < 1e-6
+    assert pd.isna(row["agent_to_mqtt"]) and pd.isna(row["boot_to_setup"])
+    assert abs(row["boot_to_registered"] - (1000.5 + row["publish_to_registered"])) < 1e-6

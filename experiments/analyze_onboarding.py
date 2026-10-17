@@ -30,6 +30,21 @@ Stages of an ESP32 onboarding (milliseconds):
 Linux boards (linux_agent.py) report agent_to_mqtt and mqtt_to_publish
 instead of the boot stages; their clock is the system clock under chrony.
 
+Serial boards (Arduino Uno through devices/serial_agent.py) have no clock of
+their own: every mark is on the host clock. With --serial-agent (the CSV the
+agent writes) their rows get, joined on (device_id, epoch_publish_ms):
+
+  usb_to_open          USB port visible -> port opened by the agent
+  board_boot           port opened (DTR reset) -> announcement received
+  announce_to_publish  announcement received -> MQTT publish
+
+and boot_to_registered = those three + publish_to_registered (from the USB
+port becoming visible; USB enumeration before it is not measured).
+
+Transit is only meaningful when the device clock is well synchronized: rows
+whose NTP sample had a round trip above --max-sync-rtt (default 30 ms) keep
+their totals but get no transit value.
+
 Totals: publish_to_registered (transit .. srv_other) and, for ESP32 boards,
 boot_to_registered = all stages except sntp.
 
@@ -53,6 +68,7 @@ import pandas as pd
 
 ESP32_STAGES = ["boot_to_setup", "serial_wait", "link", "mqtt_connect", "announce"]
 LINUX_STAGES = ["agent_to_mqtt", "mqtt_to_publish"]
+SERIAL_STAGES = ["usb_to_open", "board_boot", "announce_to_publish"]
 PIPELINE_STAGES = ["transit", "bridge_queue", "http", "srv_classify", "srv_semantic",
                    "srv_dag", "srv_other"]
 
@@ -64,6 +80,7 @@ DEVICE_TYPES = [            # (id prefix, label) - first match wins
     ("esp32-poecam", "M5Stack PoE CAM-W"),
     ("sbc-opizero", "Orange Pi Zero"),
     ("sbc-pi5", "Raspberry Pi 5"),
+    ("mcu-uno", "Arduino Uno R3"),
 ]
 
 
@@ -123,6 +140,37 @@ def compute_stages(df):
     return out
 
 
+def add_serial_agent(stages, df, agent_csvs):
+    """
+    Stages of serial boards from the CSV(s) of devices/serial_agent.py.
+
+    The agent's marks (agent_start / mqtt_epoch in the bridge CSV) mean
+    something else for these boards, so agent_to_mqtt and mqtt_to_publish are
+    cleared for them whether or not the agent CSV is given.
+    """
+    serial = stages["device_type"] == "Arduino Uno R3"
+    for col in SERIAL_STAGES:
+        stages[col] = np.nan
+    stages.loc[serial, ["agent_to_mqtt", "mqtt_to_publish", "boot_to_setup"]] = np.nan
+    if not agent_csvs or not serial.any():
+        return stages
+    agent = pd.concat([pd.read_csv(p) for p in agent_csvs], ignore_index=True)
+    by_key = {}
+    for _, a in agent.iterrows():
+        by_key.setdefault((a["device_id"], round(float(a["epoch_publish_ms"]), 3)), a)
+    pub = num(df, "epoch_publish_ms").round(3)
+    for i in stages.index[serial]:
+        a = by_key.get((stages.at[i, "device_id"], pub.at[i]))
+        if a is None:
+            continue
+        stages.at[i, "usb_to_open"] = a["serial_open_epoch_ms"] - a["usb_seen_epoch_ms"]
+        stages.at[i, "board_boot"] = a["announce_rx_epoch_ms"] - a["serial_open_epoch_ms"]
+        stages.at[i, "announce_to_publish"] = a["epoch_publish_ms"] - a["announce_rx_epoch_ms"]
+        stages.at[i, "boot_to_registered"] = (stages.loc[i, SERIAL_STAGES].sum()
+                                              + stages.at[i, "publish_to_registered"])
+    return stages
+
+
 def find_trials(stages, gap_s=20.0):
     """Number bursts of onboardings: arrivals more than gap_s apart start a new trial."""
     s = stages.sort_values(["session", "arrival_epoch_ms"]).copy()
@@ -177,7 +225,7 @@ def plot(summary, out_dir):
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
-    stages = ESP32_STAGES + LINUX_STAGES + PIPELINE_STAGES
+    stages = ESP32_STAGES + LINUX_STAGES + SERIAL_STAGES + PIPELINE_STAGES
     means = summary.pivot_table(index=["session", "device_type"], columns="stage",
                                 values="mean_ms", aggfunc="first")
     means = means.reindex(columns=[s for s in stages if s in means.columns]).fillna(0.0)
@@ -208,17 +256,25 @@ def main():
     ap.add_argument("--probe", help="CSV of experiments/clock_probe.py")
     ap.add_argument("--out", default="experiments/results/onboarding")
     ap.add_argument("--all-seq", action="store_true", help="keep re-registrations (seq > 1)")
+    ap.add_argument("--serial-agent", nargs="*", default=[],
+                    help="CSV(s) written by devices/serial_agent.py (--csv), for serial boards")
+    ap.add_argument("--max-sync-rtt", type=float, default=30.0,
+                    help="drop the transit of rows whose NTP round trip exceeds this (ms)")
     ap.add_argument("--trial-gap", type=float, default=20.0,
                     help="seconds without arrivals that separate two trials")
     args = ap.parse_args()
 
     df = pd.concat([pd.read_csv(p, dtype=str) for p in args.onboarding_csv], ignore_index=True)
     stages = compute_stages(df)
+    stages = add_serial_agent(stages, df, args.serial_agent)
+    loose_clock = stages["sync_rtt_ms"] > args.max_sync_rtt
+    stages.loc[loose_clock, "transit"] = np.nan
     ok = pd.to_numeric(stages["http_status"], errors="coerce") == 200
     dropped_http = int((~ok).sum())
     stages = stages[ok]
     if not args.all_seq:
         stages = stages[(stages["seq"] == 1) | stages["seq"].isna()]
+    # ESP32 rows only: serial and Linux boards have no NTP step of their own.
     unsynced = stages[~stages["synced"] & stages["boot_to_setup"].notna()]
     stages = find_trials(stages, args.trial_gap)
 
@@ -226,7 +282,7 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     stages.to_csv(out / "stages_per_event.csv", index=False)
 
-    cols = (ESP32_STAGES + ["sntp", "sync_rtt_ms"] + LINUX_STAGES + PIPELINE_STAGES
+    cols = (ESP32_STAGES + ["sntp", "sync_rtt_ms"] + LINUX_STAGES + SERIAL_STAGES + PIPELINE_STAGES
             + ["publish_to_registered", "boot_to_registered"])
     summary = summarize(stages, cols)
     if args.probe:
@@ -245,9 +301,12 @@ def main():
               .reset_index())
     trials["arrival_spread_ms"] = trials["last_arrival"] - trials["first_arrival"]
     trials.to_csv(out / "trials.csv", index=False)
-    plot(summary[summary["stage"].isin(ESP32_STAGES + LINUX_STAGES + PIPELINE_STAGES)], out)
+    plot(summary[summary["stage"].isin(ESP32_STAGES + LINUX_STAGES + SERIAL_STAGES
+                                        + PIPELINE_STAGES)], out)
 
     print(f"{len(stages)} onboardings analysed ({dropped_http} dropped for HTTP status != 200)")
+    if int(loose_clock.sum()):
+        print(f"{int(loose_clock.sum())} transit value(s) dropped: NTP round trip > {args.max_sync_rtt} ms")
     if len(unsynced):
         print(f"WARNING: {len(unsynced)} ESP32 onboardings with an unsynchronized clock "
               f"(their transit stage is not meaningful)")
