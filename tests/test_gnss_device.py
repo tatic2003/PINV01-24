@@ -87,6 +87,7 @@ class TestShacl:
     @pytest.mark.parametrize('over', [
         {'lat': 91}, {'lat': -90.5}, {'lon': 180.5}, {'lon': -181},
         {'hdop': -1}, {'satellites': 65}, {'fix_quality': 9},
+        {'update_rate_hz': 0}, {'update_rate_hz': -1},
     ])
     def test_out_of_range_rejected(self, over):
         r = shacl_result(store_with(**over))

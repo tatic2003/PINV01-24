@@ -266,7 +266,7 @@ iot:GNSSReceiverShape
     sh:property [
         sh:path iot:updateRateHz ;
         sh:datatype xsd:decimal ;
-        sh:exclusiveMinimum 0 ;
+        sh:minExclusive 0 ;
         sh:maxCount 1 ;
         sh:name "Update rate" ;
         sh:severity sh:Violation ;
