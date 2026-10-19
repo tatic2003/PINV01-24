@@ -145,12 +145,23 @@ class TestShaclOnRegister:
         assert timing['shacl'] > 0
         assert timing['total'] >= timing['shacl']
 
-    def test_shacl_rejects_what_the_lightweight_check_only_warns(self, shacl_client):
-        # An identifier with a space is a warning for the lightweight check
-        # and a violation of IoTDeviceShape.
-        resp = shacl_client.post('/api/devices/register', json=announcement(id='esp32 #bad'))
+    def test_shacl_rejection_is_400(self, shacl_client):
+        # Whatever passes the lightweight check but fails SHACL is rejected.
+        from semantic_layer.validator import ValidationResult
+        app = shacl_client.application
+        app.shacl_validator.validate = lambda graph: ValidationResult(
+            conforms=False, violations=[{'message': 'forced'}], warnings=[], info=[])
+        resp = shacl_client.post('/api/devices/register', json=announcement())
         assert resp.status_code == 400
-        assert resp.get_json()['error'] == 'SHACL validation failed'
+        body = resp.get_json()
+        assert body['error'] == 'SHACL validation failed'
+        assert 'shacl' in body['timing_ms']
+
+    def test_bad_identifier_is_rejected_by_both(self, shacl_client):
+        assert not lightweight(announcement(id='esp32 #bad')).is_valid
+        assert not shacl(announcement(id='esp32 #bad')).is_valid
+        assert shacl_client.post('/api/devices/register',
+                                 json=announcement(id='esp32 #bad')).status_code == 400
 
     def test_lightweight_rejection_skips_shacl(self, shacl_client):
         resp = shacl_client.post('/api/devices/register', json=announcement(memory_total=None))
@@ -161,3 +172,19 @@ class TestShaclOnRegister:
 class TestMissingHardware:
     def test_shacl_reports_missing_hardware(self):
         assert not shacl(announcement(hardware=None)).is_valid
+
+
+class TestNoClassSpecificLimits:
+    """The shapes must not flag real boards for their announced memory or name."""
+
+    @pytest.mark.parametrize('board, cls, memory', [
+        ('esp32-c3-645ce0', 'ESP32Device', 295_580),          # ESP32-C3 free heap
+        ('esp32-wroom32-267a68', 'ESP32Device', 331_488),
+        ('sbc-opizero-01', 'SingleBoardComputer', 508_035_072),  # Orange Pi Zero, 512 MB
+        ('mydevice-01', 'ESP32Device', 331_488),               # no 'esp32-' prefix
+    ])
+    def test_real_boards_have_no_findings(self, board, cls, memory):
+        result = shacl(announcement(id=board, memory_total=memory, memory_free=memory // 2),
+                       device_type=cls)
+        assert result.is_valid
+        assert not result.warnings and not result.info

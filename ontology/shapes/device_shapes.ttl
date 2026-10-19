@@ -76,31 +76,9 @@ iot:IoTDeviceShape
         sh:severity sh:Violation ;
     ] .
 
-# ------------------------------------------------------------
-# ESP32 Device Shape - Specific validation for ESP32 devices
-# ------------------------------------------------------------
-iot:ESP32DeviceShape
-    a sh:NodeShape ;
-    sh:targetClass iot:ESP32Device ;
-    sh:property [
-        sh:path iot:deviceId ;
-        sh:datatype xsd:string ;
-        sh:minCount 1 ;
-        sh:pattern "^esp32-" ;
-        sh:name "ESP32 Device ID" ;
-        sh:description "ESP32 device IDs must start with 'esp32-'" ;
-        sh:severity sh:Warning ;
-    ] ;
-    sh:property [
-        sh:path iot:memoryTotal ;
-        sh:datatype xsd:integer ;
-        sh:minInclusive 320000 ;
-        sh:maxInclusive 8388608 ;
-        sh:name "Total Memory" ;
-        sh:description "ESP32 typically has 320KB-8MB RAM" ;
-        sh:severity sh:Info ;
-    ] .
-
+# No class-specific limits on memory or identifier prefixes: the class
+# comes from the classifier, and the shapes check what a description must
+# satisfy whatever its class (format, ranges with a physical meaning).
 # ------------------------------------------------------------
 # Edge Node Shape - Validation for edge computing nodes
 # ------------------------------------------------------------
@@ -122,14 +100,6 @@ iot:EdgeNodeShape
         sh:name "Running Agents" ;
         sh:description "Edge agents running on this node" ;
         sh:severity sh:Info ;
-    ] ;
-    sh:property [
-        sh:path iot:memoryTotal ;
-        sh:datatype xsd:integer ;
-        sh:minInclusive 536870912 ;
-        sh:name "Total Memory" ;
-        sh:description "Edge nodes should have at least 512MB RAM" ;
-        sh:severity sh:Warning ;
     ] .
 
 # ------------------------------------------------------------

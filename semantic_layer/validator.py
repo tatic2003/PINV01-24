@@ -249,20 +249,12 @@ class SHACLValidator:
         if device_id:
             import re
             id_pattern = r'^[a-zA-Z0-9_-]+$'
-            if not re.match(id_pattern, device_id):
-                warnings.append({
+            # Same rule as IoTDeviceShape (pattern and 1-64 characters), as a violation
+            if not re.match(id_pattern, str(device_id)) or len(str(device_id)) > 64:
+                violations.append({
                     'path': 'device_id',
                     'value': device_id,
-                    'message': 'Device ID should only contain alphanumeric characters, hyphens, and underscores'
-                })
-
-            # Check naming convention for ESP32
-            hardware = device_data.get('hardware_type') or device_data.get('hardware', '')
-            if 'esp32' in hardware.lower() and not device_id.lower().startswith('esp32'):
-                info.append({
-                    'path': 'device_id',
-                    'value': device_id,
-                    'message': "ESP32 devices conventionally use IDs starting with 'esp32-'"
+                    'message': 'Device ID must be 1-64 characters: letters, digits, hyphens and underscores'
                 })
 
         # Validate MAC address if present
