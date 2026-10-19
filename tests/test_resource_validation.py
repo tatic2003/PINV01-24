@@ -134,8 +134,18 @@ def shacl_client(tmp_path):
 
 
 class TestShaclOnRegister:
-    def test_off_by_default(self, client):
-        body = client.post('/api/devices/register', json=announcement()).get_json()
+    def test_on_by_default(self):
+        from server.config import Config
+        assert Config().shacl_on_register is True
+
+    def test_can_be_turned_off(self, tmp_path):
+        from server.app import create_app
+        from server.config import Config
+        app = create_app(Config(
+            debug=False, data_dir=str(tmp_path / 'data'), model_dir=str(tmp_path / 'models'),
+            auto_train=False, classifier_type='rule_based', enable_dag=True,
+            node_id='test-node', shacl_on_register=False))
+        body = app.test_client().post('/api/devices/register', json=announcement()).get_json()
         assert 'shacl' not in body['timing_ms']
 
     def test_valid_registers_and_reports_shacl_time(self, shacl_client):
@@ -188,3 +198,19 @@ class TestNoClassSpecificLimits:
                        device_type=cls)
         assert result.is_valid
         assert not result.warnings and not result.info
+
+
+class TestLowConfidenceTyping:
+    def test_low_confidence_is_generic_not_name_based(self, client):
+        # Below the threshold the device must be typed IoTDevice, even when its
+        # hardware name contains 'esp32' (no fallback to name rules).
+        from rdflib import RDF
+        from pnp_ai.device_classifier import ClassificationResult
+        from semantic_layer.rdf_store import IOT
+        app = client.application
+        app.classifier.classify = lambda d: ClassificationResult('ESP32Device', 0.3, {}, 'sensor', [])
+        resp = client.post('/api/devices/register', json=announcement(id='esp32-lowconf'))
+        assert resp.status_code == 200 and resp.get_json()['low_confidence']
+        uri = IOT['device/esp32-lowconf']
+        types = set(app.semantic_manager.store.graph.objects(uri, RDF.type))
+        assert types == {IOT.IoTDevice}

@@ -32,18 +32,18 @@ class Config:
     health_check_interval: float = 30.0  # seconds
 
     # Classification
-    classifier_type: str = "rule_based"  # 'rule_based', 'decision_tree', 'random_forest'
-    classifier_feature_set: str = "resource+name"  # 'resource' | 'resource+name'
+    classifier_type: str = "random_forest"  # 'random_forest', 'decision_tree', 'rule_based'
+    classifier_feature_set: str = "resource"  # 'resource' | 'resource+name'
     classifier_confidence_threshold: float = 0.6
     # Run full SHACL validation (with the ontology hierarchy) on every
-    # registration, after the lightweight check. Off by default.
-    shacl_on_register: bool = False
+    # registration, after the lightweight check. On by default.
+    shacl_on_register: bool = True
     auto_train: bool = True
-    training_samples: int = 500
+    training_samples: int = 2000
     # 'profiles' = SyntheticDatasetGenerator (hand-written profiles, 5 classes);
     # 'catalog'  = CatalogDatasetGenerator (real-board catalog, calibrated memory,
     #              labeling 'clasificador', includes Microcontroller).
-    training_source: str = "profiles"
+    training_source: str = "catalog"
 
     # BlockDAG
     enable_dag: bool = True
@@ -78,15 +78,15 @@ class Config:
             node_id=os.getenv('ITS_NODE_ID', 'edge-node-01'),
             data_dir=os.getenv('ITS_DATA_DIR', './data'),
             log_level=os.getenv('ITS_LOG_LEVEL', 'INFO'),
-            classifier_type=os.getenv('ITS_CLASSIFIER', 'rule_based'),
-            classifier_feature_set=os.getenv('ITS_FEATURE_SET', 'resource+name'),
-            training_source=os.getenv('ITS_TRAINING_SOURCE', 'profiles'),
-            training_samples=int(os.getenv('ITS_TRAINING_SAMPLES', '500')),
+            classifier_type=os.getenv('ITS_CLASSIFIER', 'random_forest'),
+            classifier_feature_set=os.getenv('ITS_FEATURE_SET', 'resource'),
+            training_source=os.getenv('ITS_TRAINING_SOURCE', 'catalog'),
+            training_samples=int(os.getenv('ITS_TRAINING_SAMPLES', '2000')),
             enable_dag=os.getenv('ITS_ENABLE_DAG', 'true').lower() == 'true',
             dag_key_file=os.getenv('ITS_DAG_KEY_FILE') or None,
             dag_trusted_keys_file=os.getenv('ITS_DAG_TRUSTED_KEYS_FILE') or None,
             dag_require_signatures=os.getenv('ITS_DAG_REQUIRE_SIGNATURES', 'false').lower() == 'true',
-            shacl_on_register=os.getenv('ITS_SHACL_ON_REGISTER', 'false').lower() == 'true'
+            shacl_on_register=os.getenv('ITS_SHACL_ON_REGISTER', 'true').lower() == 'true'
         )
 
     def to_yaml(self, filepath: str):

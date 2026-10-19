@@ -66,31 +66,31 @@ Examples:
     parser.add_argument(
         '--classifier',
         choices=['rule_based', 'decision_tree', 'random_forest'],
-        default='rule_based',
-        help='Classifier type (default: rule_based)'
+        default='random_forest',
+        help='Classifier type (default: random_forest)'
     )
     parser.add_argument(
         '--feature-set',
         choices=['resource', 'resource+name'],
-        default='resource+name',
+        default='resource',
         help='Features used by the ML classifier. "resource" uses only '
              'quantitative resource characteristics; "resource+name" also '
              'uses flags derived from the hardware model string '
-             '(default: resource+name)'
+             '(default: resource)'
     )
     parser.add_argument(
         '--training-source',
         choices=['profiles', 'catalog'],
-        default='profiles',
-        help='Training data for the ML classifier: "profiles" = hand-written '
-             'synthetic profiles (5 classes); "catalog" = real-board catalog '
-             'with calibrated memory, as in the paper (default: profiles)'
+        default='catalog',
+        help='Training data for the ML classifier: "catalog" = real-board '
+             'catalog with calibrated memory (6 classes); "profiles" = '
+             'hand-written synthetic profiles (5 classes) (default: catalog)'
     )
     parser.add_argument(
         '--training-samples',
         type=int,
-        default=500,
-        help='Training announcements for the ML classifier (default: 500)'
+        default=2000,
+        help='Training announcements for the ML classifier (default: 2000)'
     )
     parser.add_argument(
         '--no-dag',
@@ -118,10 +118,11 @@ Examples:
     )
     parser.add_argument(
         '--shacl-on-register',
-        action='store_true',
+        action=argparse.BooleanOptionalAction,
+        default=os.getenv('ITS_SHACL_ON_REGISTER', 'true').lower() == 'true',
         help='Validate every registration with the full SHACL shapes (and the '
-             'ontology hierarchy) after the lightweight check. '
-             'Also: ITS_SHACL_ON_REGISTER=true'
+             'ontology hierarchy) after the lightweight check. On by default; '
+             '--no-shacl-on-register (or ITS_SHACL_ON_REGISTER=false) turns it off'
     )
     parser.add_argument(
         '--log-level',
@@ -160,10 +161,7 @@ def main():
                 args.dag_require_signatures
                 or os.getenv('ITS_DAG_REQUIRE_SIGNATURES', 'false').lower() == 'true'
             ),
-            shacl_on_register=(
-                args.shacl_on_register
-                or os.getenv('ITS_SHACL_ON_REGISTER', 'false').lower() == 'true'
-            ),
+            shacl_on_register=args.shacl_on_register,
             log_level=args.log_level
         )
 

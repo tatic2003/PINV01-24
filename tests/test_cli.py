@@ -509,7 +509,12 @@ class TestParseArgs:
             assert args.node_id == 'edge-node-01'
             assert args.debug is False
             assert args.config is None
-            assert args.classifier == 'rule_based'
+            # Defaults are the configuration evaluated in the paper
+            assert args.classifier == 'random_forest'
+            assert args.feature_set == 'resource'
+            assert args.training_source == 'catalog'
+            assert args.training_samples == 2000
+            assert args.shacl_on_register is True
             assert args.no_dag is False
             assert args.log_level == 'INFO'
 

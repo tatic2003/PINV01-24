@@ -10,7 +10,7 @@ through two paths:
 
   server  POST /api/devices/register on the real Flask app (in process, test
           client): the lightweight validator, PnP-AI classification, full
-          SHACL when --shacl-on-register is given, the RDF graph and the signed
+          SHACL (unless --no-shacl-on-register), the RDF graph and the signed
           BlockDAG. Accepted = HTTP 200.
           This is the path a device actually takes when it registers.
   shacl   the full SHACL validation used by the baseline: one RDF graph per
@@ -44,7 +44,7 @@ Output (in --output-dir):
   invalid_events_meta.json    arguments, catalog version, versions
 
 Usage (Pi 5, repository folder, server and bridge stopped):
-  python experiments/run_invalid_events.py --n 100 --shacl-on-register --output-dir experiments/results/invalid_events
+  python experiments/run_invalid_events.py --n 100 --output-dir experiments/results/invalid_events
 
 Project: PINV01-24 - FIUNA
 """
@@ -164,8 +164,8 @@ def main():
     ap.add_argument('--n', type=int, default=100, help='events per category (default 100)')
     ap.add_argument('--seed', type=int, default=42)
     ap.add_argument('--training-samples', type=int, default=2000)
-    ap.add_argument('--shacl-on-register', action='store_true',
-                    help='server path also runs full SHACL, as the server with --shacl-on-register')
+    ap.add_argument('--shacl-on-register', action=argparse.BooleanOptionalAction, default=True,
+                    help='server path also runs full SHACL, as the server does by default')
     ap.add_argument('--output-dir', default='experiments/results/invalid_events')
     args = ap.parse_args()
     logging.disable(logging.WARNING)   # the server logs every registration

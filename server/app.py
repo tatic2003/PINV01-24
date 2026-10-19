@@ -18,7 +18,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from .config import Config
 from semantic_layer import SemanticDeviceManager
 from pnp_ai.device_classifier import DeviceClassifier
-from pnp_ai.capability_rules import apply_capability_rules
 from blockdag import BlockDAG, DAGStorage, build_dag_options
 
 
@@ -246,8 +245,6 @@ def _register_routes(app: Flask):
             classification = app.classifier.classify(data)
         except (TypeError, ValueError) as exc:
             return jsonify({'success': False, 'error': f'Cannot classify announcement: {exc}'}), 400
-        # Safety net for models that predate the GNSSReceiver class.
-        classification = apply_capability_rules(data, classification, _known_classes(app.classifier))
         t_classify_ms = (time.perf_counter() - t0) * 1000.0
 
         # The classification is what types the device in the ontology, but only
@@ -257,6 +254,9 @@ def _register_routes(app: Flask):
         # being persisted silently.
         threshold = app.config['ITS_CONFIG'].classifier_confidence_threshold
         low_confidence = classification.confidence < threshold
+        # Below the threshold the device is typed with the generic class, never
+        # with a class guessed from its hardware name.
+        typed_class = 'IoTDevice' if low_confidence else classification.device_type
         if low_confidence:
             app.logger.warning(
                 f"Low-confidence classification for "
@@ -278,7 +278,7 @@ def _register_routes(app: Flask):
                 tmp = RDFStore(load_ontology=False)
                 tmp.register_device(
                     app.semantic_manager._normalize_device_data(data),
-                    device_type=None if low_confidence else classification.device_type)
+                    device_type=typed_class)
                 shacl = app.shacl_validator.validate(tmp.graph)
             except ValueError as exc:
                 shacl = None
@@ -298,7 +298,7 @@ def _register_routes(app: Flask):
         t0 = time.perf_counter()
         result = app.semantic_manager.register_device(
             data,
-            device_type=None if low_confidence else classification.device_type,
+            device_type=typed_class,
             validated=True
         )
         t_semantic_ms = t_validate_ms + (time.perf_counter() - t0) * 1000.0
@@ -421,7 +421,6 @@ def _register_routes(app: Flask):
             classification = app.classifier.classify(data)
         except (TypeError, ValueError) as exc:
             return jsonify({'error': f'Cannot classify announcement: {exc}'}), 400
-        classification = apply_capability_rules(data, classification, _known_classes(app.classifier))
         return jsonify(classification.to_dict())
 
     # ===================
