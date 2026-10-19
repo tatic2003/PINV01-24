@@ -89,7 +89,10 @@ class RDFStore:
         # Create device URI
         device_uri = IOT[f"device/{device_id}"]
 
-        hardware = device_data.get('hardware_type') or device_data.get('hardware', 'Unknown')
+        # No default: a missing hardware type stays missing, so that the
+        # IoTDeviceShape (minCount 1) reports it instead of it conforming as
+        # 'Unknown'.
+        hardware = device_data.get('hardware_type') or device_data.get('hardware') or ''
 
         # Prefer the classifier's decision; fall back to the name rules.
         device_class = IOT[device_type] if device_type else self._determine_device_class(hardware)
@@ -104,7 +107,8 @@ class RDFStore:
         if ip:
             self.graph.add((device_uri, IOT.ipAddress, Literal(ip, datatype=XSD.string)))
 
-        self.graph.add((device_uri, IOT.hardwareType, Literal(hardware, datatype=XSD.string)))
+        if hardware:
+            self.graph.add((device_uri, IOT.hardwareType, Literal(hardware, datatype=XSD.string)))
 
         # Add optional properties
         if 'mac_address' in device_data:
@@ -118,6 +122,21 @@ class RDFStore:
         if 'location' in device_data:
             self.graph.add((device_uri, IOT.location,
                            Literal(device_data['location'], datatype=XSD.string)))
+
+        # Announced memory, so that SHACL can check it. A value that is not a
+        # number is kept as a string literal: the shape then reports a datatype
+        # violation instead of the store failing.
+        for key, prop in (('memory_total', IOT.memoryTotal), ('memory_free', IOT.memoryFree)):
+            value = device_data.get(key)
+            if value is None:
+                continue
+            try:
+                if isinstance(value, bool):
+                    raise TypeError
+                literal = Literal(int(float(value)), datatype=XSD.integer)
+            except (TypeError, ValueError):
+                literal = Literal(str(value), datatype=XSD.string)
+            self.graph.add((device_uri, prop, literal))
 
         # GNSS receivers: typed position/quality literals and a capability
         if device_class == IOT.GNSSReceiver:

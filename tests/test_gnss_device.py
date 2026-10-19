@@ -31,6 +31,9 @@ def gnss_announcement(**over):
         'satellites': 9,
         'fix_quality': 1,
         'update_rate_hz': 1,
+        # Resources of the host, as the GNSS agent announces them
+        'memory_total': 8_454_012_928,
+        'memory_free': 6_000_000_000,
     }
     data.update(over)
     return data

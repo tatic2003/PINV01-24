@@ -54,6 +54,26 @@ iot:IoTDeviceShape
         sh:name "Device State" ;
         sh:description "Current state of the device" ;
         sh:severity sh:Warning ;
+    ] ;
+    sh:property [
+        sh:path iot:memoryTotal ;
+        sh:datatype xsd:integer ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:minExclusive 0 ;
+        sh:name "Total Memory" ;
+        sh:description "Announced memory in bytes; required and positive" ;
+        sh:severity sh:Violation ;
+    ] ;
+    sh:property [
+        sh:path iot:memoryFree ;
+        sh:datatype xsd:integer ;
+        sh:maxCount 1 ;
+        sh:minInclusive 0 ;
+        sh:lessThanOrEquals iot:memoryTotal ;
+        sh:name "Free Memory" ;
+        sh:description "Free memory in bytes; between 0 and the total memory" ;
+        sh:severity sh:Violation ;
     ] .
 
 # ------------------------------------------------------------

@@ -146,7 +146,8 @@ class TestDeviceEndpoints:
         device_data = {
             'id': 'test-state-device',
             'ip': '192.168.1.102',
-            'hardware': 'ESP32-WROOM32'
+            'hardware': 'ESP32-WROOM32',
+            'memory_total': 331488
         }
 
         client.post(
@@ -407,7 +408,8 @@ class TestDeviceWorkflow:
             {
                 'id': f'multi-test-{i}',
                 'ip': f'192.168.1.{100+i}',
-                'hardware': 'ESP32-WROOM32' if i % 2 == 0 else 'Raspberry Pi 4'
+                'hardware': 'ESP32-WROOM32' if i % 2 == 0 else 'Raspberry Pi 4',
+                'memory_total': 331488 if i % 2 == 0 else 4_096_000_000
             }
             for i in range(5)
         ]

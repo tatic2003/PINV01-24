@@ -117,6 +117,13 @@ Examples:
              'creator. Also: ITS_DAG_REQUIRE_SIGNATURES=true'
     )
     parser.add_argument(
+        '--shacl-on-register',
+        action='store_true',
+        help='Validate every registration with the full SHACL shapes (and the '
+             'ontology hierarchy) after the lightweight check. '
+             'Also: ITS_SHACL_ON_REGISTER=true'
+    )
+    parser.add_argument(
         '--log-level',
         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR'],
         default='INFO',
@@ -153,6 +160,10 @@ def main():
                 args.dag_require_signatures
                 or os.getenv('ITS_DAG_REQUIRE_SIGNATURES', 'false').lower() == 'true'
             ),
+            shacl_on_register=(
+                args.shacl_on_register
+                or os.getenv('ITS_SHACL_ON_REGISTER', 'false').lower() == 'true'
+            ),
             log_level=args.log_level
         )
 
@@ -171,6 +182,9 @@ def main():
     if config.enable_dag:
         print(f" DAG signing: {'on' if config.dag_key_file else 'off'}"
               f" (require signatures: {config.dag_require_signatures})")
+    if config.classifier_type != 'rule_based':
+        print(f" Training:   {config.training_source}, {config.training_samples} samples")
+    print(f" SHACL on register: {'on' if config.shacl_on_register else 'off'}")
     print(f" Debug:      {config.debug}")
     print("=" * 60)
 

@@ -88,6 +88,7 @@ ONBOARDING_COLUMNS = [
     "srv_classify_ms",
     "srv_semantic_ms",
     "srv_dag_ms",
+    "srv_shacl_ms",          # full SHACL on registration (server --shacl-on-register)
     "srv_total_ms",
     "device_type",
     "confidence",
@@ -228,6 +229,7 @@ def make_on_message(http_base, events, onboarding=None, session=""):
                     srv_classify_ms=srv.get("classify", ""),
                     srv_semantic_ms=srv.get("semantic", ""),
                     srv_dag_ms=srv.get("dag", ""),
+                    srv_shacl_ms=srv.get("shacl", ""),
                     srv_total_ms=srv.get("total", ""),
                     device_type=cls.get("device_type", ""),
                     confidence=cls.get("confidence", ""),

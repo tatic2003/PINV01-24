@@ -25,6 +25,7 @@ Stages of an ESP32 onboarding (milliseconds):
   srv_classify    PnP-AI classification
   srv_semantic    lightweight validation + RDF graph
   srv_dag         BlockDAG append
+  srv_shacl       full SHACL validation (only with --shacl-on-register; else 0)
   srv_other       rest of the server handler
 
 Linux boards (linux_agent.py) report agent_to_mqtt and mqtt_to_publish
@@ -70,7 +71,7 @@ ESP32_STAGES = ["boot_to_setup", "serial_wait", "link", "mqtt_connect", "announc
 LINUX_STAGES = ["agent_to_mqtt", "mqtt_to_publish"]
 SERIAL_STAGES = ["usb_to_open", "board_boot", "announce_to_publish"]
 PIPELINE_STAGES = ["transit", "bridge_queue", "http", "srv_classify", "srv_semantic",
-                   "srv_dag", "srv_other"]
+                   "srv_shacl", "srv_dag", "srv_other"]
 
 DEVICE_TYPES = [            # (id prefix, label) - first match wins
     ("esp32-wroom32", "ESP32-WROOM-32"),
@@ -130,7 +131,10 @@ def compute_stages(df):
     out["srv_classify"] = cls
     out["srv_semantic"] = sem
     out["srv_dag"] = dag
-    out["srv_other"] = srv_total - (cls + sem + dag)
+    # Sessions without SHACL on registration (or older CSVs) count it as 0.
+    shacl = num(df, "srv_shacl_ms").fillna(0.0)
+    out["srv_shacl"] = shacl
+    out["srv_other"] = srv_total - (cls + sem + dag + shacl)
     out["arrival_epoch_ms"] = arrival
 
     out["publish_to_registered"] = out[PIPELINE_STAGES].sum(axis=1, min_count=len(PIPELINE_STAGES))

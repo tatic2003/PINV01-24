@@ -83,6 +83,14 @@ def _init_components(app: Flask, config: Config):
     app.semantic_manager = SemanticDeviceManager(validate_on_register=True)
     app.logger.info("Semantic Device Manager initialized")
 
+    # Full SHACL validation on the registration path (optional). The shapes
+    # and the ontology hierarchy are loaded once here, not per request.
+    app.shacl_validator = None
+    if getattr(config, 'shacl_on_register', False):
+        from semantic_layer.validator import SHACLValidator
+        app.shacl_validator = SHACLValidator()
+        app.logger.info("SHACL validation on registration: on")
+
     # Device Classifier
     app.classifier = DeviceClassifier(
         model_type=config.classifier_type,
@@ -218,9 +226,26 @@ def _register_routes(app: Flask):
 
         app.logger.info(f"Device registration: {data.get('id', data.get('device_id', 'unknown'))}")
 
+        # Validate before classifying: a malformed announcement is rejected
+        # with 400 without paying for the classification, and the classifier
+        # never sees values it cannot convert (which used to end in a 500).
+        t0 = time.perf_counter()
+        validation = app.semantic_manager.validate_announcement(data)
+        t_validate_ms = (time.perf_counter() - t0) * 1000.0
+        if not validation.is_valid:
+            return jsonify({
+                'success': False,
+                'error': 'Validation failed',
+                'validation': validation.to_dict(),
+                'timing_ms': {'semantic': round(t_validate_ms, 3)},
+            }), 400
+
         # Classify the device
         t0 = time.perf_counter()
-        classification = app.classifier.classify(data)
+        try:
+            classification = app.classifier.classify(data)
+        except (TypeError, ValueError) as exc:
+            return jsonify({'success': False, 'error': f'Cannot classify announcement: {exc}'}), 400
         # Safety net for models that predate the GNSSReceiver class.
         classification = apply_capability_rules(data, classification, _known_classes(app.classifier))
         t_classify_ms = (time.perf_counter() - t0) * 1000.0
@@ -242,13 +267,41 @@ def _register_routes(app: Flask):
                 f"training distribution."
             )
 
+        # Full SHACL validation of this device's own graph, typed as it will be
+        # stored. Validating a per-device graph keeps the cost independent of
+        # how many devices are already registered.
+        t_shacl_ms = None
+        if app.shacl_validator is not None:
+            from semantic_layer.rdf_store import RDFStore
+            t0 = time.perf_counter()
+            try:
+                tmp = RDFStore(load_ontology=False)
+                tmp.register_device(
+                    app.semantic_manager._normalize_device_data(data),
+                    device_type=None if low_confidence else classification.device_type)
+                shacl = app.shacl_validator.validate(tmp.graph)
+            except ValueError as exc:
+                shacl = None
+                shacl_error = str(exc)
+            t_shacl_ms = (time.perf_counter() - t0) * 1000.0
+            if shacl is None or not shacl.is_valid:
+                return jsonify({
+                    'success': False,
+                    'error': 'SHACL validation failed',
+                    'validation': shacl.to_dict() if shacl is not None else {'error': shacl_error},
+                    'timing_ms': {'semantic': round(t_validate_ms, 3),
+                                  'classify': round(t_classify_ms, 3),
+                                  'shacl': round(t_shacl_ms, 3)},
+                }), 400
+
         # Register with semantic layer (lightweight validation + RDF graph)
         t0 = time.perf_counter()
         result = app.semantic_manager.register_device(
             data,
-            device_type=None if low_confidence else classification.device_type
+            device_type=None if low_confidence else classification.device_type,
+            validated=True
         )
-        t_semantic_ms = (time.perf_counter() - t0) * 1000.0
+        t_semantic_ms = t_validate_ms + (time.perf_counter() - t0) * 1000.0
 
         if not result['success']:
             return jsonify(result), 400
@@ -265,6 +318,15 @@ def _register_routes(app: Flask):
             })
         t_dag_ms = (time.perf_counter() - t0) * 1000.0
 
+        timing = {
+            'classify': round(t_classify_ms, 3),
+            'semantic': round(t_semantic_ms, 3),
+            'dag': round(t_dag_ms, 3),
+        }
+        if t_shacl_ms is not None:
+            timing['shacl'] = round(t_shacl_ms, 3)
+        timing['total'] = round((time.perf_counter() - t_start) * 1000.0, 3)
+
         return jsonify({
             'status': 'registered',
             'device_id': result.get('device_id'),
@@ -276,12 +338,7 @@ def _register_routes(app: Flask):
             # Stage timings of this request, in milliseconds. 'total' runs from
             # the start of the handler to just before the response is built.
             'server_recv_epoch_ms': round(recv_epoch_ms, 3),
-            'timing_ms': {
-                'classify': round(t_classify_ms, 3),
-                'semantic': round(t_semantic_ms, 3),
-                'dag': round(t_dag_ms, 3),
-                'total': round((time.perf_counter() - t_start) * 1000.0, 3),
-            }
+            'timing_ms': timing,
         })
 
     @app.route('/api/devices', methods=['GET'])
@@ -360,7 +417,11 @@ def _register_routes(app: Flask):
         if not data:
             return jsonify({'error': 'No JSON data provided'}), 400
 
-        classification = apply_capability_rules(data, app.classifier.classify(data), _known_classes(app.classifier))
+        try:
+            classification = app.classifier.classify(data)
+        except (TypeError, ValueError) as exc:
+            return jsonify({'error': f'Cannot classify announcement: {exc}'}), 400
+        classification = apply_capability_rules(data, classification, _known_classes(app.classifier))
         return jsonify(classification.to_dict())
 
     # ===================

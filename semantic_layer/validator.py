@@ -277,6 +277,7 @@ class SHACLValidator:
                     'message': 'Invalid MAC address format (expected XX:XX:XX:XX:XX:XX)'
                 })
 
+        violations.extend(self._validate_resource_fields(device_data))
         violations.extend(self._validate_gnss_fields(device_data))
 
         conforms = len(violations) == 0
@@ -286,6 +287,47 @@ class SHACLValidator:
             warnings=warnings,
             info=info
         )
+
+    @staticmethod
+    def _validate_resource_fields(data: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        Checks on the announced resources, mirroring IoTDeviceShape.
+
+        memory_total is required: the classifier uses it, and every firmware
+        and agent of the project announces it. memory_free, when present, must
+        lie between 0 and memory_total, and cpu_freq_mhz must be positive.
+        """
+        out = []
+
+        def number(key):
+            value = data.get(key)
+            if value is None:
+                return None
+            if isinstance(value, bool):
+                out.append({'path': key, 'value': value, 'message': f'{key} must be a number'})
+                return None
+            try:
+                return float(value)
+            except (TypeError, ValueError):
+                out.append({'path': key, 'value': value, 'message': f'{key} must be a number'})
+                return None
+
+        if data.get('memory_total') is None:
+            out.append({'path': 'memory_total', 'message': "Required field 'memory_total' is missing"})
+        total = number('memory_total')
+        free = number('memory_free')
+        cpu = number('cpu_freq_mhz')
+
+        if total is not None and total <= 0:
+            out.append({'path': 'memory_total', 'value': total, 'message': 'memory_total must be positive'})
+        if free is not None and free < 0:
+            out.append({'path': 'memory_free', 'value': free, 'message': 'memory_free must not be negative'})
+        if free is not None and total is not None and total > 0 and free > total:
+            out.append({'path': 'memory_free', 'value': free,
+                        'message': 'memory_free must not exceed memory_total'})
+        if cpu is not None and cpu <= 0:
+            out.append({'path': 'cpu_freq_mhz', 'value': cpu, 'message': 'cpu_freq_mhz must be positive'})
+        return out
 
     @staticmethod
     def _validate_gnss_fields(data: Dict[str, Any]) -> List[Dict[str, Any]]:

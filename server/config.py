@@ -35,6 +35,9 @@ class Config:
     classifier_type: str = "rule_based"  # 'rule_based', 'decision_tree', 'random_forest'
     classifier_feature_set: str = "resource+name"  # 'resource' | 'resource+name'
     classifier_confidence_threshold: float = 0.6
+    # Run full SHACL validation (with the ontology hierarchy) on every
+    # registration, after the lightweight check. Off by default.
+    shacl_on_register: bool = False
     auto_train: bool = True
     training_samples: int = 500
     # 'profiles' = SyntheticDatasetGenerator (hand-written profiles, 5 classes);
@@ -82,7 +85,8 @@ class Config:
             enable_dag=os.getenv('ITS_ENABLE_DAG', 'true').lower() == 'true',
             dag_key_file=os.getenv('ITS_DAG_KEY_FILE') or None,
             dag_trusted_keys_file=os.getenv('ITS_DAG_TRUSTED_KEYS_FILE') or None,
-            dag_require_signatures=os.getenv('ITS_DAG_REQUIRE_SIGNATURES', 'false').lower() == 'true'
+            dag_require_signatures=os.getenv('ITS_DAG_REQUIRE_SIGNATURES', 'false').lower() == 'true',
+            shacl_on_register=os.getenv('ITS_SHACL_ON_REGISTER', 'false').lower() == 'true'
         )
 
     def to_yaml(self, filepath: str):
@@ -100,6 +104,7 @@ class Config:
             'classifier_type': self.classifier_type,
             'classifier_feature_set': self.classifier_feature_set,
             'classifier_confidence_threshold': self.classifier_confidence_threshold,
+            'shacl_on_register': self.shacl_on_register,
             'auto_train': self.auto_train,
             'training_samples': self.training_samples,
             'training_source': self.training_source,

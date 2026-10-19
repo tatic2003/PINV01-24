@@ -39,7 +39,8 @@ class SemanticDeviceManager:
     def register_device(
         self,
         device_data: Dict[str, Any],
-        device_type: Optional[str] = None
+        device_type: Optional[str] = None,
+        validated: bool = False
     ) -> Dict[str, Any]:
         """
         Register a new IoT device.
@@ -51,6 +52,8 @@ class SemanticDeviceManager:
             device_type: Ontology class decided by the PnP-AI classifier. When
                 given, it types the device in the graph; otherwise the
                 hardware-name rules are used as a fallback.
+            validated: True when the caller already ran validate_announcement()
+                on this data, so the lightweight check is not repeated.
 
         Returns:
             Dictionary with registration result including validation info
@@ -59,7 +62,7 @@ class SemanticDeviceManager:
         normalized = self._normalize_device_data(device_data)
 
         # Validate if enabled
-        if self.validate_on_register:
+        if self.validate_on_register and not validated:
             validation = self.validator.validate_device_registration(normalized)
             if not validation.is_valid:
                 return {
@@ -101,6 +104,10 @@ class SemanticDeviceManager:
                 'success': False,
                 'error': str(e)
             }
+
+    def validate_announcement(self, device_data: Dict[str, Any]):
+        """Lightweight validation of an announcement, before anything else uses it."""
+        return self.validator.validate_device_registration(self._normalize_device_data(device_data))
 
     def _normalize_device_data(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Normalize device data keys to standard format."""

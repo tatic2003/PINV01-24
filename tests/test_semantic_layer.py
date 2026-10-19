@@ -124,7 +124,8 @@ class TestSHACLValidator:
         device_data = {
             'device_id': 'valid-device-01',
             'ip_address': '192.168.1.100',
-            'hardware_type': 'ESP32-WROOM32'
+            'hardware_type': 'ESP32-WROOM32',
+            'memory_total': 331488
         }
 
         result = validator.validate_device_registration(device_data)
@@ -188,7 +189,8 @@ class TestSemanticDeviceManager:
         result = manager.register_device({
             'id': 'esp32-wifi-01',
             'ip': '192.168.1.101',
-            'hardware': 'ESP32-WROOM32'
+            'hardware': 'ESP32-WROOM32',
+            'memory_total': 331488
         })
 
         assert result['success']
