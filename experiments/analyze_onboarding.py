@@ -225,7 +225,7 @@ def clock_bounds(probe_csv):
     return pd.DataFrame(rows)
 
 
-def plot(summary, out_dir):
+def plot(summary, out_dir, width=9.0):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -237,7 +237,7 @@ def plot(summary, out_dir):
     if means.empty:
         return
     labels = [f"{t}\n({s})" if s else t for s, t in means.index]
-    fig, ax = plt.subplots(figsize=(9, 0.6 * len(means) + 1.8))
+    fig, ax = plt.subplots(figsize=(width, 0.6 * len(means) + 1.8))
     left = np.zeros(len(means))
     cmap = plt.get_cmap("tab20")
     for i, st in enumerate(means.columns):
@@ -255,7 +255,7 @@ def plot(summary, out_dir):
     plt.close(fig)
 
 
-def main():
+def main(argv=None):
     ap = argparse.ArgumentParser(description="Onboarding latency decomposed by stage")
     ap.add_argument("onboarding_csv", nargs="+", help="CSV(s) written by the bridge (--onboarding-csv)")
     ap.add_argument("--probe", help="CSV of experiments/clock_probe.py")
@@ -267,7 +267,8 @@ def main():
                     help="drop the transit of rows whose NTP round trip exceeds this (ms)")
     ap.add_argument("--trial-gap", type=float, default=20.0,
                     help="seconds without arrivals that separate two trials")
-    args = ap.parse_args()
+    ap.add_argument("--fig-width", type=float, default=9.0, help="figure width in inches")
+    args = ap.parse_args(argv)
 
     df = pd.concat([pd.read_csv(p, dtype=str) for p in args.onboarding_csv], ignore_index=True)
     stages = compute_stages(df)
@@ -307,7 +308,7 @@ def main():
     trials["arrival_spread_ms"] = trials["last_arrival"] - trials["first_arrival"]
     trials.to_csv(out / "trials.csv", index=False)
     plot(summary[summary["stage"].isin(ESP32_STAGES + LINUX_STAGES + SERIAL_STAGES
-                                        + PIPELINE_STAGES)], out)
+                                        + PIPELINE_STAGES)], out, width=args.fig_width)
 
     print(f"{len(stages)} onboardings analysed ({dropped_http} dropped for HTTP status != 200)")
     if int(loose_clock.sum()):

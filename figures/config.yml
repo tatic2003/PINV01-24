@@ -1,0 +1,95 @@
+# Inputs of figures/make_figures.py and the only fixed values the figures use.
+# Every number drawn in a figure is computed from the data files listed here;
+# the values below only select data (time windows, sources) or describe the
+# experiment (keepalive, start types). Paths are relative to the repository root.
+
+baseline:
+  # Per-event CSVs of baseline/run_benchmark.py and run_distributed_benchmark.py
+  results_dir: baseline/results_pi5_catalog
+
+ttff:
+  # CSV and NMEA log written by experiments/ttff_gps.py for each start type.
+  # The TTFF is recomputed from the NMEA log and checked against the CSV.
+  runs:
+    - label: "Hot (PMTK101)"
+      csv: figures/data/ttff/ttff_hot.csv
+      nmea: figures/data/ttff/ttff_hot_nmea.txt
+    - label: "Cold by command (PMTK103)"
+      csv: figures/data/ttff/ttff_cold_command.csv
+      nmea: figures/data/ttff/ttff_cold_command_nmea.txt
+    - label: "Full cold (PMTK104)"
+      csv: figures/data/ttff/ttff_full_cold.csv
+      nmea: figures/data/ttff/ttff_full_cold_nmea.txt
+  # Largest accepted difference between the TTFF in the CSV (rounded to
+  # 0.1 s, monotonic clock) and the one recomputed from the log (wall clock).
+  tolerance_s: 0.15
+
+chrony:
+  statistics: figures/data/chrony/statistics.log
+  tracking: figures/data/chrony/tracking.log
+  # Steady-state windows of the two clock configurations (UTC). Between them
+  # chrony was restarted with the PPS refclock (header repeated in tracking.log).
+  ntp_window: ["2026-10-12 18:52:00", "2026-10-12 19:13:20"]
+  pps_window: ["2026-10-12 19:16:00", "2026-10-12 19:54:00"]
+  # Clock time on the x axis: UTC plus this offset (local time of the test bench)
+  display_utc_offset_h: -3
+  display_label: "Local time (UTC−3)"
+
+gnss_device:
+  lwt: figures/data/gnss_device/gnss_lwt.csv
+  validation: figures/data/gnss_device/gnss_validacion.csv
+  # Cases rejected before SHACL (a non-numeric latitude cannot be written as a
+  # typed literal), so they have no SHACL time.
+  cases_without_shacl: [lat_not_numeric]
+
+lwt_ethernet:
+  # Cable cuts (experiments/run_lwt_trials.py) and the bridge CSV of the same
+  # session. Each bridge CSV covers both keepalive values of its board.
+  series:
+    - board: Olimex ESP32-PoE
+      device_id: esp32-olimex-poe-01
+      keepalive_s: 15
+      trials: figures/data/lwt_ethernet/lwt_trials_olimex_k15.csv
+      bridge: figures/data/lwt_ethernet/bridge_olimex.csv
+    - board: Olimex ESP32-PoE
+      device_id: esp32-olimex-poe-01
+      keepalive_s: 5
+      trials: figures/data/lwt_ethernet/lwt_trials_olimex_k5.csv
+      bridge: figures/data/lwt_ethernet/bridge_olimex.csv
+    - board: M5Stack PoE CAM-W
+      device_id: esp32-poecam-01
+      keepalive_s: 15
+      trials: figures/data/lwt_ethernet/lwt_trials_poecam_k15.csv
+      bridge: figures/data/lwt_ethernet/bridge_poecam.csv
+    - board: M5Stack PoE CAM-W
+      device_id: esp32-poecam-01
+      keepalive_s: 5
+      trials: figures/data/lwt_ethernet/lwt_trials_poecam_k5.csv
+      bridge: figures/data/lwt_ethernet/bridge_poecam.csv
+
+onboarding:
+  # Bridge onboarding CSVs (--onboarding-csv) of the onboarding sessions, the
+  # CSVs of devices/serial_agent.py (Uno) and of experiments/clock_probe.py.
+  onboarding_csvs: [figures/data/onboarding/onboarding_*.csv]
+  serial_agent_csvs: [figures/data/onboarding/serial_agent_*.csv]
+  probe_csv: figures/data/onboarding/clock_probe.csv
+
+load:
+  # One entry per node under test (experiments/analyze_load.py --node)
+  nodes:
+    - name: pi5
+      onboarding: figures/data/load/onboarding_pi5.csv
+      resources: figures/data/load/resources_pi5.csv
+      generator: figures/data/load/generator_pi5.csv
+    - name: opi
+      onboarding: figures/data/load/onboarding_opi.csv
+      resources: figures/data/load/resources_opi.csv
+      generator: figures/data/load/generator_opi.csv
+
+convergence:
+  runs: figures/data/convergence/runs.csv
+  agents:
+    - name: pi5
+      csv: figures/data/convergence/sync_pi5.csv
+    - name: opi
+      csv: figures/data/convergence/sync_opi.csv

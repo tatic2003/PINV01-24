@@ -82,8 +82,8 @@ def stats_table(data):
     return pd.DataFrame(rows)
 
 
-def plot_latency(data, out: Path):
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
+def plot_latency(data, out: Path, figsize=(10, 4)):
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=figsize)
     keys = [s[0] for s in SERIES]
     labels = [s[3] for s in SERIES]
     colors = [s[4] for s in SERIES]
@@ -96,7 +96,8 @@ def plot_latency(data, out: Path):
     for med in bp["medians"]:
         med.set_color("black")
     ax1.set_xticks(range(1, len(keys) + 1))
-    ax1.set_xticklabels([l.replace(" (", "\n(") for l in labels], fontsize=8)
+    # "Distributed DT (signed DAG)" -> "DT\ndistributed"; the legend of (b) has the full names
+    ax1.set_xticklabels([f"{l.split()[1]}\n{l.split()[0].lower()}" for l in labels], fontsize=8)
     ax1.set_ylabel("End-to-end latency per event (ms)")
     ax1.set_ylim(bottom=0)
     ax1.grid(axis="y", alpha=0.3)
@@ -111,16 +112,17 @@ def plot_latency(data, out: Path):
     ax2.set_xlabel("End-to-end latency per event (ms)")
     ax2.set_ylabel("Cumulative probability")
     ax2.grid(alpha=0.3)
-    ax2.legend(fontsize=8, loc="lower right")
     ax2.set_title("(b)", loc="left")
 
-    fig.tight_layout()
+    handles, names = ax2.get_legend_handles_labels()
+    fig.tight_layout(rect=(0, 0.13, 1, 1))
+    fig.legend(handles, names, fontsize=8, loc="lower center", ncol=2, frameon=False)
     for ext in ("pdf", "png"):
         fig.savefig(out / f"fig_baseline_latency.{ext}", dpi=300, bbox_inches="tight")
     plt.close(fig)
 
 
-def plot_stages(data, out: Path):
+def plot_stages(data, out: Path, figsize=(6.5, 4)):
     keys = [s[0] for s in SERIES]
     labels = [s[3].replace(" (", "\n(") for s in SERIES]
     cls = np.array([data[k]["t_classification_ms"].mean() for k in keys])
@@ -129,7 +131,7 @@ def plot_stages(data, out: Path):
     tot = np.array([data[k]["t_total_ms"].mean() for k in keys])
     other = np.clip(tot - cls - sh - dag, 0, None)
 
-    fig, ax = plt.subplots(figsize=(6.5, 4))
+    fig, ax = plt.subplots(figsize=figsize)
     x = np.arange(len(keys))
     bottom = np.zeros(len(keys))
     for vals, name, color in [(cls, "PnP-AI classification", "#4c72b0"),
