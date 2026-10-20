@@ -35,9 +35,15 @@ from semantic_layer.device_manager import SemanticDeviceManager
 from semantic_layer.rdf_store import RDFStore
 from semantic_layer.validator import SHACLValidator
 
+# Base announcement: a valid one under the current contract, with the fields
+# the real gnss_agent announces (the registration path and the SHACL shape
+# require a positive memory_total). Memory values are those measured on the
+# Raspberry Pi 5 host. Each case below changes exactly one thing.
 BASE = {
     "hardware": "Adafruit Ultimate GPS HAT (PA1616D)", "ip": "192.168.1.60",
     "capabilities": ["gnss", "position", "time"],
+    "link_type": "wifi", "memory_total": 8454012928, "memory_free": 7744864256,
+    "cpu_freq_mhz": 2400,
     "lat": -25.2637, "lon": -57.5759, "hdop": 0.9, "satellites": 9,
     "fix_quality": 1, "update_rate_hz": 1,
 }
