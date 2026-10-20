@@ -47,6 +47,23 @@ DEFAULT_TRAINING_SOURCE = _SERVER.training_source
 DEFAULT_FEATURE_SET = _SERVER.classifier_feature_set
 
 
+def build_device_graph(device: Dict[str, Any]):
+    """
+    Build a fresh single-device RDF graph for SHACL validation.
+    Uses a throwaway RDFStore per event so the graph never accumulates,
+    which would artificially inflate SHACL overhead over repetitions.
+    This mirrors how a real centralized system validates each incoming
+    message independently before persisting it.
+    """
+    from semantic_layer.rdf_store import RDFStore
+    tmp_store = RDFStore(load_ontology=False)
+    try:
+        tmp_store.register_device(device)
+    except Exception:
+        pass
+    return tmp_store.graph
+
+
 def training_metadata(training_source: str, training_samples: int, seed: int) -> Dict[str, Any]:
     """What the classifier of a benchmark was trained on, for its summary JSON."""
     meta = {'training_source': training_source, 'training_samples': training_samples, 'seed': seed}
@@ -187,20 +204,7 @@ class CentralizedBaseline:
     # ------------------------------------------------------------------
 
     def _build_device_graph(self, device: Dict[str, Any]):
-        """
-        Build a fresh single-device RDF graph for SHACL validation.
-        Uses a throwaway RDFStore per event so the graph never accumulates,
-        which would artificially inflate SHACL overhead over repetitions.
-        This mirrors how a real centralized system validates each incoming
-        message independently before persisting it.
-        """
-        from semantic_layer.rdf_store import RDFStore
-        tmp_store = RDFStore(load_ontology=False)
-        try:
-            tmp_store.register_device(device)
-        except Exception:
-            pass
-        return tmp_store.graph
+        return build_device_graph(device)
 
     def _log_event(self, event_id: str, payload: Dict[str, Any]) -> float:
         """
