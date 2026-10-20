@@ -220,7 +220,9 @@ def make_on_message(http_base, events, onboarding=None, session=""):
                 cls = body.get("classification") or {}
                 row = {k: timing.get(k, "") for k in ONBOARDING_COLUMNS if k in timing}
                 row.update(
-                    session=session, device_id=device_id,
+                    # A load generator labels each load level in the timing
+                    # block; otherwise the bridge's --session applies.
+                    session=timing.get("session") or session, device_id=device_id,
                     hardware=payload.get("hardware", ""),
                     arrival_epoch_ms=f"{arrival_epoch_ms:.3f}",
                     callback_epoch_ms=f"{callback_epoch_ms:.3f}",

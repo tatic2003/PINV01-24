@@ -132,6 +132,13 @@ class TestBridge:
         assert row["srv_total_ms"] == "4.0" and row["device_type"] == "ESP32Device"
         assert float(row["callback_epoch_ms"]) >= float(row["arrival_epoch_ms"])
 
+    def test_session_from_timing_block_overrides_bridge_session(self, tmp_path, monkeypatch):
+        # A load generator labels every load level in the timing block.
+        _, handler, _ = self.make(tmp_path, monkeypatch)
+        handler(None, None, self.message(dict(ANNOUNCEMENT, timing=dict(TIMING, session="load_pi5_burst_N10"))))
+        row = list(csv.DictReader(open(tmp_path / "onb.csv", encoding="utf-8")))[0]
+        assert row["session"] == "load_pi5_burst_N10"
+
     def test_announcement_without_timing_writes_no_onboarding_row(self, tmp_path, monkeypatch):
         _, handler, sent = self.make(tmp_path, monkeypatch)
         handler(None, None, self.message(dict(ANNOUNCEMENT)))

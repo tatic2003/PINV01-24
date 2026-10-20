@@ -74,6 +74,7 @@ PIPELINE_STAGES = ["transit", "bridge_queue", "http", "srv_classify", "srv_seman
                    "srv_shacl", "srv_dag", "srv_other"]
 
 DEVICE_TYPES = [            # (id prefix, label) - first match wins
+    ("emu-", "Emulated device"),
     ("esp32-wroom32", "ESP32-WROOM-32"),
     ("esp32-c3", "ESP32-C3-Zero"),
     ("esp32-cam", "ESP32-CAM"),
