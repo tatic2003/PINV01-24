@@ -1,0 +1,98 @@
+{
+  "central_dt": {
+    "architecture": "centralized",
+    "model": "decision_tree",
+    "latency_mean_ms": 8.825751593001314,
+    "latency_std_ms": 4.449229031935759,
+    "latency_p95_ms": 9.894940999856772,
+    "throughput_events_per_s": 113.30479783647941,
+    "shacl_overhead_mean_ms": 8.023668074336456,
+    "shacl_conformance_rate": 1.0,
+    "classification_mean_ms": 0.7417539363389855,
+    "classification_accuracy": 0.99,
+    "training_source": "catalog",
+    "training_samples": 2000
+  },
+  "central_rf": {
+    "architecture": "centralized",
+    "model": "random_forest",
+    "latency_mean_ms": 12.244147330668815,
+    "latency_std_ms": 5.928558397159511,
+    "latency_p95_ms": 13.307008000083442,
+    "throughput_events_per_s": 81.67167324875507,
+    "shacl_overhead_mean_ms": 8.334914700335807,
+    "shacl_conformance_rate": 1.0,
+    "classification_mean_ms": 3.845413989332883,
+    "classification_accuracy": 0.99,
+    "training_source": "catalog",
+    "training_samples": 2000
+  },
+  "central_svm": {
+    "architecture": "centralized",
+    "model": "svm",
+    "latency_mean_ms": 11.73561490933965,
+    "latency_std_ms": 5.20866298090664,
+    "latency_p95_ms": 12.79600699990624,
+    "throughput_events_per_s": 85.21070329294477,
+    "shacl_overhead_mean_ms": 8.293005694003872,
+    "shacl_conformance_rate": 1.0,
+    "classification_mean_ms": 3.377040981325384,
+    "classification_accuracy": 0.8425,
+    "training_source": "catalog",
+    "training_samples": 2000
+  },
+  "central_mlp": {
+    "architecture": "centralized",
+    "model": "mlp",
+    "latency_mean_ms": 9.010969835004138,
+    "latency_std_ms": 5.292937088741807,
+    "latency_p95_ms": 10.041292999630969,
+    "throughput_events_per_s": 110.97584592009024,
+    "shacl_overhead_mean_ms": 8.168789986999855,
+    "shacl_conformance_rate": 1.0,
+    "classification_mean_ms": 0.7810821146675456,
+    "classification_accuracy": 0.855,
+    "training_source": "catalog",
+    "training_samples": 2000
+  },
+  "distrib_dt": {
+    "architecture": "distributed",
+    "model": "decision_tree",
+    "latency_mean_ms": 9.123790760331152,
+    "latency_std_ms": 4.683159139437528,
+    "latency_p95_ms": 10.16951000019617,
+    "throughput_events_per_s": 109.60356569638218,
+    "shacl_overhead_mean_ms": 8.138984405996325,
+    "classification_accuracy": 0.99
+  },
+  "distrib_rf": {
+    "architecture": "distributed",
+    "model": "random_forest",
+    "latency_mean_ms": 12.371938009997848,
+    "latency_std_ms": 6.106185780752288,
+    "latency_p95_ms": 13.409470000169676,
+    "throughput_events_per_s": 80.82808038578054,
+    "shacl_overhead_mean_ms": 8.325002458334742,
+    "classification_accuracy": 0.99
+  },
+  "distrib_svm": {
+    "architecture": "distributed",
+    "model": "svm",
+    "latency_mean_ms": 11.942522107664141,
+    "latency_std_ms": 5.417090162864012,
+    "latency_p95_ms": 13.020007000250189,
+    "throughput_events_per_s": 83.73440643314763,
+    "shacl_overhead_mean_ms": 8.334485637333122,
+    "classification_accuracy": 0.8425
+  },
+  "distrib_mlp": {
+    "architecture": "distributed",
+    "model": "mlp",
+    "latency_mean_ms": 9.20125286266466,
+    "latency_std_ms": 4.559203443620947,
+    "latency_p95_ms": 10.265405999689392,
+    "throughput_events_per_s": 108.68085193676576,
+    "shacl_overhead_mean_ms": 8.17935877166777,
+    "classification_accuracy": 0.855
+  }
+}
