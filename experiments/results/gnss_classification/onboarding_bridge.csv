@@ -1,0 +1,1 @@
+session,device_id,hardware,seq,synced,setup_ms,serial_ms,link_ms,sync_ms,sync_rtt_ms,mqtt_ms,publish_ms,epoch_publish_ms,agent_start_epoch_ms,mqtt_epoch_ms,uptime_s,arrival_epoch_ms,callback_epoch_ms,http_status,http_rtt_ms,server_recv_epoch_ms,srv_classify_ms,srv_semantic_ms,srv_dag_ms,srv_shacl_ms,srv_total_ms,device_type,confidence
