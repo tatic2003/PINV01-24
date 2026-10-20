@@ -34,7 +34,8 @@ from semantic_layer.rdf_store import RDFStore
 from semantic_layer.validator import SHACLValidator
 from blockdag.dag import BlockDAG
 from blockdag import signing
-from baseline.central_baseline import make_generator
+from baseline.central_baseline import (make_generator, training_metadata, DEFAULT_FEATURE_SET,
+                                       DEFAULT_TRAINING_SAMPLES, DEFAULT_TRAINING_SOURCE)
 
 import numpy as np
 
@@ -71,8 +72,8 @@ class EdgeNode:
     Each node has its own classifier, validator, and DAG instance.
     """
 
-    def __init__(self, node_id: str, model_type: str, training_samples: int = 1000,
-                 feature_set: str = 'resource', training_source: str = 'profiles',
+    def __init__(self, node_id: str, model_type: str, training_samples: int = DEFAULT_TRAINING_SAMPLES,
+                 feature_set: str = DEFAULT_FEATURE_SET, training_source: str = DEFAULT_TRAINING_SOURCE,
                  sign: bool = False, seed: int = 42):
         self.node_id = node_id
         self.model_type = model_type
@@ -182,11 +183,11 @@ def run_distributed_benchmark(
     num_events: int = 100,
     num_repetitions: int = 30,
     warmup_events: int = 10,
-    training_samples: int = 1000,
+    training_samples: int = DEFAULT_TRAINING_SAMPLES,
     seed: int = 42,
     output_dir: str = 'baseline/results',
-    feature_set: str = 'resource',
-    training_source: str = 'profiles',
+    feature_set: str = DEFAULT_FEATURE_SET,
+    training_source: str = DEFAULT_TRAINING_SOURCE,
     sign: bool = False
 ) -> List[DistributedEventRecord]:
 
@@ -288,7 +289,7 @@ def run_distributed_benchmark(
     summary = {
         'architecture': 'distributed',
         'feature_set': feature_set,
-        'training_source': training_source,
+        **training_metadata(training_source, training_samples, seed),
         'dag_signed': sign,
         'model': model_type,
         'num_nodes': num_nodes,
@@ -333,17 +334,17 @@ if __name__ == '__main__':
                         help='Number of repetitions (default: 30)')
     parser.add_argument('--warmup', type=int, default=10,
                         help='Warmup events to discard (default: 10)')
-    parser.add_argument('--training-samples', type=int, default=1000,
-                        help='PnP-AI training samples (default: 1000)')
+    parser.add_argument('--training-samples', type=int, default=DEFAULT_TRAINING_SAMPLES,
+                        help=f'PnP-AI training samples (default: {DEFAULT_TRAINING_SAMPLES}, as the server)')
     parser.add_argument('--seed', type=int, default=42,
                         help='Random seed (default: 42)')
     parser.add_argument('--feature-set', choices=['resource', 'resource+name'],
-                        default='resource',
-                        help="Classifier features (default: resource, observable only)")
+                        default=DEFAULT_FEATURE_SET,
+                        help=f"Classifier features (default: {DEFAULT_FEATURE_SET}, as the server)")
     parser.add_argument('--training-source', choices=['profiles', 'catalog'],
-                        default='profiles',
+                        default=DEFAULT_TRAINING_SOURCE,
                         help="Training data and benchmark events: 'profiles' (5 classes) or "
-                             "'catalog' (real-board catalog, as in the paper). Default: profiles")
+                             f"'catalog' (real-board catalog). Default: {DEFAULT_TRAINING_SOURCE}, as the server")
     parser.add_argument('--sign', action='store_true',
                         help='Sign every DAG node with Ed25519, as the server does with --dag-key-file')
     parser.add_argument('--output-dir', type=str, default='baseline/results',

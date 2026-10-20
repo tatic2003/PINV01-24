@@ -37,6 +37,25 @@ from semantic_layer.rdf_store import RDFStore
 
 TRAINING_SOURCES = ('profiles', 'catalog')
 
+# The benchmarks train the classifier exactly as the server does by default
+# (server/config.py), so a run without options measures the deployed
+# configuration. Explicit options still override these values.
+from server.config import Config as _ServerConfig  # noqa: E402
+_SERVER = _ServerConfig()
+DEFAULT_TRAINING_SAMPLES = _SERVER.training_samples
+DEFAULT_TRAINING_SOURCE = _SERVER.training_source
+DEFAULT_FEATURE_SET = _SERVER.classifier_feature_set
+
+
+def training_metadata(training_source: str, training_samples: int, seed: int) -> Dict[str, Any]:
+    """What the classifier of a benchmark was trained on, for its summary JSON."""
+    meta = {'training_source': training_source, 'training_samples': training_samples, 'seed': seed}
+    if training_source == 'catalog':
+        from pnp_ai.dataset_generator.catalog import DEFAULT_LABELING, load_catalog
+        meta['labeling'] = DEFAULT_LABELING
+        meta['catalog_version'] = load_catalog().version
+    return meta
+
 
 def make_generator(training_source: str, seed: int):
     """
@@ -125,13 +144,14 @@ class CentralizedBaseline:
     def __init__(
         self,
         model_type: str = 'decision_tree',
-        training_samples: int = 1000,
+        training_samples: int = DEFAULT_TRAINING_SAMPLES,
         seed: int = 42,
-        feature_set: str = 'resource',
-        training_source: str = 'profiles'
+        feature_set: str = DEFAULT_FEATURE_SET,
+        training_source: str = DEFAULT_TRAINING_SOURCE
     ):
         self.model_type = model_type
         self.seed = seed
+        self.training_samples = training_samples
         # 'resource' = only self-reported quantities (deployable signal).
         # 'resource+name' also uses hardware-name flags and is circular with
         # the rule-based baseline; keep it only for comparison.
@@ -424,7 +444,7 @@ class CentralizedBaseline:
         summary['generated_at'] = datetime.utcnow().isoformat()
         summary['architecture'] = 'centralized_baseline'
         summary['feature_set'] = self.feature_set
-        summary['training_source'] = self.training_source
+        summary.update(training_metadata(self.training_source, self.training_samples, self.seed))
 
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(summary, f, indent=2)
@@ -458,7 +478,6 @@ if __name__ == '__main__':
 
     baseline = CentralizedBaseline(
         model_type=args.model,
-        training_samples=1000,
         seed=args.seed
     )
 

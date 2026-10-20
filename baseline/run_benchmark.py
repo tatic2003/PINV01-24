@@ -43,7 +43,8 @@ import matplotlib.pyplot as plt
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from baseline.central_baseline import CentralizedBaseline, BaselineResults
+from baseline.central_baseline import (CentralizedBaseline, BaselineResults, DEFAULT_FEATURE_SET,
+                                       DEFAULT_TRAINING_SAMPLES, DEFAULT_TRAINING_SOURCE)
 
 
 # ---------------------------------------------------------------------------
@@ -322,6 +323,7 @@ def run(args):
             'classification_mean_ms': results.classification_mean_ms,
             'classification_accuracy': results.classification_accuracy,
             'training_source': args.training_source,
+            'training_samples': args.training_samples,
         }
 
     # -----------------------------------------------------------------------
@@ -415,17 +417,17 @@ if __name__ == '__main__':
                         help='Number of repetitions (default: 30)')
     parser.add_argument('--warmup', type=int, default=10,
                         help='Warmup events to discard (default: 10)')
-    parser.add_argument('--training-samples', type=int, default=1000,
-                        help='PnP-AI training samples (default: 1000)')
+    parser.add_argument('--training-samples', type=int, default=DEFAULT_TRAINING_SAMPLES,
+                        help=f'PnP-AI training samples (default: {DEFAULT_TRAINING_SAMPLES}, as the server)')
     parser.add_argument('--seed', type=int, default=42,
                         help='Random seed (default: 42)')
     parser.add_argument('--feature-set', choices=['resource', 'resource+name'],
-                        default='resource',
-                        help="Classifier features (default: resource, observable only)")
+                        default=DEFAULT_FEATURE_SET,
+                        help=f"Classifier features (default: {DEFAULT_FEATURE_SET}, as the server)")
     parser.add_argument('--training-source', choices=['profiles', 'catalog'],
-                        default='profiles',
+                        default=DEFAULT_TRAINING_SOURCE,
                         help="Training data and benchmark events: 'profiles' (5 classes) or "
-                             "'catalog' (real-board catalog, as in the paper). Default: profiles")
+                             f"'catalog' (real-board catalog). Default: {DEFAULT_TRAINING_SOURCE}, as the server")
     parser.add_argument('--output-dir', type=str, default='baseline/results',
                         help='Output directory (default: baseline/results)')
     args = parser.parse_args()
