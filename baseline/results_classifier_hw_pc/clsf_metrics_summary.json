@@ -1,0 +1,193 @@
+{
+  "_meta": {
+    "training_source": "catalog",
+    "samples": 2000,
+    "test_split": 400,
+    "feature_set": "resource",
+    "seed": 42,
+    "classes": [
+      "ESP32Device",
+      "GNSSReceiver",
+      "IoTGateway",
+      "Microcontroller",
+      "Sensor",
+      "SingleBoardComputer"
+    ]
+  },
+  "Decision Tree": {
+    "accuracy": 0.99,
+    "f1_macro": 0.9899,
+    "infer_ms": 0.03,
+    "train_ms": 84.6,
+    "per_class": {
+      "ESP32Device": {
+        "precision": 1.0,
+        "recall": 0.9692307692307692,
+        "f1": 0.984375,
+        "support": 65.0
+      },
+      "GNSSReceiver": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 69.0
+      },
+      "IoTGateway": {
+        "precision": 0.9846153846153847,
+        "recall": 1.0,
+        "f1": 0.9922480620155039,
+        "support": 64.0
+      },
+      "Microcontroller": {
+        "precision": 0.9565217391304348,
+        "recall": 1.0,
+        "f1": 0.9777777777777777,
+        "support": 66.0
+      },
+      "Sensor": {
+        "precision": 1.0,
+        "recall": 0.9846153846153847,
+        "f1": 0.9922480620155039,
+        "support": 65.0
+      },
+      "SingleBoardComputer": {
+        "precision": 1.0,
+        "recall": 0.9859154929577465,
+        "f1": 0.9929078014184397,
+        "support": 71.0
+      }
+    }
+  },
+  "Random Forest": {
+    "accuracy": 0.99,
+    "f1_macro": 0.9901,
+    "infer_ms": 0.7868,
+    "train_ms": 163.4,
+    "per_class": {
+      "ESP32Device": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 65.0
+      },
+      "GNSSReceiver": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 69.0
+      },
+      "IoTGateway": {
+        "precision": 0.9838709677419355,
+        "recall": 0.953125,
+        "f1": 0.9682539682539683,
+        "support": 64.0
+      },
+      "Microcontroller": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 66.0
+      },
+      "Sensor": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 65.0
+      },
+      "SingleBoardComputer": {
+        "precision": 0.958904109589041,
+        "recall": 0.9859154929577465,
+        "f1": 0.9722222222222222,
+        "support": 71.0
+      }
+    }
+  },
+  "SVM": {
+    "accuracy": 0.8425,
+    "f1_macro": 0.8348,
+    "infer_ms": 0.6695,
+    "train_ms": 278.5,
+    "per_class": {
+      "ESP32Device": {
+        "precision": 0.6813186813186813,
+        "recall": 0.9538461538461539,
+        "f1": 0.7948717948717948,
+        "support": 65.0
+      },
+      "GNSSReceiver": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 69.0
+      },
+      "IoTGateway": {
+        "precision": 0.7666666666666667,
+        "recall": 0.71875,
+        "f1": 0.7419354838709677,
+        "support": 64.0
+      },
+      "Microcontroller": {
+        "precision": 0.8974358974358975,
+        "recall": 0.5303030303030303,
+        "f1": 0.6666666666666666,
+        "support": 66.0
+      },
+      "Sensor": {
+        "precision": 0.8904109589041096,
+        "recall": 1.0,
+        "f1": 0.9420289855072463,
+        "support": 65.0
+      },
+      "SingleBoardComputer": {
+        "precision": 0.8823529411764706,
+        "recall": 0.8450704225352113,
+        "f1": 0.8633093525179856,
+        "support": 71.0
+      }
+    }
+  },
+  "MLP": {
+    "accuracy": 0.855,
+    "f1_macro": 0.8456,
+    "infer_ms": 0.0343,
+    "train_ms": 175.6,
+    "per_class": {
+      "ESP32Device": {
+        "precision": 0.6966292134831461,
+        "recall": 0.9538461538461539,
+        "f1": 0.8051948051948052,
+        "support": 65.0
+      },
+      "GNSSReceiver": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 69.0
+      },
+      "IoTGateway": {
+        "precision": 0.8490566037735849,
+        "recall": 0.703125,
+        "f1": 0.7692307692307693,
+        "support": 64.0
+      },
+      "Microcontroller": {
+        "precision": 0.8974358974358975,
+        "recall": 0.5303030303030303,
+        "f1": 0.6666666666666666,
+        "support": 66.0
+      },
+      "Sensor": {
+        "precision": 0.8552631578947368,
+        "recall": 1.0,
+        "f1": 0.9219858156028369,
+        "support": 65.0
+      },
+      "SingleBoardComputer": {
+        "precision": 0.8918918918918919,
+        "recall": 0.9295774647887324,
+        "f1": 0.9103448275862069,
+        "support": 71.0
+      }
+    }
+  }
+}

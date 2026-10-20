@@ -1,10 +1,10 @@
 {
-  "date": "2026-10-15T10:25:11",
+  "date": "2026-10-20T14:24:35",
   "catalog_path": "datasets\\catalog\\catalogo_placas.csv",
   "catalog_version": "8f8756c70cae",
   "catalog_boards": 114,
-  "real_announcements_total": 42,
-  "real_announcements_valid": 40,
+  "real_announcements_total": 47,
+  "real_announcements_valid": 45,
   "real_configs": [
     "esp32-c3-38a960",
     "esp32-c3-645ce0",
@@ -15,11 +15,13 @@
     "esp32-poecam-01",
     "esp32-wroom32-267a68",
     "gnss-pi5-01",
+    "mcu-uno-069rr4",
     "sbc-opizero-01",
     "sbc-pi5-01"
   ],
   "real_boards": [
     "ai_thinker_esp32_cam",
+    "arduino_uno_r3",
     "espressif_esp32_wroom_32",
     "m5stack_unit_poe_cam_w",
     "olimex_esp32_poe_16mb",
@@ -39,24 +41,22 @@
     ],
     "feature_set": "resource",
     "generators": [
-      "profiles",
       "catalog_nominal",
       "catalog_calibrated"
     ],
     "labelings": [
-      "clasificador",
-      "hw",
-      "hw_unificado"
-    ]
+      "hw"
+    ],
+    "no_rules": false
   },
   "catalog_generator_full": {
     "classes": {
       "ESP32Device": 34,
       "GNSSReceiver": 79,
-      "IoTGateway": 16,
-      "Microcontroller": 16,
-      "Sensor": 12,
-      "SingleBoardComputer": 36
+      "IoTGateway": 7,
+      "Microcontroller": 21,
+      "Sensor": 7,
+      "SingleBoardComputer": 45
     },
     "calibration": {
       "measured_boards": [
