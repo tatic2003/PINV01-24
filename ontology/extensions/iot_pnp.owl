@@ -89,7 +89,7 @@
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
         <IRI>#SingleBoardComputer</IRI>
-        <Literal>SBC devices like Raspberry Pi, Jetson Nano</Literal>
+        <Literal>General-purpose computer on a single board that runs a full operating system (e.g. Raspberry Pi, Orange Pi, Jetson), including industrial controllers and gateways built on compute modules.</Literal>
     </AnnotationAssertion>
 
     <!-- Microcontroller -->
@@ -103,7 +103,7 @@
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
         <IRI>#Microcontroller</IRI>
-        <Literal>Microcontroller devices like ESP32, Arduino</Literal>
+        <Literal>Device built around a microcontroller without a general-purpose operating system (e.g. Arduino), including development boards with on-board sensors.</Literal>
     </AnnotationAssertion>
 
     <!-- ESP32 Device -->
@@ -114,6 +114,11 @@
         <Class IRI="#ESP32Device"/>
         <Class IRI="#Microcontroller"/>
     </SubClassOf>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#ESP32Device</IRI>
+        <Literal>Microcontroller of the Espressif ESP32 family; a class of its own for the classifier.</Literal>
+    </AnnotationAssertion>
 
     <!-- GNSS Receiver (GPS and other satellite positioning devices) -->
     <Declaration>
@@ -148,7 +153,7 @@
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
         <IRI>#IoTGateway</IRI>
-        <Literal>Industrial IoT gateway connecting sensors to the network</Literal>
+        <Literal>Dedicated gateway hardware, such as a cellular or LoRaWAN router. A gateway built on a compute module or a general-purpose computer is a SingleBoardComputer: classes describe hardware, not the role a device is deployed in.</Literal>
     </AnnotationAssertion>
 
     <!-- Sensor -->
@@ -159,6 +164,11 @@
         <Class IRI="#Sensor"/>
         <Class IRI="#IoTDevice"/>
     </SubClassOf>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#Sensor</IRI>
+        <Literal>Dedicated sensing device whose function is to measure, such as a LoRaWAN sensor node or tracker.</Literal>
+    </AnnotationAssertion>
 
     <!-- Actuator -->
     <Declaration>
