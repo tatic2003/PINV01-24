@@ -10,3 +10,4 @@ esp32-cam-afd340,ai_thinker_esp32_cam,ESP32Device,ESP32-CAM cinta afd340 (mqtt_d
 gnss-pi5-01,raspberry_pi_5_8gb,GNSSReceiver,Pi 5 + Adafruit Ultimate GPS HAT (devices/gnss_agent.py)
 sbc-pi5-01,raspberry_pi_5_8gb,SingleBoardComputer,Raspberry Pi 5 8 GB anunciada como SBC (devices/linux_agent.py --device-id sbc-pi5-01)
 sbc-opizero-01,orange_pi_zero_lts_512mb,SingleBoardComputer,Orange Pi Zero LTS 512 MB anunciada como SBC (linux_agent.py --device-id sbc-opizero-01)
+mcu-uno-069rr4,arduino_uno_r3,Microcontroller,Arduino Uno R3 (clon) por USB en la Pi 5; anunciado por devices/serial_agent.py (firmware/arduino/mqtt_device_uno_serial)

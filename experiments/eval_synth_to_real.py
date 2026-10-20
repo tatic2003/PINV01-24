@@ -19,6 +19,11 @@ same way, so every labeling is scored against its own taxonomy. Accuracies of
 different labelings are NOT directly comparable: merging two classes removes a
 decision boundary and makes the task easier.
 
+The name-based rule baseline (DeviceClassifier(model_type='rule_based'), the
+same one as in eval_unseen_boards.py) classifies the same announcements. It
+is deterministic and needs no training, so it is scored once per labeling
+(generator and model 'rules', seed 0); --no-rules leaves it out.
+
 Leave-one-board-out: to test a real board, the catalog generators are rebuilt
 WITHOUT that board's row, neither for sampling nor for the memory calibration.
 The unit that is held out is the catalog board_id, so the three ESP32-C3-Zero
@@ -152,11 +157,22 @@ def score(clf, records, labeling):
     return out
 
 
+def rule_rows(records, labelings):
+    """Rows of the name-based rule baseline: one per labeling and configuration."""
+    rules = DeviceClassifier(model_type='rule_based')
+    rows = []
+    for labeling in labelings:
+        for dev, s in sorted(score(rules, records, labeling).items()):
+            rows.append({'generator': 'rules', 'labeling': labeling, 'model': 'rules',
+                         'seed': 0, 'device_id': dev, **s})
+    return rows
+
+
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
-def main():
+def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split('\n\n')[0])
     ap.add_argument('--catalog', default=str(ROOT / 'datasets' / 'catalog' / 'catalogo_placas.csv'))
     ap.add_argument('--real-dir', default=str(ROOT / 'datasets' / 'real'))
@@ -168,7 +184,8 @@ def main():
     ap.add_argument('--generators', nargs='+', default=['catalog_nominal', 'catalog_calibrated'],
                     choices=GENERATORS)
     ap.add_argument('--labelings', nargs='+', default=[DEFAULT_LABELING], choices=LABELINGS)
-    args = ap.parse_args()
+    ap.add_argument('--no-rules', action='store_true', help='leave out the name-based rule baseline')
+    args = ap.parse_args(argv)
 
     catalog = load_catalog(args.catalog)
     records, total = load_real(Path(args.real_dir))
@@ -206,6 +223,10 @@ def main():
                     rows.append({'generator': gen_name, 'labeling': labeling, 'model': model,
                                  'seed': seed, 'device_id': dev, **s})
             print(f"  {gen_name:19s} {labeling:12s} {model:14s} listo ({time.time() - t0:.0f} s)")
+
+    if not args.no_rules:
+        rows += rule_rows(records, args.labelings)
+        print(f"  {'rules':19s} {'':12s} {'rule_based':14s} listo")
 
     # -- summary ---------------------------------------------------------------
     summary = []
