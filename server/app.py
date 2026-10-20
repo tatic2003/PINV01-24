@@ -461,12 +461,19 @@ def _register_routes(app: Flask):
         if not app.dag:
             return jsonify({'error': 'BlockDAG not enabled'}), 501
 
-        return jsonify({
+        tips = sorted(app.dag.get_tips())
+        status = {
             'status': 'active',
             'node_count': len(app.dag),
-            'tips_count': len(app.dag.get_tips()),
+            'tips_count': len(tips),
+            'tips': tips,
+            # Equal digests and tips on two replicas = they hold the same DAG.
+            'digest': app.dag.state_digest(),
             'node_id': app.config['ITS_CONFIG'].node_id
-        })
+        }
+        if request.args.get('ids') in ('1', 'true'):
+            status['node_ids'] = app.dag.node_ids()
+        return jsonify(status)
 
     @app.route('/api/dag/events', methods=['GET'])
     def get_dag_events():
@@ -499,8 +506,13 @@ def _register_routes(app: Flask):
 
         if data.get('action') == 'get':
             # Return our DAG data for sync
+            # With the requester's tips, only what it cannot already have is
+            # sent; with neither tips nor 'since', the whole DAG.
             since = data.get('since')
-            sync_data = app.dag.get_sync_data(since)
+            peer_tips = data.get('peer_tips')
+            if peer_tips is not None and not isinstance(peer_tips, list):
+                return jsonify({'error': 'peer_tips must be a list'}), 400
+            sync_data = app.dag.get_sync_data(since, peer_tips=peer_tips)
             return jsonify(sync_data)
 
         elif data.get('action') == 'merge':

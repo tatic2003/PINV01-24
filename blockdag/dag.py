@@ -417,6 +417,23 @@ class BlockDAG:
         """Get a node by ID."""
         return self._nodes.get(node_id)
 
+    def node_ids(self) -> List[str]:
+        """Ids of every node, sorted."""
+        with self._lock:
+            return sorted(self._nodes)
+
+    def state_digest(self) -> str:
+        """
+        SHA-256 over the sorted ``node_id:hash`` pairs of every node.
+
+        Two replicas hold the same DAG exactly when their digests are equal
+        (including the hash of each node, so an equivocation, the same id with
+        different content, gives different digests).
+        """
+        with self._lock:
+            lines = sorted(f"{nid}:{node.hash}" for nid, node in self._nodes.items())
+        return hashlib.sha256("\n".join(lines).encode("utf-8")).hexdigest()
+
     def get_tips(self) -> List[str]:
         """Get current DAG tips (latest nodes)."""
         with self._lock:
@@ -631,20 +648,19 @@ class BlockDAG:
         def _record_failure(reason: str) -> None:
             nonlocal failed
             failed += 1
-            if self._metrics_hook is not None:
-                if "Missing parents" in reason:
-                    key = "missing_parents"
-                elif "Signature" in reason or "Unknown creator" in reason:
-                    key = "bad_signature"
-                elif "Hash conflict" in reason:
-                    key = "hash_conflict"
-                elif "Parent hash" in reason:
-                    key = "broken_link"
-                elif "Hash" in reason:
-                    key = "hash_failed"
-                else:
-                    key = "other"
-                _fail_reasons[key] = _fail_reasons.get(key, 0) + 1
+            if "Missing parents" in reason:
+                key = "missing_parents"
+            elif "Signature" in reason or "Unknown creator" in reason:
+                key = "bad_signature"
+            elif "Hash conflict" in reason:
+                key = "hash_conflict"
+            elif "Parent hash" in reason:
+                key = "broken_link"
+            elif "Hash" in reason:
+                key = "hash_failed"
+            else:
+                key = "other"
+            _fail_reasons[key] = _fail_reasons.get(key, 0) + 1
 
         def _classify_known(node: DAGNode) -> None:
             nonlocal existing
@@ -691,7 +707,10 @@ class BlockDAG:
             'added': added,
             'failed': failed,
             'existing': existing,
-            'total_nodes': len(self._nodes)
+            'total_nodes': len(self._nodes),
+            # Rejected nodes by reason: missing_parents, bad_signature,
+            # hash_conflict, broken_link, hash_failed, other.
+            'failed_reasons': dict(_fail_reasons)
         }
 
         if self._metrics_hook is not None:
