@@ -101,3 +101,6 @@ secrets.yml
 keys/*.key
 
 wifi_secrets.h
+# Raw data of the article figures (data/ and *.log are ignored above)
+!figures/data/
+!figures/data/**/*.log

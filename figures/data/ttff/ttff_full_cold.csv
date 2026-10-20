@@ -1,0 +1,4 @@
+corrida,tipo,antena_etiqueta,pgtop,inicio_utc,ttff_s,calidad_gga,satelites,hdop,nota
+1,completo,externa,,2026-10-12T17:09:22.427064+00:00,39.0,1,09,1.26,"alfeizar, nublado"
+2,completo,externa,,2026-10-12T17:10:16.387878+00:00,39.0,1,08,1.51,"alfeizar, nublado"
+3,completo,externa,,2026-10-12T17:11:10.413168+00:00,39.0,1,09,1.26,"alfeizar, nublado"

@@ -1,0 +1,4 @@
+corrida,tipo,antena_etiqueta,pgtop,inicio_utc,ttff_s,calidad_gga,satelites,hdop,nota
+1,caliente,externa,,2026-10-12T17:18:56.259656+00:00,1.7,1,08,1.28,"alfeizar, nublado, con CR1220"
+2,caliente,externa,,2026-10-12T17:19:12.998869+00:00,1.8,1,09,1.19,"alfeizar, nublado, con CR1220"
+3,caliente,externa,,2026-10-12T17:19:29.801619+00:00,1.7,1,09,1.19,"alfeizar, nublado, con CR1220"

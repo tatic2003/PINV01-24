@@ -1,0 +1,11 @@
+run,keepalive_s,fault,expected_s,since_last_packet_s,since_freeze_s,server_state
+1,15,freeze,22.5,22.324,22.302,inactive
+2,15,freeze,22.5,22.323,22.32,inactive
+3,15,freeze,22.5,22.424,22.232,inactive
+4,15,freeze,22.5,22.324,22.321,inactive
+5,15,freeze,22.5,22.324,22.133,inactive
+6,15,freeze,22.5,22.424,22.422,inactive
+7,15,freeze,22.5,22.324,22.133,inactive
+8,15,freeze,22.5,22.425,22.423,inactive
+9,15,freeze,22.5,22.324,22.135,inactive
+10,15,freeze,22.5,22.324,22.323,inactive
