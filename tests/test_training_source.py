@@ -76,3 +76,16 @@ def test_baseline_generator_sources():
     assert not isinstance(make_generator('profiles', 1), CatalogDatasetGenerator)
     with pytest.raises(ValueError):
         make_generator('nope', 1)
+
+
+def test_default_labeling_is_hardware():
+    """Server, baseline and experiments label boards by hardware ('hw')."""
+    from pnp_ai.dataset_generator.catalog import CatalogDatasetGenerator, DEFAULT_LABELING
+    from baseline.central_baseline import make_generator
+    assert DEFAULT_LABELING == 'hw'
+    assert CatalogDatasetGenerator(seed=1).labeling == 'hw'
+    assert make_generator('catalog', 1).labeling == 'hw'
+    # A gateway built on a Compute Module is a SingleBoardComputer by hardware
+    gen = CatalogDatasetGenerator(seed=1)
+    board = next(b for b in gen.catalog.boards if b.placa.startswith('Kunbus RevPi Connect 4'))
+    assert board.label(DEFAULT_LABELING) == 'SingleBoardComputer'

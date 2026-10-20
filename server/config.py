@@ -42,7 +42,7 @@ class Config:
     training_samples: int = 2000
     # 'profiles' = SyntheticDatasetGenerator (hand-written profiles, 5 classes);
     # 'catalog'  = CatalogDatasetGenerator (real-board catalog, calibrated memory,
-    #              labeling 'clasificador', includes Microcontroller).
+    #              hardware labeling 'hw', includes Microcontroller).
     training_source: str = "catalog"
 
     # BlockDAG

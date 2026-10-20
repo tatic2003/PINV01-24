@@ -56,7 +56,7 @@ sys.path.insert(0, str(ROOT))
 
 from pnp_ai.dataset_generator import SyntheticDatasetGenerator           # noqa: E402
 from pnp_ai.dataset_generator.catalog import (                          # noqa: E402
-    LABELINGS, CatalogDatasetGenerator, load_catalog, unify_label)
+    DEFAULT_LABELING, LABELINGS, CatalogDatasetGenerator, load_catalog, unify_label)
 from pnp_ai.device_classifier import DeviceClassifier                   # noqa: E402
 
 warnings.filterwarnings('ignore')
@@ -165,8 +165,9 @@ def main():
     ap.add_argument('--samples', type=int, default=2000)
     ap.add_argument('--models', nargs='+', default=['random_forest', 'decision_tree'])
     ap.add_argument('--feature-set', default='resource')
-    ap.add_argument('--generators', nargs='+', default=list(GENERATORS), choices=GENERATORS)
-    ap.add_argument('--labelings', nargs='+', default=list(LABELINGS), choices=LABELINGS)
+    ap.add_argument('--generators', nargs='+', default=['catalog_nominal', 'catalog_calibrated'],
+                    choices=GENERATORS)
+    ap.add_argument('--labelings', nargs='+', default=[DEFAULT_LABELING], choices=LABELINGS)
     args = ap.parse_args()
 
     catalog = load_catalog(args.catalog)

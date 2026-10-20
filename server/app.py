@@ -104,10 +104,12 @@ def _init_components(app: Flask, config: Config):
             from pnp_ai.device_classifier import train_classifier_from_synthetic_data
             generator = None
             if config.training_source == 'catalog':
-                from pnp_ai.dataset_generator.catalog import CatalogDatasetGenerator
-                generator = CatalogDatasetGenerator(seed=42, labeling='clasificador', calibrated=True)
+                from pnp_ai.dataset_generator.catalog import (
+                    CatalogDatasetGenerator, DEFAULT_LABELING)
+                generator = CatalogDatasetGenerator(seed=42, labeling=DEFAULT_LABELING, calibrated=True)
                 app.logger.info(f"Catalog version {generator.catalog.version}, "
-                                f"{len(generator.catalog.boards)} boards")
+                                f"{len(generator.catalog.boards)} boards, "
+                                f"labeling {DEFAULT_LABELING}")
             elif config.training_source != 'profiles':
                 raise ValueError(f"unknown training source {config.training_source!r} "
                                  "(expected 'profiles' or 'catalog')")

@@ -44,15 +44,15 @@ def make_generator(training_source: str, seed: int):
 
     'profiles' = SyntheticDatasetGenerator (hand-written profiles, 5 classes).
     'catalog'  = CatalogDatasetGenerator over the real-board catalog, calibrated
-                 memory, labeling 'clasificador' (6 classes, with
+                 memory, hardware labeling 'hw' (6 classes, with
                  Microcontroller): the same data the server uses with
                  --training-source catalog and the paper reports.
     """
     if training_source == 'profiles':
         return SyntheticDatasetGenerator(seed=seed)
     if training_source == 'catalog':
-        from pnp_ai.dataset_generator.catalog import CatalogDatasetGenerator
-        return CatalogDatasetGenerator(seed=seed, labeling='clasificador', calibrated=True)
+        from pnp_ai.dataset_generator.catalog import CatalogDatasetGenerator, DEFAULT_LABELING
+        return CatalogDatasetGenerator(seed=seed, labeling=DEFAULT_LABELING, calibrated=True)
     raise ValueError(f"unknown training source {training_source!r}; expected one of {TRAINING_SOURCES}")
 
 

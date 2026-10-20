@@ -34,8 +34,13 @@ Two modes:
   calibrated=False  announced memory = nominal RAM (the naive use of a catalog)
 
 Three labelings:
-  labeling='clasificador'  catalog column clase_clasificador
-  labeling='hw'            catalog column clase_hw (main processor family)
+  labeling='hw'            catalog column clase_hw: the class describes what
+                           the hardware is (default, used by the server and
+                           every experiment). A board sold as a gateway but
+                           built on a general-purpose computer is a
+                           SingleBoardComputer; its role is not a class.
+  labeling='clasificador'  catalog column clase_clasificador: classes by
+                           deployment role (kept for reference)
   labeling='hw_unificado'  clase_hw, with ESP32Device merged into
                            Microcontroller: an ESP32 is a microcontroller with
                            an integrated radio, and the radio is already
@@ -70,6 +75,9 @@ DEFAULT_CATALOG_PATH = (
 )
 
 LABELINGS = ('clasificador', 'hw', 'hw_unificado')
+
+#: Labeling used by the server, the baseline and the experiments.
+DEFAULT_LABELING = 'hw'
 
 #: Classes merged by labeling='hw_unificado' (from -> to).
 UNIFIED_MERGE = {'ESP32Device': 'Microcontroller'}
@@ -302,7 +310,7 @@ class CatalogDatasetGenerator(SyntheticDatasetGenerator):
         seed: Optional[int] = None,
         catalog: Optional[Catalog] = None,
         catalog_path: Optional[str] = None,
-        labeling: str = 'clasificador',
+        labeling: str = DEFAULT_LABELING,
         calibrated: bool = True,
         exclude_boards: Sequence[str] = (),
         include_gnss: bool = True,

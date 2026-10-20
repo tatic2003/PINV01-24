@@ -58,7 +58,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from pnp_ai.dataset_generator.catalog import (                          # noqa: E402
-    LABELINGS, CatalogDatasetGenerator, load_catalog)
+    DEFAULT_LABELING, LABELINGS, CatalogDatasetGenerator, load_catalog)
 from pnp_ai.device_classifier import DeviceClassifier                   # noqa: E402
 
 warnings.filterwarnings('ignore')
@@ -97,8 +97,8 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.split('\n\n')[0])
     ap.add_argument('--catalog', default=str(ROOT / 'datasets' / 'catalog' / 'catalogo_placas.csv'))
     ap.add_argument('--out', default=str(ROOT / 'experiments' / 'results' / 'unseen_boards'))
-    ap.add_argument('--labeling', default='clasificador', choices=LABELINGS)
-    ap.add_argument('--seeds', type=int, default=3)
+    ap.add_argument('--labeling', default=DEFAULT_LABELING, choices=LABELINGS)
+    ap.add_argument('--seeds', type=int, default=10)
     ap.add_argument('--samples', type=int, default=2000)
     ap.add_argument('--per-board', type=int, default=5, help='announcements per held-out board')
     ap.add_argument('--models', nargs='+', default=['random_forest', 'decision_tree'])
