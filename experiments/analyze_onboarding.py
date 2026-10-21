@@ -225,10 +225,65 @@ def clock_bounds(probe_csv):
     return pd.DataFrame(rows)
 
 
+#: Readable names of the stages for the figure (the CSVs keep the identifiers).
+STAGE_LABELS = {
+    "boot_to_setup": "Boot to setup()",
+    "serial_wait": "Serial-port wait",
+    "link": "Link (association or Ethernet, DHCP)",
+    "mqtt_connect": "MQTT connection",
+    "announce": "Announcement",
+    "agent_to_mqtt": "Agent start to MQTT connection",
+    "mqtt_to_publish": "MQTT connection to publication",
+    "usb_to_open": "USB visible to port open",
+    "board_boot": "Board boot (reset and setup)",
+    "announce_to_publish": "Announcement to publication",
+    "transit": "Transit to the bridge",
+    "bridge_queue": "Bridge queue",
+    "http": "HTTP",
+    "srv_classify": "Classification",
+    "srv_semantic": "Lightweight validation and RDF",
+    "srv_shacl": "SHACL validation",
+    "srv_dag": "Signed DAG append",
+    "srv_other": "Rest of the server handler",
+}
+
+#: Rows of the figure in the order of the onboarding table of the article:
+#: (device type, session label of the bridge CSV, label of the row).
+ROW_ORDER = [
+    ("ESP32-C3-Zero", "individual", "ESP32-C3-Zero\n(alone)"),
+    ("ESP32-C3-Zero", "concurrente", "ESP32-C3-Zero\n(concurrent)"),
+    ("ESP32-WROOM-32", "individual", "ESP32-WROOM-32\n(alone)"),
+    ("ESP32-WROOM-32", "concurrente", "ESP32-WROOM-32\n(concurrent)"),
+    ("ESP32-CAM", "individual", "ESP32-CAM\n(alone)"),
+    ("M5Stack PoE CAM-W", "ethernet", "M5Stack PoE CAM-W\n(Ethernet)"),
+    ("Olimex ESP32-PoE", "ethernet", "Olimex ESP32-PoE\n(Ethernet)"),
+    ("Arduino Uno R3", "uno", "Arduino Uno R3\n(USB, host agent)"),
+    ("Orange Pi Zero", "opi_dispositivo", "Orange Pi Zero (agent)\nserver on the Raspberry Pi 5"),
+    ("Raspberry Pi 5", "pi5_dispositivo", "Raspberry Pi 5 (agent)\nserver on the Orange Pi Zero"),
+]
+
+
+def row_position(session, dtype):
+    """Position of a (session, device type) row; unknown rows go last."""
+    for i, (t, s, _) in enumerate(ROW_ORDER):
+        if t == dtype and s == session:
+            return i
+    return len(ROW_ORDER)
+
+
+def row_label(session, dtype):
+    for t, s, label in ROW_ORDER:
+        if t == dtype and s == session:
+            return label
+    return f"{dtype}\n({session})" if session else dtype
+
+
 def plot(summary, out_dir, width=9.0):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
+
+    matplotlib.rcParams["pdf.fonttype"] = 42      # embed TrueType fonts (editable text)
 
     stages = ESP32_STAGES + LINUX_STAGES + SERIAL_STAGES + PIPELINE_STAGES
     means = summary.pivot_table(index=["session", "device_type"], columns="stage",
@@ -236,22 +291,29 @@ def plot(summary, out_dir, width=9.0):
     means = means.reindex(columns=[s for s in stages if s in means.columns]).fillna(0.0)
     if means.empty:
         return
-    labels = [f"{t}\n({s})" if s else t for s, t in means.index]
-    fig, ax = plt.subplots(figsize=(width, 0.6 * len(means) + 1.8))
+    order = sorted(range(len(means)),
+                   key=lambda i: (row_position(*means.index[i]), means.index[i]))
+    means = means.iloc[order]
+    labels = [row_label(s, t) for s, t in means.index]
+
+    n_legend_rows = -(-len(means.columns) // 3)
+    fig, ax = plt.subplots(figsize=(width, 0.55 * len(means) + 1.0 + 0.22 * n_legend_rows))
     left = np.zeros(len(means))
     cmap = plt.get_cmap("tab20")
     for i, st in enumerate(means.columns):
         vals = means[st].to_numpy() / 1000.0
-        ax.barh(range(len(means)), vals, left=left, color=cmap(i % 20), label=st)
+        ax.barh(range(len(means)), vals, left=left, color=cmap(i % 20),
+                label=STAGE_LABELS.get(st, st))
         left += vals
     ax.set_yticks(range(len(means)))
     ax.set_yticklabels(labels, fontsize=8)
     ax.invert_yaxis()
     ax.set_xlabel("Mean time (s), first registration after boot; SNTP step excluded")
-    ax.legend(fontsize=7, ncol=3, loc="lower right")
+    # Legend below the axes so that it never covers a bar.
+    ax.legend(fontsize=7, ncol=3, loc="upper center", bbox_to_anchor=(0.45, -0.12), frameon=False)
     fig.tight_layout()
     for ext in ("pdf", "png"):
-        fig.savefig(out_dir / f"fig_onboarding_stages.{ext}", dpi=200)
+        fig.savefig(out_dir / f"fig_onboarding_stages.{ext}", dpi=200, bbox_inches="tight")
     plt.close(fig)
 
 
