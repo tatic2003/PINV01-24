@@ -129,7 +129,180 @@ def test_validation(tmp_path):
         rows.append([f'load_x_val_r{i % 3}', f'e{i}', 0.0, 0.0, 200, 15 + rng.normal(0, 1), 13, 5, 7])
     path = tmp_path / 'onb.csv'
     onboarding(rows).to_csv(path, index=False)
-    val = ana.validate(path, 'phys', 'load_x_val', 5.0)
+    val = ana.validate(path, 'phys', path, 'load_x_val', 5.0)
     row = val.set_index('stage').loc['bridge_to_registered']
     assert row['n_physical'] == 10 and row['n_emulated'] == 30
     assert bool(row['passes'])
+
+
+def noisy_rows(session, n, rtt, seed):
+    """n accepted registrations of a session with an HTTP round trip around rtt (ms). The server
+    stages vary too: with fully tied samples the Mann-Whitney p-value is undefined (NaN)."""
+    rng = np.random.default_rng(seed)
+    return [[session, f'{session}-{i}', 0.0, 0.0, 200, rtt + rng.normal(0, 1),
+             13 + rng.normal(0, 0.5), 5 + rng.normal(0, 0.3), 7 + rng.normal(0, 0.4)] for i in range(n)]
+
+
+class TestValidationInTwoFiles:
+    def test_each_side_is_read_from_its_own_file(self, tmp_path):
+        # The physical file also holds a session that matches the prefix, with a very different
+        # time: it must be ignored, because the emulated sessions come from the other file.
+        phys = noisy_rows('phys', 10, 15, 1) + noisy_rows('load_x_val_r9', 10, 100, 2)
+        emu = sum((noisy_rows(f'load_x_val_r{k}', 10, 15, 10 + k) for k in range(3)), [])
+        emu += noisy_rows('phys', 10, 100, 3)   # same name as the physical session: also ignored
+        onboarding(phys).to_csv(tmp_path / 'phys.csv', index=False)
+        onboarding(emu).to_csv(tmp_path / 'emu.csv', index=False)
+        val = ana.validate(tmp_path / 'phys.csv', 'phys', tmp_path / 'emu.csv', 'load_x_val', 5.0)
+        row = val.set_index('stage').loc['bridge_to_registered']
+        assert row['n_physical'] == 10 and row['n_emulated'] == 30
+        assert bool(row['passes'])
+
+    def test_the_two_paths_can_be_the_same_file(self, tmp_path):
+        rows = noisy_rows('phys', 10, 15, 1) + noisy_rows('load_x_val_r1', 10, 15, 2)
+        onboarding(rows).to_csv(tmp_path / 'one.csv', index=False)
+        val = ana.validate(tmp_path / 'one.csv', 'phys', tmp_path / 'one.csv', 'load_x_val', 5.0)
+        row = val.set_index('stage').loc['bridge_to_registered']
+        assert (row['n_physical'], row['n_emulated']) == (10, 10)
+
+    def test_a_difference_above_the_bound_fails_the_criterion(self, tmp_path):
+        onboarding(noisy_rows('phys', 40, 22, 1)).to_csv(tmp_path / 'phys.csv', index=False)
+        onboarding(noisy_rows('load_x_val_r1', 40, 15, 2)).to_csv(tmp_path / 'emu.csv', index=False)
+        val = ana.validate(tmp_path / 'phys.csv', 'phys', tmp_path / 'emu.csv', 'load_x_val',
+                           5.0).set_index('stage')
+        row = val.loc['bridge_to_registered']
+        assert row['diff_median'] == pytest.approx(-7.0, abs=1.0)
+        assert not bool(row['passes'])
+        # The server stages are drawn from the same distribution in both files and pass
+        assert bool(val.loc['srv_total', 'passes'])
+
+    def test_a_small_but_systematic_difference_fails_on_the_p_value(self, tmp_path):
+        # 2 ms is under the 5 ms bound, but with 40 + 40 registrations it is significant.
+        onboarding(noisy_rows('phys', 40, 17, 1)).to_csv(tmp_path / 'phys.csv', index=False)
+        onboarding(noisy_rows('load_x_val_r1', 40, 15, 2)).to_csv(tmp_path / 'emu.csv', index=False)
+        row = ana.validate(tmp_path / 'phys.csv', 'phys', tmp_path / 'emu.csv', 'load_x_val',
+                           5.0).set_index('stage').loc['bridge_to_registered']
+        assert abs(row['diff_median']) < 5.0 and row['p_mannwhitney'] < 0.05
+        assert not bool(row['passes'])
+
+    def test_missing_sessions_stop_the_analysis(self, tmp_path):
+        onboarding(noisy_rows('phys', 10, 15, 1)).to_csv(tmp_path / 'phys.csv', index=False)
+        onboarding(noisy_rows('other', 10, 15, 2)).to_csv(tmp_path / 'emu.csv', index=False)
+        with pytest.raises(SystemExit):
+            ana.validate(tmp_path / 'phys.csv', 'phys', tmp_path / 'emu.csv', 'load_x_val', 5.0)
+
+
+class TestCommandLine:
+    def run_cli(self, tmp_path, validate):
+        # Node under test: the three announcements of GEN_SYNCED. The validation files are separate.
+        ONB.to_csv(tmp_path / 'onb.csv', index=False)
+        RES.to_csv(tmp_path / 'res.csv', index=False)
+        GEN_SYNCED.to_csv(tmp_path / 'gen.csv', index=False)
+        onboarding(noisy_rows('phys', 10, 15, 4)).to_csv(tmp_path / 'phys.csv', index=False)
+        onboarding(noisy_rows('load_x_val_r1', 10, 15, 3)).to_csv(tmp_path / 'emu.csv', index=False)
+        argv = ['--node', 'n', str(tmp_path / 'onb.csv'), str(tmp_path / 'res.csv'), str(tmp_path / 'gen.csv'),
+                '--no-plots', '--out', str(tmp_path / 'out')] + validate
+        return ana.main(argv)
+
+    def test_validation_reads_the_two_raw_files(self, tmp_path):
+        v = ['--validate', str(tmp_path / 'phys.csv'), 'phys', str(tmp_path / 'emu.csv'), 'load_x_val']
+        assert self.run_cli(tmp_path, v) == 0
+        val = pd.read_csv(tmp_path / 'out' / 'validation.csv').set_index('stage')
+        assert val.loc['bridge_to_registered', 'n_physical'] == 10
+        assert val.loc['bridge_to_registered', 'n_emulated'] == 10
+        assert {'bridge_to_registered', 'srv_total', 'srv_classify', 'srv_shacl'} <= set(val.index)
+        assert (tmp_path / 'out' / 'load_summary.csv').exists()
+
+    def test_validate_needs_four_arguments(self, tmp_path):
+        with pytest.raises(SystemExit):
+            self.run_cli(tmp_path, ['--validate', str(tmp_path / 'phys.csv'), 'phys', 'load_x_val'])
+
+    def test_without_validate_nothing_is_validated(self, tmp_path):
+        assert self.run_cli(tmp_path, []) == 0
+        assert not (tmp_path / 'out' / 'validation.csv').exists()
+
+
+class TestCpuFrequency:
+    # Resource samples every 500 ms: 1500 MHz, then 2400 MHz.
+    RES_FREQ = pd.DataFrame({'epoch_ms': [500.0, 1000.0, 1500.0, 2000.0],
+                             'cpu0_mhz': [1500, 1500, 2400, 2400],
+                             'server_cpu_pct': [5.0, 5.0, 90.0, 90.0]})
+
+    def events(self, arrivals, srv):
+        ev = pd.DataFrame({'node': 'n', 'session': 's', 'device_id': [f'd{i}' for i in range(len(arrivals))],
+                           'http_status': 200, 'arrival_ms': arrivals})
+        for st in ana.NODE_STAGES:
+            ev[st] = srv
+        return ev
+
+    def test_each_arrival_takes_the_nearest_sample(self):
+        # 1200 is nearer the 1000 ms sample (1500 MHz); 1300 is nearer the 1500 ms one (2400 MHz)
+        ev = ana.add_cpu_freq(self.events([1100.0, 1200.0, 1300.0, 1900.0], [20.0, 20.0, 14.0, 14.0]),
+                              self.RES_FREQ)
+        assert ev['cpu0_mhz'].tolist() == [1500, 1500, 2400, 2400]
+
+    def test_an_arrival_far_from_every_sample_has_no_frequency(self):
+        ev = ana.add_cpu_freq(self.events([1100.0, 9000.0], [20.0, 20.0]), self.RES_FREQ)
+        assert ev['cpu0_mhz'].iloc[0] == 1500
+        assert np.isnan(ev['cpu0_mhz'].iloc[1])
+
+    def test_resources_without_frequency_leave_it_empty(self):
+        ev = ana.add_cpu_freq(self.events([1100.0], [20.0]), self.RES_FREQ.drop(columns='cpu0_mhz'))
+        assert ev['cpu0_mhz'].isna().all()
+
+    def test_event_order_is_kept(self):
+        # merge_asof needs sorted keys; the result must still go back to the original rows
+        ev = ana.add_cpu_freq(self.events([1900.0, 1100.0], [14.0, 20.0]), self.RES_FREQ)
+        assert dict(zip(ev['device_id'], ev['cpu0_mhz'])) == {'d0': 2400, 'd1': 1500}
+
+    def test_stages_are_grouped_by_frequency(self):
+        ev = ana.add_cpu_freq(self.events([1000.0, 1100.0, 1900.0, 2000.0, 9000.0],
+                                          [21.0, 19.0, 14.0, 14.0, 99.0]), self.RES_FREQ)
+        ev.loc[ev['device_id'] == 'd3', 'http_status'] = 400   # rejected: not counted
+        by = ana.stages_by_freq(ev).set_index('cpu0_mhz')
+        assert by.loc[1500, 'n'] == 2 and by.loc[1500, 'srv_total_median'] == pytest.approx(20.0)
+        assert by.loc[2400, 'n'] == 1 and by.loc[2400, 'srv_total_median'] == pytest.approx(14.0)
+        assert len(by) == 2   # the arrival without a sample is left out
+
+    def test_session_summary_has_the_median_frequency(self):
+        _, summ = ana.summarize_node('n', ONB, self.RES_FREQ.assign(epoch_ms=[990.0, 1000.0, 1010.0, 1020.0]),
+                                     GEN_SYNCED)
+        assert summ.iloc[0]['cpu0_mhz_median'] == pytest.approx(1950.0)
+
+
+class TestBootstrapInterval:
+    def test_interval_contains_the_true_difference_and_is_reproducible(self):
+        rng = np.random.default_rng(5)
+        a, b = rng.normal(20, 1, 40), rng.normal(17, 1, 40)
+        lo, hi = ana.bootstrap_diff_median_ci(a, b, 4000, seed=1)
+        assert lo < -3.0 < hi and hi - lo < 2.0
+        assert (lo, hi) == ana.bootstrap_diff_median_ci(a, b, 4000, seed=1)
+
+    def test_validation_reports_the_interval(self, tmp_path):
+        onboarding(noisy_rows('phys', 40, 15, 1)).to_csv(tmp_path / 'phys.csv', index=False)
+        onboarding(noisy_rows('load_x_val_r1', 40, 15, 2)).to_csv(tmp_path / 'emu.csv', index=False)
+        val = ana.validate(tmp_path / 'phys.csv', 'phys', tmp_path / 'emu.csv', 'load_x_val', 5.0,
+                           n_boot=2000).set_index('stage')
+        row = val.loc['bridge_to_registered']
+        assert row['ci95_low'] <= row['diff_median'] <= row['ci95_high']
+        assert bool(row['ci_within_bound'])
+
+    def test_an_interval_that_crosses_the_bound_is_flagged(self, tmp_path):
+        # Medians 4 ms apart with a wide spread: the interval reaches past 5 ms.
+        rng = np.random.default_rng(7)
+        phys = [['phys', f'p{i}', 0.0, 0.0, 200, 15 + rng.normal(0, 6), 13, 5, 7] for i in range(15)]
+        emu = [['load_x_val_r1', f'e{i}', 0.0, 0.0, 200, 19 + rng.normal(0, 6), 13, 5, 7] for i in range(15)]
+        onboarding(phys).to_csv(tmp_path / 'phys.csv', index=False)
+        onboarding(emu).to_csv(tmp_path / 'emu.csv', index=False)
+        row = ana.validate(tmp_path / 'phys.csv', 'phys', tmp_path / 'emu.csv', 'load_x_val', 5.0,
+                           n_boot=2000).set_index('stage').loc['bridge_to_registered']
+        assert row['ci95_high'] > 5.0
+        assert not bool(row['ci_within_bound'])
+
+    def test_the_command_line_writes_stages_by_freq(self, tmp_path):
+        ONB.to_csv(tmp_path / 'onb.csv', index=False)
+        RES.assign(cpu0_mhz=[1500, 2400]).to_csv(tmp_path / 'res.csv', index=False)
+        GEN_SYNCED.to_csv(tmp_path / 'gen.csv', index=False)
+        assert ana.main(['--node', 'n', str(tmp_path / 'onb.csv'), str(tmp_path / 'res.csv'),
+                         str(tmp_path / 'gen.csv'), '--no-plots', '--out', str(tmp_path / 'out')]) == 0
+        by = pd.read_csv(tmp_path / 'out' / 'stages_by_freq.csv')
+        assert by['n'].sum() == 3 and set(by['cpu0_mhz']) <= {1500, 2400}
