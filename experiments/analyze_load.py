@@ -2,24 +2,23 @@
 """
 Analysis of the load experiments (experiments/load_generator.py).
 
-Latency without a common clock
-------------------------------
-The generator and the node under test have different clocks, so a publish
-time cannot be subtracted from a registration time directly. Within one
-session, however, the generator's clock gives the publication instants
-relative to the first one, and the node's clock gives the arrival of the
-first announcement. The latency of announcement i is therefore
+Latency
+-------
+latency_i = done_i - publish_i: from the generator's publication to the end
+of the registration (bridge callback + HTTP round trip). The generator and
+the node under test are separate machines, so the two clocks are compared
+through chrony; the bound of the difference (|offset| + root delay / 2 +
+root dispersion, from `chronyc tracking` on the client machine) must be
+reported next to the result. It includes every wait the announcement
+suffers on the node, also in the broker and in the socket before the
+bridge reads it (bridge_to_registered = queue in the bridge's client + HTTP
+round trip is reported as well, for reference).
 
-    latency_i = done_i - arrival_first - (publish_i - publish_first)
-
-where done_i is the end of its registration (bridge callback + HTTP round
-trip) on the node's clock. Clock offsets cancel; what is left out is the
-network transit of the first announcement of the session (a few
-milliseconds on the LAN), so the value is a slight underestimate. It
-includes every wait the announcement suffers on the node, also in the
-broker and in the socket before the bridge reads it, which the bridge's own
-arrival stamp cannot see (bridge_to_registered = queue in the bridge's
-client + HTTP round trip is reported as well, for reference).
+latency_rel is the former estimator, which needs no common clock:
+latency_rel_i = done_i - arrival_first - (publish_i - publish_first). It
+depends on the transit of the first announcement of each session, so it is
+biased when that transit is large (ramp sessions); it is kept only as a
+cross-check in bursts.
 
 Per session (one load level) the script reports what was sent, acknowledged
 and registered, the latency (median, P95, max) and its parts (HTTP, server
@@ -60,7 +59,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-STAGES = ['latency', 'bridge_to_registered', 'bridge_queue', 'http', 'srv_total',
+STAGES = ['latency', 'latency_rel', 'bridge_to_registered', 'bridge_queue', 'http', 'srv_total',
           'srv_classify', 'srv_shacl']
 
 
@@ -100,13 +99,14 @@ def window_resources(res, start, end, pad=500.0):
 
 
 def add_latency(ev, gen):
-    """latency_i = done_i - arrival_first - (publish_i - publish_first), per session."""
+    """latency = done - publish (chrony-synchronised clocks); latency_rel = clock-free estimator."""
     pub = gen[['device_id', 'publish_ms']].copy()
     pub['publish_ms'] = pd.to_numeric(pub['publish_ms'], errors='coerce')
     ev = ev.merge(pub, on='device_id', how='left')
     first_arrival = ev.groupby('session')['arrival_ms'].transform('min')
     first_publish = ev.groupby('session')['publish_ms'].transform('min')
-    ev['latency'] = ev['done_ms'] - first_arrival - (ev['publish_ms'] - first_publish)
+    ev['latency_rel'] = ev['done_ms'] - first_arrival - (ev['publish_ms'] - first_publish)
+    ev['latency'] = ev['done_ms'] - ev['publish_ms']
     return ev
 
 
@@ -164,15 +164,22 @@ def validate(onb_path, physical_session, emulated_prefix, bound_ms):
     return pd.DataFrame(rows)
 
 
+NODE_LABELS = {'pi5': 'Raspberry Pi 5', 'opi': 'Orange Pi Zero'}
+
+
 def plot(summary, out):
     import matplotlib
     matplotlib.use('Agg')
+    matplotlib.rcParams['pdf.fonttype'] = 42   # embedded TrueType fonts (journal artwork rules)
     import matplotlib.pyplot as plt
     colors = {}
     palette = ['#1f77b4', '#d62728', '#2ca02c', '#9467bd']
 
     def color(node):
         return colors.setdefault(node, palette[len(colors) % len(palette)])
+
+    def label(node):
+        return NODE_LABELS.get(node, node)
 
     burst = summary[summary['mode'] == 'burst']
     if not burst.empty:
@@ -183,10 +190,11 @@ def plot(summary, out):
                                         'throughput_per_s': 'median',
                                         'server_cpu_mean': 'median'}).reset_index()
             c = color(node)
-            a1.plot(g['level'], g['latency_median'], 'o-', color=c, label=f'{node} median')
-            a1.plot(g['level'], g['latency_p95'], 's--', color=c, label=f'{node} P95')
-            a2.plot(g['level'], g['throughput_per_s'], 'o-', color=c, label=node)
-            a3.plot(g['level'], g['server_cpu_mean'], 'o-', color=c, label=node)
+            # median: solid line; P95: dashed line (same convention in the ramp figure)
+            a1.plot(g['level'], g['latency_median'], 'o-', color=c, label=f'{label(node)}, median')
+            a1.plot(g['level'], g['latency_p95'], 's--', color=c, label=f'{label(node)}, P95')
+            a2.plot(g['level'], g['throughput_per_s'], 'o-', color=c, label=label(node))
+            a3.plot(g['level'], g['server_cpu_mean'], 'o-', color=c, label=label(node))
         for ax, yl, t in [(a1, 'Publication to registration (ms)', '(a)'),
                           (a2, 'Registrations per second', '(b)'),
                           (a3, 'Server CPU, mean (% of one core)', '(c)')]:
@@ -196,8 +204,10 @@ def plot(summary, out):
             ax.set_title(t, loc='left')
             ax.grid(alpha=0.3)
         a1.set_yscale('log')
-        a1.legend(fontsize=7)
-        a2.legend(fontsize=7)
+        a2.set_ylim(0, burst['throughput_per_s'].max() * 1.2)   # axis from zero
+        a3.set_ylim(0, None)
+        a1.legend(fontsize=8)
+        a2.legend(fontsize=8, loc='lower right')
         fig.tight_layout()
         for ext in ('pdf', 'png'):
             fig.savefig(out / f'fig_load_burst.{ext}', dpi=300, bbox_inches='tight')
@@ -211,9 +221,9 @@ def plot(summary, out):
         for node, g in ramp.groupby('node'):
             g = g.sort_values('level')
             c = color(node)
-            a1.plot(g['level'], g['throughput_per_s'], 'o-', color=c, label=node)
-            a2.plot(g['level'], g['latency_p95'], 's-', color=c, label=f'{node} P95')
-            a2.plot(g['level'], g['latency_median'], 'o--', color=c, label=f'{node} median')
+            a1.plot(g['level'], g['throughput_per_s'], 'o-', color=c, label=label(node))
+            a2.plot(g['level'], g['latency_median'], 'o-', color=c, label=f'{label(node)}, median')
+            a2.plot(g['level'], g['latency_p95'], 's--', color=c, label=f'{label(node)}, P95')
         a1.set_xlabel('Offered rate (announcements/s)')
         a1.set_ylabel('Registrations per second')
         a1.set_title('(a)', loc='left')
@@ -223,7 +233,7 @@ def plot(summary, out):
         a2.set_title('(b)', loc='left')
         for ax in (a1, a2):
             ax.grid(alpha=0.3)
-            ax.legend(fontsize=7)
+            ax.legend(fontsize=8)
         fig.tight_layout()
         for ext in ('pdf', 'png'):
             fig.savefig(out / f'fig_load_ramp.{ext}', dpi=300, bbox_inches='tight')
