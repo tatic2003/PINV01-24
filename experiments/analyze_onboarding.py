@@ -258,8 +258,8 @@ ROW_ORDER = [
     ("M5Stack PoE CAM-W", "ethernet", "M5Stack PoE CAM-W\n(Ethernet)"),
     ("Olimex ESP32-PoE", "ethernet", "Olimex ESP32-PoE\n(Ethernet)"),
     ("Arduino Uno R3", "uno", "Arduino Uno R3\n(USB, host agent)"),
-    ("Orange Pi Zero", "opi_dispositivo", "Orange Pi Zero (agent)\nserver on the Raspberry Pi 5"),
-    ("Raspberry Pi 5", "pi5_dispositivo", "Raspberry Pi 5 (agent)\nserver on the Orange Pi Zero"),
+    ("Orange Pi Zero", "opi_dispositivo", "Orange Pi Zero\n(agent)"),
+    ("Raspberry Pi 5", "pi5_dispositivo", "Raspberry Pi 5 (agent)\n(server on the Orange Pi Zero)"),
 ]
 
 
