@@ -199,11 +199,13 @@ def summarize(comparison):
     return pd.DataFrame(rows)
 
 
-def plot(levels, out):
+def make_figure(levels):
+    """The three panels against the offered rate; the x axis is marked at the levels of the runs."""
     import matplotlib
     matplotlib.use('Agg')
     matplotlib.rcParams['pdf.fonttype'] = 42   # embedded TrueType fonts (journal artwork rules)
     import matplotlib.pyplot as plt
+    from matplotlib.ticker import FixedLocator, FixedFormatter, NullLocator
     palette = ['#0072B2', '#D55E00', '#009E73', '#CC79A7']   # Okabe-Ito
     markers = ['o', 's', '^', 'D']
     fig, axes = plt.subplots(1, 3, figsize=(12, 3.6))
@@ -215,8 +217,14 @@ def plot(levels, out):
         for ax, (col, _, _) in zip(axes, panels):
             ax.plot(g['level'], g[col], marker=markers[i % 4], color=palette[i % 4],
                     label=LABELS.get(run, run))
+    # On a log axis matplotlib only labels the powers of ten (one mark, 10^1, for 2-40/s):
+    # mark the offered rates themselves instead.
+    rates = sorted(levels['level'].dropna().unique())
     for ax, (col, ylabel, tag) in zip(axes, panels):
         ax.set_xscale('log')
+        ax.xaxis.set_major_locator(FixedLocator(rates))
+        ax.xaxis.set_major_formatter(FixedFormatter([f'{r:g}' for r in rates]))
+        ax.xaxis.set_minor_locator(NullLocator())
         ax.set_xlabel('Offered rate, total (announcements/s)')
         ax.set_ylabel(ylabel)
         ax.set_title(tag, loc='left')
@@ -226,6 +234,12 @@ def plot(levels, out):
     axes[2].set_ylim(0, None)
     axes[0].legend(fontsize=8)
     fig.tight_layout()
+    return fig
+
+
+def plot(levels, out):
+    import matplotlib.pyplot as plt
+    fig = make_figure(levels)
     for ext in ('pdf', 'png'):
         fig.savefig(out / f'fig_placement.{ext}', dpi=300, bbox_inches='tight')
     plt.close(fig)

@@ -257,6 +257,17 @@ class TestPlacementAnalysis:
 
 # ------------------------------------------------------------------ figure
 
+def test_placement_figure_marks_the_offered_rates():
+    levels = pd.DataFrame([dict(run=r, level=l, latency_mean=20.0 + l, util_max=l, cpu_ms_per_reg=25.0)
+                           for r in ('central', 'dist50') for l in (2.0, 5.0, 10.0, 20.0, 40.0)])
+    fig = ap_mod.make_figure(levels)
+    for ax in fig.axes:
+        assert ax.get_xscale() == 'log'
+        assert list(ax.get_xticks()) == [2.0, 5.0, 10.0, 20.0, 40.0]
+        fig.canvas.draw()
+        assert [t.get_text() for t in ax.get_xticklabels()] == ['2', '5', '10', '20', '40']
+        assert len(ax.xaxis.get_minor_ticks()) == 0
+
 def test_make_figures_placement(tmp_path):
     mf = load('make_figures', 'figures/make_figures.py')
     config = yaml.safe_load(open(ROOT / 'figures' / 'config.yml', encoding='utf-8'))
