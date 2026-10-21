@@ -77,20 +77,36 @@ RES = pd.DataFrame({'epoch_ms': [990.0, 1020.0], 'sys_cpu_pct': [10.0, 30.0],
                     'server_cpu_pct': [20.0, 60.0], 'server_rss_mb': [200.0, 201.0]})
 
 
+# The same three announcements with the generator's clock synchronised to the node's
+# (chrony): published at 985, 986 and 987 on the common clock.
+GEN_SYNCED = generator([
+    ['s', 'burst', 3, 1, 'd0', 'c0', 0, 0, 985.0, 986.0, ''],
+    ['s', 'burst', 3, 1, 'd1', 'c1', 0, 0, 986.0, 987.0, ''],
+    ['s', 'burst', 3, 1, 'd2', 'c2', 0, 0, 987.0, 988.0, ''],
+])
+
+
 class TestLatency:
-    def test_clock_offset_cancels_and_waiting_is_counted(self):
-        ev = ana.add_latency(ana.event_stages(ONB), GEN)
+    def test_direct_latency_is_registration_minus_publication(self):
+        ev = ana.add_latency(ana.event_stages(ONB), GEN_SYNCED)
         lat = dict(zip(ev['device_id'], ev['latency']))
+        # done_i = 1010, 1021, 1032 on the node's clock
+        assert lat == pytest.approx({'d0': 25.0, 'd1': 35.0, 'd2': 45.0})
+
+    def test_clock_free_estimator_cancels_the_offset_and_counts_the_waiting(self):
+        ev = ana.add_latency(ana.event_stages(ONB), GEN)
+        lat = dict(zip(ev['device_id'], ev['latency_rel']))
         # d0: done at 1010; d1: done 1021, published 1 ms after d0 -> 20; d2: 1032 - 1000 - 2 = 30
         assert lat == pytest.approx({'d0': 10.0, 'd1': 20.0, 'd2': 30.0})
         # The bridge's own stamp misses the wait before it read d1 and d2
         assert ev['bridge_to_registered'].tolist() == pytest.approx([10.0, 10.0, 10.0])
 
     def test_summary(self):
-        ev, summ = ana.summarize_node('n', ONB, RES, GEN)
+        ev, summ = ana.summarize_node('n', ONB, RES, GEN_SYNCED)
         row = summ.iloc[0]
         assert (row['sent'], row['registered'], row['rejected'], row['missing']) == (3, 3, 0, 0)
-        assert row['latency_median'] == pytest.approx(20.0)
+        assert row['latency_median'] == pytest.approx(35.0)
+        assert row['latency_rel_median'] == pytest.approx(20.0)
         assert row['makespan_ms'] == pytest.approx(32.0)
         assert row['throughput_per_s'] == pytest.approx(3 / 0.032)
         assert row['server_cpu_max'] == 60.0

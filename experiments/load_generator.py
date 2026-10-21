@@ -304,7 +304,9 @@ def run_ramp(args, source, writer):
                 row['error'] = 'no puback'
             writer.writerow(row)
         log.info("%s: %d announcements in %ss (offered %.1f/s)", session, len(rows), args.step_s, rate)
-        time.sleep(args.settle)
+        # Keep the pool's network loops running during the pause: a plain sleep would let the
+        # connections miss their keepalive and the broker would drop them.
+        pump(live, lambda: False, time.time() + args.settle)
     for c in pool:
         c.close()
 
@@ -326,7 +328,7 @@ def main(argv=None):
     ap.add_argument('--keepalive', type=int, default=15)
     ap.add_argument('--timeout', type=float, default=60.0, help='max seconds to connect / get PUBACKs')
     ap.add_argument('--hold', type=float, default=5.0, help='seconds the burst connections stay up')
-    ap.add_argument('--settle', type=float, default=10.0, help='pause between load levels')
+    ap.add_argument('--settle', type=float, default=10.0, help='pause between load levels (the ramp keeps its connections attended)')
     ap.add_argument('--csv', required=True)
     args = ap.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')

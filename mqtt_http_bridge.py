@@ -23,6 +23,7 @@ Usage:
     python mqtt_http_bridge.py --mqtt-host localhost --http-host localhost
     python mqtt_http_bridge.py --csv resultados/eventos_bridge.csv
     python mqtt_http_bridge.py --session solo_c3 --onboarding-csv resultados/onboarding.csv
+    python mqtt_http_bridge.py --keepalive 600     # load tests on a slow node (see --keepalive)
 
 Onboarding latency by stage
 ---------------------------
@@ -330,6 +331,13 @@ def main():
         "--session", default="",
         help="label copied into every row of the onboarding CSV (e.g. individual, concurrent)"
     )
+    parser.add_argument(
+        "--keepalive", type=int, default=60,
+        help="MQTT keepalive in seconds. The reply to the bridge's ping queues behind the messages "
+             "the broker still holds for it; if the backlog takes longer than the keepalive, the "
+             "client drops the connection, reconnects with a clean session and the broker "
+             "discards the backlog. Raise it when a slow node is loaded beyond its capacity"
+    )
     args = parser.parse_args()
 
     http_base = f"http://{args.http_host}:{args.http_port}"
@@ -341,7 +349,7 @@ def main():
     client.on_message = make_on_message(http_base, events, onboarding, args.session)
 
     log.info("Connecting to MQTT %s:%s ...", args.mqtt_host, args.mqtt_port)
-    client.connect(args.mqtt_host, args.mqtt_port, keepalive=60)
+    client.connect(args.mqtt_host, args.mqtt_port, keepalive=args.keepalive)
     try:
         client.loop_forever()
     except KeyboardInterrupt:
