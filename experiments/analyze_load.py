@@ -207,7 +207,7 @@ def plot(summary, out):
         a2.set_ylim(0, burst['throughput_per_s'].max() * 1.2)   # axis from zero
         a3.set_ylim(0, None)
         a1.legend(fontsize=8)
-        a2.legend(fontsize=8, loc='lower right')
+        a2.legend(fontsize=8, loc='center right')
         fig.tight_layout()
         for ext in ('pdf', 'png'):
             fig.savefig(out / f'fig_load_burst.{ext}', dpi=300, bbox_inches='tight')
