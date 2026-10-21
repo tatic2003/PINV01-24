@@ -1,0 +1,17 @@
+
+  .-- Source mode  '^' = server, '=' = peer, '#' = local clock.
+ / .- Source state '*' = current best, '+' = combined, '-' = not combined,
+| /             'x' = may be in error, '~' = too variable, '?' = unusable.
+||                                                 .- xxxx [ yyyy ] +/- zzzz
+||      Reachability register (octal) -.           |  xxxx = adjusted offset,
+||      Log2(Polling interval) --.      |          |  yyyy = measured offset,
+||                                \     |          |  zzzz = estimated error.
+||                                 |    |           \
+MS Name/IP address         Stratum Poll Reach LastRx Last sample               
+===============================================================================
+#? NMEA                          0   4   377    11    -41ms[  -41ms] +/-  200ms
+#* PPS                           0   4   377    11   +331ns[ +620ns] +/-  101ns
+^? ntp.copaco.com.py             2  10   377    92  -8008us[-8007us] +/-  137ms
+^? time.cloudflare.com           3  10   377   624  -1564us[-1612us] +/-   87ms
+^? ntp2.copaco.com.py            2  10   377   733  -7986us[-8057us] +/-  127ms
+^? time.cloudflare.com           3  10   377    54  -1822us[-1822us] +/-   87ms

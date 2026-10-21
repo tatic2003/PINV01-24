@@ -1,0 +1,13 @@
+Reference ID    : C0A80015 (192.168.0.21)
+Stratum         : 2
+Ref time (UTC)  : Tue Oct 20 21:16:57 2026
+System time     : 0.000499446 seconds slow of NTP time
+Last offset     : -0.000554352 seconds
+RMS offset      : 0.001618103 seconds
+Frequency       : 17.549 ppm fast
+Residual freq   : -1.718 ppm
+Skew            : 0.102 ppm
+Root delay      : 0.004409322 seconds
+Root dispersion : 0.001409828 seconds
+Update interval : 65.0 seconds
+Leap status     : Normal

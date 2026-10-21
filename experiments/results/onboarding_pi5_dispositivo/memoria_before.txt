@@ -1,0 +1,6 @@
+ 5320 /usr/sbin/mosquitto -c /etc/mosquitto/mosquitto.conf
+102660 python run_server.py --classifier random_forest --feature-set resource --training-source catalog --training-samples 2000 --dag-key-file /root/dag_signing_key.hex
+22800 python mqtt_http_bridge.py --session pi5_dispositivo --csv experiments/results/onboarding_pi5_dispositivo/eventos_bridge.csv --onboarding-csv experiments/results/onboarding_pi5_dispositivo/onboarding_pi5_dispositivo.csv
+               total        used        free      shared  buff/cache   available
+Mem:             484         157          95           1         244         326
+Swap:            242           0         242
