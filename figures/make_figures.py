@@ -5,7 +5,7 @@ Regenerates every figure of the article from the measured data.
 Each figure is drawn by one function that reads the raw data files listed in
 figures/config.yml (and nothing else): no value shown in a figure is written
 in the code. Figures whose data come from a pipeline that already exists in
-the repository (baseline, onboarding, load, convergence) are drawn by calling
+the repository (baseline, onboarding, load, convergence, placement) are drawn by calling
 that pipeline's own functions, so there is a single implementation of each.
 
 Usage (from the repository root):
@@ -491,6 +491,26 @@ def fig_convergence(cfg, out):
     return {"fig_convergence": [runs] + [p for _, p in agents]}
 
 
+def fig_placement(cfg, out):
+    c = cfg["placement"]
+    argv, inputs = [], []
+    for r in c["runs"]:
+        gen = path(r["generator"])
+        need(gen)
+        argv += ["--run", r["name"], str(gen)]
+        inputs.append(gen)
+        for n in r["nodes"]:
+            files = need(path(n["onboarding"]), path(n["resources"]))
+            argv += ["--node", r["name"], n["name"], str(n["host"])] + [str(f) for f in files]
+            inputs += files
+    work = out / "placement"
+    argv += ["--reference", c["reference"], "--out", str(work)]
+    load_module("analyze_placement", "experiments/analyze_placement.py").main(argv)
+    for ext in ("pdf", "png"):
+        shutil.copy(work / f"fig_placement.{ext}", out / f"fig_placement.{ext}")
+    return {"fig_placement": inputs}
+
+
 # name -> (function, figures it writes, short description)
 FIGURES = {
     "fig_baseline": (fig_baseline, ["fig_baseline_stages", "fig_baseline_latency"],
@@ -503,6 +523,7 @@ FIGURES = {
     "fig_lwt_detection": (fig_lwt_detection, ["fig_lwt_detection"], "Last-Will detection, Ethernet boards"),
     "fig_load": (fig_load, ["fig_load_burst", "fig_load_ramp"], "load with emulated devices"),
     "fig_convergence": (fig_convergence, ["fig_convergence"], "DAG convergence after a partition"),
+    "fig_placement": (fig_placement, ["fig_placement"], "centralized vs distributed placement"),
 }
 ALIASES = {out_name: key for key, (_, outs, _) in FIGURES.items() for out_name in outs}
 

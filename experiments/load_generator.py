@@ -34,8 +34,20 @@ server registers a new device every time (never the "already registered"
 path). State messages are not retained, so the broker does not accumulate
 thousands of retained topics.
 
+Several nodes
+-------------
+--host can be given several brokers (e.g. the two edge nodes in the
+placement experiment). Each announcement goes to the broker whose turn it is
+in a smooth weighted round robin with --weights (equal by default), so the
+split follows the weights exactly rather than at random. In burst mode each
+emulated device is assigned a broker the same way; in ramp mode each broker
+has its own pool of --pool connections. One process drives all brokers, so
+the levels start at the same time on every node and all publication marks
+are on one clock.
+
 Output: --csv, one row per announcement (connection and publication marks,
-PUBACK, errors), used by experiments/analyze_load.py.
+PUBACK, errors, broker), used by experiments/analyze_load.py and
+experiments/analyze_placement.py.
 
 Usage (on the machine that generates the load):
   python3 experiments/load_generator.py --host 192.168.0.21 --label pi5 \\
@@ -44,6 +56,8 @@ Usage (on the machine that generates the load):
       --mode ramp --rates 1 2 5 10 20 50 100 --step-s 20 --csv resultados/load/gen_pi5_ramp.csv
   python3 experiments/load_generator.py --host 192.168.0.21 --label pi5val \\
       --mode burst --n 4 --repeat 10 --announcements testbed --csv resultados/load/gen_pi5_val.csv
+  python3 experiments/load_generator.py --host localhost 192.168.0.13 --weights 50 50 \\
+      --label dist50 --mode ramp --rates 2 5 10 20 40 --csv resultados/placement/gen_dist50.csv
 
 Project: PINV01-24 - FIUNA
 """
@@ -67,7 +81,7 @@ log = logging.getLogger("load_generator")
 
 CSV_COLUMNS = [
     "session", "mode", "level", "repeat", "device_id", "client",
-    "connect_start_ms", "connack_ms", "publish_ms", "puback_ms", "error",
+    "connect_start_ms", "connack_ms", "publish_ms", "puback_ms", "error", "host",
 ]
 
 #: Devices of the concurrent physical session, as captured in datasets/real.
@@ -133,6 +147,38 @@ class AnnouncementSource:
         payload = copy.deepcopy(self.pool[self.cycle % len(self.pool)])
         self.cycle += 1
         return payload
+
+
+class HostPicker:
+    """Smooth weighted round robin over brokers (the scheme of nginx upstreams).
+
+    After every sum(weights) picks with integer weights, each host has been
+    picked exactly weight times, and the picks are spread out rather than
+    grouped, so each load level gets the intended split from its start.
+    """
+
+    def __init__(self, hosts, weights=None):
+        weights = list(weights) if weights else [1.0] * len(hosts)
+        if len(weights) != len(hosts):
+            raise ValueError(f"{len(hosts)} hosts but {len(weights)} weights")
+        if any(w <= 0 for w in weights):
+            raise ValueError("weights must be positive")
+        self.hosts = list(hosts)
+        self.weights = [float(w) for w in weights]
+        self.total = sum(self.weights)
+        self.current = [0.0] * len(hosts)
+
+    def next(self):
+        for i, w in enumerate(self.weights):
+            self.current[i] += w
+        best = max(range(len(self.hosts)), key=lambda i: self.current[i])
+        self.current[best] -= self.total
+        return self.hosts[best]
+
+
+def hosts_of(args):
+    """--host as a list (a plain string is accepted too)."""
+    return [args.host] if isinstance(args.host, str) else list(args.host)
 
 
 def make_announcement(payload, device_id, session, agent_start_ms, connack_ms):
@@ -225,10 +271,13 @@ def pump(clients, until, deadline):
 # ---------------------------------------------------------------------------
 
 def run_burst(args, source, writer):
+    hosts = hosts_of(args)
+    picker = HostPicker(hosts, getattr(args, 'weights', None))
     for n in args.n:
         for rep in range(1, args.repeat + 1):
             session = f"load_{args.label}_burst_N{n}" + (f"_r{rep}" if args.repeat > 1 else '')
-            clients = [EmuClient(f"emu-{args.label}-{n}-{rep}-{i}", args.host, args.port,
+            brokers = [picker.next() for _ in range(n)]
+            clients = [EmuClient(f"emu-{args.label}-{n}-{rep}-{i}", brokers[i], args.port,
                                  args.keepalive, args.topic_prefix) for i in range(n)]
             agent_start = epoch_ms()
             for c in clients:
@@ -244,7 +293,8 @@ def run_burst(args, source, writer):
                            device_id=f"emu-{session}-{i}", client=c.name,
                            connect_start_ms=round(c.connect_start_ms, 3),
                            connack_ms=round(c.connack_ms, 3) if c.connack_ms else '',
-                           publish_ms='', puback_ms='', error=c.error)
+                           publish_ms='', puback_ms='', error=c.error,
+                           host=brokers[i])
                 rows.append(row)
                 if c.connected and not c.error:
                     msg = make_announcement(source.next(), row['device_id'], session,
@@ -265,15 +315,25 @@ def run_burst(args, source, writer):
 
 
 def run_ramp(args, source, writer):
-    pool = [EmuClient(f"emu-{args.label}-ramp-{i}", args.host, args.port,
-                      args.keepalive, args.topic_prefix) for i in range(args.pool)]
+    hosts = hosts_of(args)
+    picker = HostPicker(hosts, getattr(args, 'weights', None))
+    pools = {}
+    for h, host in enumerate(hosts):
+        prefix = f"emu-{args.label}-ramp-" + (f"{h}-" if len(hosts) > 1 else '')
+        pools[host] = [EmuClient(f"{prefix}{i}", host, args.port, args.keepalive, args.topic_prefix)
+                       for i in range(args.pool)]
+    pool = [c for host in hosts for c in pools[host]]
     start = epoch_ms()
     for c in pool:
         c.connect()
     if not pump(pool, lambda: all(c.connected or c.error for c in pool), time.time() + args.timeout):
         raise SystemExit("the connection pool did not connect")
-    live = [c for c in pool if c.connected and not c.error]
-    k = 0
+    live_by_host = {host: [c for c in pools[host] if c.connected and not c.error] for host in hosts}
+    empty = [host for host, cs in live_by_host.items() if not cs]
+    if empty:
+        raise SystemExit(f"no connection to {empty}")
+    live = [c for host in hosts for c in live_by_host[host]]
+    turn = {host: 0 for host in hosts}
     for rate in args.rates:
         session = f"load_{args.label}_ramp_R{rate:g}"
         interval = 1.0 / rate
@@ -284,12 +344,15 @@ def run_ramp(args, source, writer):
         while time.time() - t0 < args.step_s:
             now = time.time()
             if now >= next_t:
-                c = live[k % len(live)]
-                k += 1
+                host = picker.next()
+                cs = live_by_host[host]
+                c = cs[turn[host] % len(cs)]
+                turn[host] += 1
                 row = dict(session=session, mode='ramp', level=rate, repeat=1,
                            device_id=f"emu-{session}-{i}", client=c.name,
                            connect_start_ms=round(c.connect_start_ms, 3),
-                           connack_ms=round(c.connack_ms, 3), publish_ms='', puback_ms='', error='')
+                           connack_ms=round(c.connack_ms, 3), publish_ms='', puback_ms='', error='',
+                           host=host)
                 msg = make_announcement(source.next(), row['device_id'], session, start, c.connack_ms)
                 c.publish_announcement(msg, row)
                 rows.append(row)
@@ -303,7 +366,9 @@ def run_ramp(args, source, writer):
             if not row['puback_ms'] and not row['error']:
                 row['error'] = 'no puback'
             writer.writerow(row)
-        log.info("%s: %d announcements in %ss (offered %.1f/s)", session, len(rows), args.step_s, rate)
+        per_host = {host: sum(1 for r in rows if r['host'] == host) for host in hosts}
+        log.info("%s: %d announcements in %ss (offered %.1f/s)%s", session, len(rows), args.step_s, rate,
+                 f" per broker {per_host}" if len(hosts) > 1 else '')
         # Keep the pool's network loops running during the pause: a plain sleep would let the
         # connections miss their keepalive and the broker would drop them.
         pump(live, lambda: False, time.time() + args.settle)
@@ -313,7 +378,10 @@ def run_ramp(args, source, writer):
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--host', default='localhost', help='MQTT broker of the node under test')
+    ap.add_argument('--host', nargs='+', default=['localhost'],
+                    help='MQTT broker(s) of the node(s) under test; several brokers share the load')
+    ap.add_argument('--weights', type=float, nargs='+', default=None,
+                    help='share of the announcements of each --host (default: equal)')
     ap.add_argument('--port', type=int, default=1883)
     ap.add_argument('--topic-prefix', default='its')
     ap.add_argument('--label', required=True, help='node label used in the session names (e.g. pi5, opi)')
@@ -322,7 +390,7 @@ def main(argv=None):
     ap.add_argument('--repeat', type=int, default=1, help='bursts per N')
     ap.add_argument('--rates', type=float, nargs='+', default=[1, 2, 5, 10, 20, 50, 100])
     ap.add_argument('--step-s', type=float, default=20.0, help='seconds per ramp step')
-    ap.add_argument('--pool', type=int, default=20, help='connections used by the ramp')
+    ap.add_argument('--pool', type=int, default=20, help='connections used by the ramp, per broker')
     ap.add_argument('--announcements', choices=['catalog', 'testbed'], default='catalog')
     ap.add_argument('--seed', type=int, default=42)
     ap.add_argument('--keepalive', type=int, default=15)
@@ -331,6 +399,11 @@ def main(argv=None):
     ap.add_argument('--settle', type=float, default=10.0, help='pause between load levels (the ramp keeps its connections attended)')
     ap.add_argument('--csv', required=True)
     args = ap.parse_args(argv)
+    if args.weights is not None:
+        try:
+            HostPicker(args.host, args.weights)
+        except ValueError as exc:
+            ap.error(str(exc))
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 
     source = AnnouncementSource(args.announcements, seed=args.seed)

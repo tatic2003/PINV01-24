@@ -93,3 +93,38 @@ convergence:
       csv: figures/data/convergence/sync_pi5.csv
     - name: opi
       csv: figures/data/convergence/sync_opi.csv
+
+placement:
+  # experiments/analyze_placement.py: one entry per run; host = broker as
+  # written in the 'host' column of the generator CSV (--host of the generator)
+  reference: central
+  runs:
+    - name: central
+      generator: figures/data/placement/generator_central.csv
+      nodes:
+        - name: pi5
+          host: localhost
+          onboarding: figures/data/placement/onboarding_central_pi5.csv
+          resources: figures/data/placement/resources_central_pi5.csv
+    - name: dist50
+      generator: figures/data/placement/generator_dist50.csv
+      nodes:
+        - name: pi5
+          host: localhost
+          onboarding: figures/data/placement/onboarding_dist50_pi5.csv
+          resources: figures/data/placement/resources_dist50_pi5.csv
+        - name: opi
+          host: 192.168.0.13
+          onboarding: figures/data/placement/onboarding_dist50_opi.csv
+          resources: figures/data/placement/resources_dist50_opi.csv
+    - name: distcap
+      generator: figures/data/placement/generator_distcap.csv
+      nodes:
+        - name: pi5
+          host: localhost
+          onboarding: figures/data/placement/onboarding_distcap_pi5.csv
+          resources: figures/data/placement/resources_distcap_pi5.csv
+        - name: opi
+          host: 192.168.0.13
+          onboarding: figures/data/placement/onboarding_distcap_opi.csv
+          resources: figures/data/placement/resources_distcap_opi.csv

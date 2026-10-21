@@ -9,6 +9,8 @@ and each process of the pipeline, found by its command line:
   server  run_server.py
   bridge  mqtt_http_bridge.py
   broker  mosquitto
+  sync    experiments/dag_sync.py (DAG replication; only in the distributed
+          placement, empty columns otherwise)
 
 CPU % of a process is relative to one core (100 = one core fully busy), as
 in top; the system CPU % is the average over all cores. Processes are looked
@@ -33,6 +35,7 @@ PROCESSES = {
     'server': 'run_server.py',
     'bridge': 'mqtt_http_bridge.py',
     'broker': 'mosquitto',
+    'sync': 'dag_sync.py',
 }
 COLUMNS = (['node', 'epoch_ms', 'sys_cpu_pct', 'sys_mem_used_mb', 'sys_mem_avail_mb',
             'temp_c', 'cpu0_mhz']

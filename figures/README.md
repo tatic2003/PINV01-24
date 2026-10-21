@@ -24,6 +24,7 @@ No value shown in a figure is written in the code. The only fixed values are in 
 | `fig_onboarding_stages` | `data/onboarding/` | `mqtt_http_bridge.py --onboarding-csv`, `devices/serial_agent.py`, `experiments/clock_probe.py`; drawn by `experiments/analyze_onboarding.py` |
 | `fig_load_burst`, `fig_load_ramp` | `data/load/` | `experiments/load_generator.py`, `experiments/resource_monitor.py`, bridge; drawn by `experiments/analyze_load.py` |
 | `fig_convergence` | `data/convergence/` | `experiments/run_partition.py`, `experiments/dag_sync.py`; drawn by `experiments/analyze_convergence.py` |
+| `fig_placement` | `data/placement/` | `experiments/load_generator.py` (several `--host`), `experiments/resource_monitor.py`, `experiments/dag_sync.py`; drawn by `experiments/analyze_placement.py` |
 
 ## The data files
 
