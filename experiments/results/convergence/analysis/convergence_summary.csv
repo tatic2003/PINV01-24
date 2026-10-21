@@ -1,0 +1,4 @@
+m,repetitions,converged,convergence_median_ms,convergence_p95_ms,convergence_max_ms,convergence_min_ms,nodes_local_median,nodes_peer_median,late_nodes,generator_errors,added_opi_median,added_pi5_median,failed,missing_parents,bad_signature,hash_conflict,broken_link,hash_failed,other
+10,10,10,925.15,1070.85,1084.8,847.4,20.0,20.0,0,0,20.0,20.0,0,0,0,0,0,0,0
+50,10,10,1053.3,1283.955,1311.0,679.2,100.0,100.0,0,0,100.0,100.0,0,0,0,0,0,0,0
+200,10,10,1906.6,2419.935,2481.0,1690.6,400.0,400.0,0,0,400.0,400.0,0,0,0,0,0,0,0
