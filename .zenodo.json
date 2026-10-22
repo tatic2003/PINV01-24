@@ -1,0 +1,27 @@
+{
+  "title": "PINV01-24: code and data for \"Interoperability of Heterogeneous Devices in Intelligent Transportation Systems: Semantic Validation, PnP-AI, and DAG-Based Synchronization on Edge Hardware\"",
+  "upload_type": "software",
+  "description": "Source code, experiment scripts and measured data of the article. Devices announce themselves over MQTT; a PnP-AI classifier types them from the resources they announce; SHACL shapes over an OWL model of the ITS domain validate their descriptions; and events are recorded in an Ed25519-signed BlockDAG replicated between edge nodes. Includes the catalogue of 114 boards, the announcements captured from the laboratory devices, the raw data and analysis outputs of every experiment, and the script that regenerates every data figure.",
+  "creators": [
+    {
+      "name": "Caballero, Tatiana",
+      "affiliation": "Centro de Innovación Tecnológica (CITEC), Facultad de Ingeniería, Universidad Nacional de Asunción, Paraguay",
+      "orcid": "0009-0002-9479-0906"
+    },
+    {
+      "name": "Gregor, Derlis O.",
+      "affiliation": "Centro de Innovación Tecnológica (CITEC), Facultad de Ingeniería, Universidad Nacional de Asunción, Paraguay",
+      "orcid": "0000-0003-2606-5980"
+    }
+  ],
+  "license": "MIT",
+  "keywords": [
+    "intelligent transportation systems",
+    "semantic interoperability",
+    "plug-and-play",
+    "edge computing",
+    "BlockDAG",
+    "SHACL"
+  ],
+  "notes": "Project PINV01-24, co-funded by the Consejo Nacional de Ciencia y Tecnología (CONACYT), Paraguay, with the support of the Fondo para la Excelencia de la Educación y la Investigación (FEEI)."
+}
