@@ -42,10 +42,11 @@ Feature sets
 characteristics. ``FEATURE_SET_RESOURCE_NAME`` adds flags derived from the
 hardware model string (has_esp32, has_raspberry, ...).
 
-The distinction matters for the experimental report: the name flags
-reproduce the rule-based baseline's lookup logic inside the ML model, so
-they make the comparison between the two approaches circular and inflate
-accuracy toward 1.0. See ``docs`` in the report for the measured effect.
+The server and every evaluation of the article use ``FEATURE_SET_RESOURCE``.
+``FEATURE_SET_RESOURCE_NAME`` is kept only for comparison: the name flags
+reproduce the lookup of the rule-based baseline inside the ML model, so they
+make the comparison between the two approaches circular and push accuracy
+toward 1.0.
 """
 
 from typing import Any, Dict, List
