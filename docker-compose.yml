@@ -1,79 +1,136 @@
-# Docker Compose for IoT-ITS System
-# Project: PINV01-24 - FIUNA
+# Two edge nodes of the IoT-ITS pipeline, each with its own MQTT broker,
+# server, bridge and DAG synchronization agent, as on the test bench.
 #
-# Usage:
-#   docker-compose up -d        # Start all services
-#   docker-compose logs -f      # View logs
-#   docker-compose down         # Stop all services
+#   docker compose up -d --build               start both nodes
+#   docker compose run --rm demo               10 emulated devices announce themselves
+#   docker compose logs -f bridge-a bridge-b   follow the registrations
+#   docker compose down                        stop (add -v to delete the keys)
+#
+# Server of node A: http://localhost:5000, of node B: http://localhost:5001.
+# The CSVs of the bridges, the agents and the generator are written to
+# docker/out/. These containers are for trying the system; the timings of
+# the article were measured on the boards without containers.
 
-version: '3.8'
+x-app: &app
+  build: .
+  image: pinv01-24
+  restart: unless-stopped
+  volumes:
+    - ./docker/out:/out
+
+x-server-health: &server-health
+  test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health', timeout=5)"]
+  interval: 5s
+  timeout: 6s
+  retries: 30
+  start_period: 10s
 
 services:
-  # Primary gateway node
-  gateway-primary:
-    build: .
-    container_name: its-gateway-primary
+  keys:
+    <<: *app
+    restart: "no"
+    command: ["python", "docker/make_keys.py", "/keys", "edge-a", "edge-b"]
+    volumes:
+      - keys:/keys
+
+  broker-a:
+    image: eclipse-mosquitto:2
+    restart: unless-stopped
+    volumes:
+      - ./docker/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+
+  broker-b:
+    image: eclipse-mosquitto:2
+    restart: unless-stopped
+    volumes:
+      - ./docker/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+
+  server-a:
+    <<: *app
+    command: ["python", "run_server.py", "--node-id", "edge-a",
+              "--dag-key-file", "/keys/edge-a.key",
+              "--dag-trusted-keys", "/keys/trusted_keys.json",
+              "--dag-require-signatures"]
     ports:
       - "5000:5000"
-    environment:
-      - ITS_NODE_ID=gateway-primary
-      - ITS_PORT=5000
-      - ITS_CLASSIFIER=decision_tree
-      - ITS_ENABLE_DAG=true
-      - ITS_LOG_LEVEL=INFO
     volumes:
-      - gateway-primary-data:/app/data
-      - ./ontology:/app/ontology:ro
-    networks:
-      - its-network
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      - keys:/keys
+    depends_on:
+      keys:
+        condition: service_completed_successfully
+    healthcheck: *server-health
 
-  # Secondary gateway node (for distributed setup)
-  gateway-secondary:
-    build: .
-    container_name: its-gateway-secondary
+  server-b:
+    <<: *app
+    command: ["python", "run_server.py", "--node-id", "edge-b",
+              "--dag-key-file", "/keys/edge-b.key",
+              "--dag-trusted-keys", "/keys/trusted_keys.json",
+              "--dag-require-signatures"]
     ports:
       - "5001:5000"
-    environment:
-      - ITS_NODE_ID=gateway-secondary
-      - ITS_PORT=5000
-      - ITS_CLASSIFIER=rule_based
-      - ITS_ENABLE_DAG=true
-      - ITS_LOG_LEVEL=INFO
     volumes:
-      - gateway-secondary-data:/app/data
-      - ./ontology:/app/ontology:ro
-    networks:
-      - its-network
-    restart: unless-stopped
+      - keys:/keys
     depends_on:
-      - gateway-primary
+      keys:
+        condition: service_completed_successfully
+    healthcheck: *server-health
 
-  # MQTT Broker (for future MQTT support)
-  mqtt-broker:
-    image: eclipse-mosquitto:2
-    container_name: its-mqtt-broker
-    ports:
-      - "1883:1883"
-      - "9001:9001"
-    volumes:
-      - mqtt-data:/mosquitto/data
-      - mqtt-logs:/mosquitto/log
-    networks:
-      - its-network
-    restart: unless-stopped
+  bridge-a:
+    <<: *app
+    command: ["python", "mqtt_http_bridge.py", "--mqtt-host", "broker-a",
+              "--http-host", "server-a", "--http-port", "5000",
+              "--csv", "/out/bridge_a.csv", "--onboarding-csv", "/out/onboarding_a.csv"]
+    depends_on:
+      broker-a:
+        condition: service_started
+      server-a:
+        condition: service_healthy
 
-networks:
-  its-network:
-    driver: bridge
+  bridge-b:
+    <<: *app
+    command: ["python", "mqtt_http_bridge.py", "--mqtt-host", "broker-b",
+              "--http-host", "server-b", "--http-port", "5000",
+              "--csv", "/out/bridge_b.csv", "--onboarding-csv", "/out/onboarding_b.csv"]
+    depends_on:
+      broker-b:
+        condition: service_started
+      server-b:
+        condition: service_healthy
+
+  sync-a:
+    <<: *app
+    command: ["python", "experiments/dag_sync.py", "--local", "http://server-a:5000",
+              "--peer", "http://server-b:5000", "--csv", "/out/sync_a.csv"]
+    depends_on:
+      server-a:
+        condition: service_healthy
+      server-b:
+        condition: service_healthy
+
+  sync-b:
+    <<: *app
+    command: ["python", "experiments/dag_sync.py", "--local", "http://server-b:5000",
+              "--peer", "http://server-a:5000", "--csv", "/out/sync_b.csv"]
+    depends_on:
+      server-a:
+        condition: service_healthy
+      server-b:
+        condition: service_healthy
+
+  # Optional: 10 emulated devices from the calibrated catalogue, split
+  # between the two brokers. Run it with: docker compose run --rm demo
+  demo:
+    <<: *app
+    restart: "no"
+    profiles: ["demo"]
+    command: ["python", "experiments/load_generator.py", "--host", "broker-a", "broker-b",
+              "--label", "demo", "--mode", "burst", "--n", "10",
+              "--csv", "/out/generator_demo.csv"]
+    depends_on:
+      bridge-a:
+        condition: service_started
+      bridge-b:
+        condition: service_started
 
 volumes:
-  gateway-primary-data:
-  gateway-secondary-data:
-  mqtt-data:
-  mqtt-logs:
+  keys:

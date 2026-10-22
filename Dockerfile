@@ -1,45 +1,24 @@
-# IoT-ITS Server Docker Image
-# Project: PINV01-24 - FIUNA
+# Image of the IoT-ITS pipeline (server, MQTT bridge, DAG synchronization
+# agent, load generator). docker-compose.yml starts two edge nodes with it.
 #
-# Build: docker build -t iot-its-server .
-# Run:   docker run -p 5000:5000 iot-its-server
+# The containers are for trying the system, not for reproducing the timings
+# of the article, which were measured on the boards without containers.
+#
+# Build: docker build -t pinv01-24 .
 
-FROM python:3.11-slim
+ARG BASE_IMAGE=python:3.11-slim
+FROM ${BASE_IMAGE}
 
-# Set working directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy requirements first for caching
 COPY requirements.txt .
-
-# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
 COPY . .
 
-# Create data directories
-RUN mkdir -p /app/data /app/models
-
-# Environment variables
-ENV ITS_HOST=0.0.0.0
-ENV ITS_PORT=5000
-ENV ITS_NODE_ID=docker-node-01
-ENV ITS_LOG_LEVEL=INFO
-ENV ITS_CLASSIFIER=rule_based
-ENV ITS_ENABLE_DAG=true
-
-# Expose port
+ENV PYTHONUNBUFFERED=1
 EXPOSE 5000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:5000/health || exit 1
-
-# Run the server
+# Server with the configuration evaluated in the article (random forest,
+# resource features, calibrated catalogue, SHACL on every registration).
 CMD ["python", "run_server.py"]
