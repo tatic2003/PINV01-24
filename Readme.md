@@ -25,21 +25,6 @@ Traffic management depends on knowing which devices are in the field, what they 
 
 This repository holds a system that keeps the registry without manual configuration, together with every experiment and every measured data file of the article *Interoperability of Heterogeneous Devices in Intelligent Transportation Systems: Semantic Validation, PnP-AI, and DAG-Based Synchronization on Edge Hardware* (T. Caballero and D. O. Gregor). Every number in the article comes from a script and from raw data committed here.
 
-## What we measured
-
-Tests ran on ESP32 boards, an Arduino Uno, an Orange Pi Zero and a Raspberry Pi 5 with a GPS HAT.
-
-| Question | Result |
-|---|---|
-| Can a new device be typed without configuration? | A classifier trained only on a calibrated catalogue of 114 boards typed 12 real configurations with a mean accuracy of **0.975**, and beat a name-based rule baseline by **12 to 14 points** on boards it had never seen |
-| Are malformed descriptions stopped? | **All 1200** were rejected |
-| Is a silent departure noticed in bounded time? | Within 1 s of the MQTT keep-alive model in **39 of 40** cable cuts |
-| How many devices can a node register? | About **47 per second** on the Raspberry Pi 5 and **5.8** on the Orange Pi Zero |
-| Do replicas agree after a network partition? | They converged in a median of **0.93 to 1.91 s**, without rejecting any node |
-| How good is the common clock? | Disciplined by GPS pulse-per-second, the Raspberry Pi 5 clock erred by about **1 µs** |
-
-The testbed is one local network with a small number of physical devices; the article discusses what that leaves untested.
-
 ## What the system does
 
 Devices announce themselves over MQTT. On each edge node a bridge turns the MQTT events into REST calls to a Flask server, which:
