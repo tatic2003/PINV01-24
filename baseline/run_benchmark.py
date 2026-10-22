@@ -77,7 +77,7 @@ LABELS = {
 def load_distributed_results(results_dir: Path, model: str) -> Optional[List[float]]:
     """
     Load per-event latencies from the distributed system's existing CSV output
-    (produced by generate_dag_evaluation.py or a previous benchmark run).
+    (produced by run_distributed_benchmark.py or a previous benchmark run).
     Returns None if not found — caller will skip that series.
     """
     # Look in the results directory itself (produced by run_distributed_benchmark.py)

@@ -19,8 +19,6 @@ help:
 	@echo "  format      Format code with black"
 	@echo "  run         Start the server"
 	@echo "  run-debug   Start server in debug mode"
-	@echo "  cli         Show CLI help"
-	@echo "  evaluate    Generate learning curves and confusion matrices"
 	@echo "  clean       Clean cache and build files"
 	@echo "  docker      Build Docker image"
 	@echo "  docker-up   Start Docker containers"
@@ -60,24 +58,21 @@ test-dag:
 test-api:
 	pytest tests/test_api_integration.py -v
 
-test-mqtt:
-	pytest tests/test_mqtt.py -v
-
 # ============================================================
 # Code Quality
 # ============================================================
 
 lint:
 	flake8 --max-line-length=100 --ignore=E501,W503 \
-		semantic_layer/ pnp_ai/ edge_agents/ blockdag/ mqtt/ server/
+		semantic_layer/ pnp_ai/ blockdag/ server/ devices/ experiments/
 
 format:
 	black --line-length=100 \
-		semantic_layer/ pnp_ai/ edge_agents/ blockdag/ mqtt/ server/ tests/
+		semantic_layer/ pnp_ai/ blockdag/ server/ devices/ experiments/ tests/
 
 typecheck:
 	mypy --ignore-missing-imports \
-		semantic_layer/ pnp_ai/ edge_agents/ blockdag/ mqtt/ server/
+		semantic_layer/ pnp_ai/ blockdag/ server/ devices/ experiments/
 
 # ============================================================
 # Running
@@ -92,21 +87,12 @@ run-debug:
 run-port:
 	python run_server.py --port $(PORT)
 
-cli:
-	python cli.py --help
-
-status:
-	python cli.py status
-
-devices:
-	python cli.py devices list
-
 # ============================================================
 # Docker
 # ============================================================
 
 docker:
-	docker build -t iot-its-server .
+	docker build -t pinv01-24 .
 
 docker-up:
 	docker compose up -d
@@ -157,21 +143,6 @@ train:
 		classifier, metrics = train_classifier_from_synthetic_data(1000, 'random_forest'); \
 		print('Accuracy:', metrics.get('accuracy', 'N/A'))"
 
-# Generate model evaluation plots (learning curves and confusion matrices)
-evaluate:
-	python generate_model_evaluation.py --samples 1000 --output-dir ./evaluation_plots
-
-evaluate-detailed:
-	python generate_model_evaluation.py --samples 2000 --output-dir ./evaluation_plots
-
-# Generate BlockDAG performance evaluation plots
-evaluate-dag:
-	python generate_dag_evaluation.py --nodes 500 --syncs 10 --output-dir ./dag_evaluation
-
-# Export RDF
-export-rdf:
-	python cli.py export rdf > output.ttl
-	@echo "Exported to output.ttl"
 
 # Validate ontology
 validate:
@@ -191,11 +162,11 @@ info:
 	@echo "Structure:"
 	@echo "  semantic_layer/  - RDF/SHACL management"
 	@echo "  pnp_ai/          - Device classification"
-	@echo "  edge_agents/     - Distributed agents"
 	@echo "  blockdag/        - Event synchronization"
-	@echo "  mqtt/            - MQTT support"
-	@echo "  server/          - REST API"
-	@echo "  firmware/esp32/  - ESP32 library"
+	@echo "  server/          - REST API (registration, classification, SHACL, DAG)"
+	@echo "  devices/         - Agents for Linux boards, GNSS receiver and Arduino Uno"
+	@echo "  experiments/     - Experiment runners and analysis"
+	@echo "  firmware/        - ESP32 and Arduino Uno sketches"
 	@echo ""
 	@python --version
 	@pip --version

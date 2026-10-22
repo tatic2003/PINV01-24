@@ -6,8 +6,7 @@ pyshacl>=0.25.0
 # Lightweight ML for edge
 scikit-learn>=1.3.0
 numpy>=1.24.0
-onnxruntime>=1.16.0  # For edge inference
-matplotlib>=3.7.0    # For evaluation plots (learning curves, confusion matrices)
+matplotlib>=3.7.0    # Figures of the experiments
 
 # Signatures for the BlockDAG (Ed25519)
 cryptography>=41.0.0
@@ -20,13 +19,11 @@ pyyaml>=6.0
 flask>=3.0.0
 requests>=2.31.0
 paho-mqtt>=1.6.1  # For IoT messaging
-aiohttp>=3.9.0    # For async HTTP (edge agents)
 
 # Note: hashlib, json are Python built-ins (no install needed)
 
 # Development
 pytest>=7.4.0
-pytest-asyncio>=0.23.0  # Required for async edge agent tests (@pytest.mark.asyncio)
 black>=23.0.0
 
 # Optional: For Raspberry Pi / Edge

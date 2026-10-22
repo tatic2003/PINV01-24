@@ -37,8 +37,6 @@ figures/                     make_figures.py, its configuration and its input da
 tests/                       automated tests
 ```
 
-`edge_agents/`, `examples/`, `cli.py`, `mqtt/` and `generate_*.py` are not used in the experiments of the article.
-
 ## Installation and tests
 
 Python 3.9 or later.

@@ -112,18 +112,6 @@ def client(app):
 
 
 @pytest.fixture
-def mqtt_config():
-    """MQTT broker configuration for testing."""
-    from mqtt.broker import MQTTBrokerConfig
-
-    return MQTTBrokerConfig(
-        host="localhost",
-        port=1883,
-        topic_prefix="its-test"
-    )
-
-
-@pytest.fixture
 def classifier():
     """Create device classifier for testing."""
     from pnp_ai.device_classifier import DeviceClassifier
