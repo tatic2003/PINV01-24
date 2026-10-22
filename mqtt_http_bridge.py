@@ -4,7 +4,7 @@ MQTT -> HTTP Bridge for IoT-ITS (PINV01-24)
 
 The Flask server (run_server.py) only exposes an HTTP API; it does not
 listen to MQTT directly. This bridge subscribes to the MQTT topics used by the
-ESP32 boards (mqtt_device.ino) and forwards each event as an HTTP call to the
+ESP32 boards (firmware/esp32/examples/mqtt_device/) and forwards each event as an HTTP call to the
 server, so that it is recorded in the same semantic layer / BlockDAG.
 
 It also writes a CSV with one row per event, the raw log from which the

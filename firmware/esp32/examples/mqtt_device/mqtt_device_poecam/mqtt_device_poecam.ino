@@ -1,7 +1,7 @@
 /**
  * MQTT Device Example - M5Stack Unit PoE CAM-W (Ethernet / W5500)
  *
- * Same announcement format as mqtt_device.ino, but the board is attached over
+ * Same announcement format as mqtt_device_wroom32.ino, but the board is attached over
  * ETHERNET (W5500 on SPI), not WiFi. It announces link_type = "ethernet" and
  * protocol = "mqtt" as two separate fields, so the server can tell this board
  * apart from a WiFi ESP32 even though both are ESP32-class and speak MQTT.
