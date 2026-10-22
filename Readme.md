@@ -10,6 +10,7 @@
   <img src="https://img.shields.io/badge/OWL%20%C2%B7%20SHACL-semantic%20web-0A7BBB?style=for-the-badge" alt="OWL and SHACL">
   <img src="https://img.shields.io/badge/BlockDAG-Ed25519-C58B00?style=for-the-badge" alt="BlockDAG with Ed25519">
   <img src="https://img.shields.io/badge/docker-compose-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker Compose">
+  <a href="https://doi.org/10.5281/zenodo.23567519"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.23567519.svg" alt="DOI"></a>
 </p>
 
 <p align="center">
@@ -150,7 +151,20 @@ The NMEA logs have latitude and longitude removed. The coordinates in the GNSS v
 
 ## Citation
 
-If you use this code or data, please cite the article and the archived release of this repository (Zenodo DOI to be added).
+If you use this code or data, please cite the article and the archived release of this repository:
+
+> Caballero, T., & Gregor, D. O. (2026). *PINV01-24: code and data for "Interoperability of Heterogeneous Devices in Intelligent Transportation Systems: Semantic Validation, PnP-AI, and DAG-Based Synchronization on Edge Hardware"* (Version v1.0.0) [Software]. Zenodo. https://doi.org/10.5281/zenodo.23567520
+
+```bibtex
+@misc{caballero2026pinv0124,
+  author       = {Caballero, Tatiana and Gregor, Derlis O.},
+  title        = {{PINV01-24}: code and data for ``Interoperability of Heterogeneous Devices in Intelligent Transportation Systems: Semantic Validation, {PnP-AI}, and {DAG}-Based Synchronization on Edge Hardware''},
+  howpublished = {Version v1.0.0 [software]. Zenodo},
+  year         = {2026},
+  doi          = {10.5281/zenodo.23567520},
+  url          = {https://doi.org/10.5281/zenodo.23567520}
+}
+```
 
 ## Funding
 
