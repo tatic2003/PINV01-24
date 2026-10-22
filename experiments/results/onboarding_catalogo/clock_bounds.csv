@@ -1,9 +1,0 @@
-device_id,device_type,probes,median_offset_ms,best_offset_ms,bound_ms
-esp32-c3-38a960,ESP32-C3-Zero,40,3.243,1.622,4.871
-esp32-c3-645ce0,ESP32-C3-Zero,40,4.295,-0.222,4.2355
-esp32-c3-65beac,ESP32-C3-Zero,40,3.472,0.832,4.825
-esp32-cam-af0bec,ESP32-CAM,20,4.356,3.859,7.4295
-esp32-cam-afd340,ESP32-CAM,20,5.1575,2.316,7.84
-esp32-olimex-poe-17eca4,Olimex ESP32-PoE,20,2.1205,0.911,4.379
-esp32-poecam-824280,M5Stack PoE CAM-W,20,5.8525,5.661,6.6575
-esp32-wroom32-267a68,ESP32-WROOM-32,40,5.242,3.249,6.095
