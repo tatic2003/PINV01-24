@@ -24,7 +24,7 @@ No value shown in a figure is written in the code. The only fixed values are in 
 | `fig_onboarding_stages` | `data/onboarding/` | `mqtt_http_bridge.py --onboarding-csv`, `devices/serial_agent.py`, `experiments/clock_probe.py`; drawn by `experiments/analyze_onboarding.py` |
 | `fig_load_burst`, `fig_load_ramp` | `data/load/` | `experiments/load_generator.py`, `experiments/resource_monitor.py`, bridge; drawn by `experiments/analyze_load.py` |
 | `fig_convergence` | `data/convergence/` | `experiments/run_partition.py`, `experiments/dag_sync.py`; drawn by `experiments/analyze_convergence.py` |
-| `fig_placement` | `data/placement/` | `experiments/load_generator.py` (several `--host`), `experiments/resource_monitor.py`, `experiments/dag_sync.py`; drawn by `experiments/analyze_placement.py` |
+| `fig_placement` | `data/placement/` (three blocks) | `experiments/load_generator.py` (several `--host`), `experiments/resource_monitor.py`, `experiments/dag_sync.py`; drawn by `experiments/analyze_placement.py` |
 
 ## The data files
 
@@ -48,3 +48,12 @@ No value shown in a figure is written in the code. The only fixed values are in 
 - `lwt_trials_<board>_k<K>.csv`: cable cuts of the Olimex ESP32-PoE and the M5Stack PoE CAM-W with keepalive K = 15 s and 5 s (10 cuts each): last heartbeat, cut, Last Will, detection, link back, recovery. The board and K are given by the file name only.
 - `bridge_olimex.csv`, `bridge_poecam.csv`: everything the bridge received from each board during both series (registrations, heartbeats, data, state, Last Will). `bridge_poecam.csv` also has one leftover row of the Olimex at its start; the figure filters by device.
 - The time from the last device packet to the cut is computed as the latest of the last heartbeat or data message received before the Last Will and the last PINGREQ, which does not reach the bridge and is estimated as the connection time plus multiples of K.
+
+### `data/placement/` — centralized vs distributed placement
+
+- Each placement was run three times, once in each of three blocks, in a Latin-square order: block 1 (centralized, even split, capacity split), block 2 (even, capacity, centralized) and block 3 (capacity, centralized, even). Block 1 was run on 21 October 2026, with the Orange Pi Zero at 192.168.0.13; blocks 2 and 3 on 23 October 2026, with the Orange Pi Zero at 192.168.0.15. The files of block 1 are in this folder; those of blocks 2 and 3 are in `block2/` and `block3/`.
+- Placements: `central` (every announcement to the Raspberry Pi 5), `dist50` (50/50 split between the two nodes) and `distcap` (89/11 split).
+- `generator_<placement>.csv`: one row per announcement, written by `load_generator.py`, with the level (offered rate), the broker (`host`), the publication time and the time of the broker's acknowledgement.
+- `onboarding_<placement>_<node>.csv`: one row per registration on node `pi5` or `opi`, written by `mqtt_http_bridge.py --onboarding-csv` (arrival at the bridge, HTTP status and the stage times returned by the server).
+- `resources_<placement>_<node>.csv`: CPU, memory, temperature and CPU-0 frequency of the node, and CPU of its server, bridge, broker and synchronization agent, sampled every 0.5 s by `resource_monitor.py`.
+- In `config.yml`, each run is named `<placement>:<block>`. The three blocks are aggregated by `analyze_placement.py`: each run weighs the same, and the figure shows the mean with the minimum and maximum of the three runs.
