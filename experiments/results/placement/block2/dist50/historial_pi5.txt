@@ -1,0 +1,60 @@
+  549  grep "2026-10-16T16:3[1-5]" ARCHIVO | grep -c "mcu-uno-069rr4"
+  550  grep "2026-10-16T16:3[1-5]" resultados/onboarding_2026-10/eventos_uno_cat.csv | grep -c "mcu-uno-069rr4"
+  551  cd ~/PINV01-24 && source .venv/bin/activate
+  552  watch -n 2 "grep ^individual_cat, resultados/onboarding_2026-10/onboarding_catalogo.csv | cut -d, -f2,4,5 | sort | uniq -c"
+  553  chronyc tracking | head -4
+  554  cd ~/PINV01-24 && source .venv/bin/activate
+  555  python run_server.py --classifier random_forest --feature-set resource --training-source catalog --training-samples 2000 --dag-key-file ~/dag_signing_key.hex
+  556  cd ~/PINV01-24 && source .venv/bin/activate
+  557  python devices/serial_agent.py --session uno   --csv experiments/results/onboarding_uno/serial_agent_uno.csv
+  558  cd ~/PINV01-24
+  559  diff -rq --strip-trailing-cr ~/respaldo_invalid_events experiments/results/invalid_events
+  560  wc -lc ~/respaldo_invalid_events/* experiments/results/invalid_events/*
+  561  diff --strip-trailing-cr ~/respaldo_invalid_events/invalid_events_summary.csv experiments/results/invalid_events/invalid_events_summary.csv | head -20
+  562  diff --strip-trailing-cr ~/respaldo_invalid_events/invalid_events_meta.json experiments/results/invalid_events/invalid_events_meta.json | head -20
+  563  diff -r --strip-trailing-cr ~/respaldo_invalid_events experiments/results/invalid_events && echo "IGUALES"
+  564  md5sum devices/linux_agent.py
+  565  tar czf - --exclude=.git --exclude=.venv --exclude=resultados --exclude=dag_storage --exclude=data . | ssh root@192.168.0.32 "cd /root/PINV01-24 && tar xzf -"
+  566  cd ~/PINV01-24
+  567  watch -n 2 'f=experiments/results/onboarding_ethernet/onboarding_ethernet.csv; \
+  568  echo "altas en frío (seq=1) por placa:"; \
+  569  awk -F, "NR>1 && \$4==1 {n[\$2]++} END {for (d in n) print n[d], d}" $f; \
+  570  echo; echo "últimas filas (device_id, seq, synced):"; \
+  571  tail -n 4 $f | cut -d, -f2,4,5'
+  572  cd ~/PINV01-24
+  573  watch -n 2 'f=experiments/results/onboarding_concurrente/onboarding_concurrente.csv; \
+  574  echo "altas validas (seq=1, synced=True) por placa:"; \
+  575  awk -F, "NR>1 && \$4==1 && \$5==\"True\" {n[\$2]++} END {for (d in n) print n[d], d}" $f; \
+  576  echo; echo "ultimas filas (device_id, seq, synced):"; \
+  577  tail -n 6 $f | cut -d, -f2,4,5'
+  578  cd ~/PINV01-24
+  579  watch -n 2 'd=experiments/results/onboarding_uno; \
+  580  echo "ciclos del agente (filas):"; tail -n +2 $d/serial_agent_uno.csv 2>/dev/null | wc -l; \
+  581  echo "altas en el bridge (filas):"; tail -n +2 $d/onboarding_uno.csv 2>/dev/null | wc -l; \
+  582  echo; echo "ultimas altas (device_id, seq, http):"; \
+  583  tail -n 3 $d/onboarding_uno.csv 2>/dev/null | cut -d, -f2,4,19'
+  584  cd ~/PINV01-24
+  585  watch -n 2 'f=experiments/results/onboarding_individual_wifi/onboarding_individual_wifi.csv; \
+  586  echo "altas validas (seq=1, synced=True) por placa:"; \
+  587  awk -F, "NR>1 && \$4==1 && \$5==\"True\" {n[\$2]++} END {for (d in n) print n[d], d}" $f; \
+  588  echo; echo "ultimas filas (device_id, seq, synced):"; \
+  589  tail -n 4 $f | cut -d, -f2,4,5'
+  590  cd ~/PINV01-24
+  591  cd ~/PINV01-24 && source .venv/bin/activate
+  592  history
+  593  ip neigh | grep -v FAILED
+  594  hostname -I
+  595  cd ~/PINV01-24 && source .venv/bin/activate
+  596  mkdir -p experiments/results/placement/block2/dist50
+  597  rm -f dag_storage/pi5.json
+  598  sudo systemctl restart mosquitto
+  599  export PROMPT_COMMAND='history -a'
+  600  cond before experiments/results/placement/block2/dist50/conditions.csv
+  601  cond() {   f=${2:-baseline/results_pi5_catalog/conditions.csv};   [ -f "$f" ] || echo "moment,utc,load_1min,load_5min,load_15min,temp_c,throttled" > "$f";   read l1 l5 l15 _ < /proc/loadavg;   t=$(vcgencmd measure_temp | sed "s/temp=//;s/'C//");   th=$(vcgencmd get_throttled | cut -d= -f2);   echo "$1,$(date -u +%Y-%m-%dT%H:%M:%SZ),$l1,$l5,$l15,$t,$th" >> "$f";   cat "$f"; }
+  602  cond before experiments/results/placement/block2/dist50/conditions.csv
+  603  chronyc tracking | tee experiments/results/placement/block2/dist50/chrony_inicio_pi5.txt
+  604  python experiments/load_generator.py --host localhost 192.168.0.15 --weights 50 50 --label dist50_b2 --mode ramp --rates 2 5 10 20 40 --step-s 20 --settle 150 --csv experiments/results/placement/block2/dist50/generator_dist50.csv
+  605  wc -l experiments/results/placement/block2/dist50/onboarding_pi5.csv
+  606  chronyc tracking | tee experiments/results/placement/block2/dist50/chrony_fin_pi5.txt
+  607  cond after experiments/results/placement/block2/dist50/conditions.csv
+  608  history | tail -60 > experiments/results/placement/block2/dist50/historial_pi5.txt

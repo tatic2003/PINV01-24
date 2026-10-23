@@ -1,3 +1,7 @@
-reference,run,levels,preferable_at_lowest,levels_reference_preferable,levels_run_preferable,levels_neither,crossover_level
-central,dist50,5,central,2 5 10 20 40,,,
-central,distcap,5,central,2 5 10 20 40,,,
+block,reference,run,levels,preferable_at_lowest,levels_reference_preferable,levels_run_preferable,levels_neither,crossover_level
+1,central,dist50,5,central,2 5 10 20 40,,,
+1,central,distcap,5,central,2 5 10 20 40,,,
+2,central,dist50,5,central,2 5 10 20 40,,,
+2,central,distcap,5,central,2 5 10 20 40,,,
+3,central,dist50,5,central,2 5 10 20 40,,,
+3,central,distcap,5,central,2 5 10 20 40,,,

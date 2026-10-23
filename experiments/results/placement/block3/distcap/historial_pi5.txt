@@ -1,0 +1,60 @@
+  593  ip neigh | grep -v FAILED
+  594  hostname -I
+  595  cd ~/PINV01-24 && source .venv/bin/activate
+  596  mkdir -p experiments/results/placement/block2/dist50
+  597  rm -f dag_storage/pi5.json
+  598  sudo systemctl restart mosquitto
+  599  export PROMPT_COMMAND='history -a'
+  600  cond before experiments/results/placement/block2/dist50/conditions.csv
+  601  cond() {   f=${2:-baseline/results_pi5_catalog/conditions.csv};   [ -f "$f" ] || echo "moment,utc,load_1min,load_5min,load_15min,temp_c,throttled" > "$f";   read l1 l5 l15 _ < /proc/loadavg;   t=$(vcgencmd measure_temp | sed "s/temp=//;s/'C//");   th=$(vcgencmd get_throttled | cut -d= -f2);   echo "$1,$(date -u +%Y-%m-%dT%H:%M:%SZ),$l1,$l5,$l15,$t,$th" >> "$f";   cat "$f"; }
+  602  cond before experiments/results/placement/block2/dist50/conditions.csv
+  603  chronyc tracking | tee experiments/results/placement/block2/dist50/chrony_inicio_pi5.txt
+  604  python experiments/load_generator.py --host localhost 192.168.0.15 --weights 50 50 --label dist50_b2 --mode ramp --rates 2 5 10 20 40 --step-s 20 --settle 150 --csv experiments/results/placement/block2/dist50/generator_dist50.csv
+  605  wc -l experiments/results/placement/block2/dist50/onboarding_pi5.csv
+  606  chronyc tracking | tee experiments/results/placement/block2/dist50/chrony_fin_pi5.txt
+  607  cond after experiments/results/placement/block2/dist50/conditions.csv
+  608  history | tail -60 > experiments/results/placement/block2/dist50/historial_pi5.txt
+  609  mkdir -p experiments/results/placement/block2/distcap
+  610  rm -f dag_storage/pi5.json
+  611  sudo systemctl restart mosquitto
+  612  cond before experiments/results/placement/block2/distcap/conditions.csv
+  613  chronyc tracking | tee experiments/results/placement/block2/distcap/chrony_inicio_pi5.txt
+  614  python experiments/load_generator.py --host localhost 192.168.0.15 --weights 89 11 --label distcap_b2 --mode ramp --rates 2 5 10 20 40 --step-s 20 --settle 150 --csv experiments/results/placement/block2/distcap/generator_distcap.csv
+  615  wc -l experiments/results/placement/block2/distcap/onboarding_pi5.csv
+  616  chronyc tracking | tee experiments/results/placement/block2/distcap/chrony_fin_pi5.txt
+  617  history | tail -60 > experiments/results/placement/block2/distcap/historial_pi5.txt
+  618  mkdir -p experiments/results/placement/block2/central
+  619  rm -f dag_storage/pi5.json
+  620  sudo systemctl restart mosquitto
+  621  cond before experiments/results/placement/block2/central/conditions.csv
+  622  chronyc tracking | tee experiments/results/placement/block2/central/chrony_inicio_pi5.txt
+  623  python experiments/load_generator.py --host localhost --label central_b2 --mode ramp --rates 2 5 10 20 40 --step-s 20 --settle 150 --csv experiments/results/placement/block2/central/generator_central.csv
+  624  wc -l experiments/results/placement/block2/central/onboarding_pi5.csv
+  625  chronyc tracking | tee experiments/results/placement/block2/central/chrony_fin_pi5.txt
+  626  cond after experiments/results/placement/block2/central/conditions.csv
+  627  history | tail -60 > experiments/results/placement/block2/central/historial_pi5.txt
+  628  mkdir -p experiments/results/placement/block3/distcap
+  629  rm -f dag_storage/pi5.json
+  630  sudo systemctl restart mosquitto
+  631  cond before experiments/results/placement/block3/distcap/conditions.csv
+  632  chronyc tracking | tee experiments/results/placement/block3/distcap/chrony_inicio_pi5.txt
+  633  mkdir -p experiments/results/placement/block2/central_rep
+  634  rm -f dag_storage/pi5.json
+  635  sudo systemctl restart mosquitto
+  636  cond before experiments/results/placement/block2/central_rep/conditions.csv
+  637  chronyc tracking | tee experiments/results/placement/block2/central_rep/chrony_inicio_pi5.txt
+  638  python experiments/load_generator.py --host localhost --label central_b2r --mode ramp --rates 2 5 10 20 40 --step-s 20 --settle 150 --csv experiments/results/placement/block2/central_rep/generator_central.csv
+  639  wc -l experiments/results/placement/block2/central_rep/onboarding_pi5.csv
+  640  chronyc tracking | tee experiments/results/placement/block2/central_rep/chrony_fin_pi5.txt
+  641  cond after experiments/results/placement/block2/central_rep/conditions.csv
+  642  history | tail -60 > experiments/results/placement/block2/central_rep/historial_pi5.txt
+  643  mkdir -p experiments/results/placement/block3/distcap
+  644  rm -f dag_storage/pi5.json
+  645  sudo systemctl restart mosquitto
+  646  cond before experiments/results/placement/block3/distcap/conditions.csv
+  647  chronyc tracking | tee experiments/results/placement/block3/distcap/chrony_inicio_pi5.txt
+  648  python experiments/load_generator.py --host localhost 192.168.0.15 --weights 89 11 --label distcap_b3 --mode ramp --rates 2 5 10 20 40 --step-s 20 --settle 150 --csv experiments/results/placement/block3/distcap/generator_distcap.csv
+  649  wc -l experiments/results/placement/block3/distcap/onboarding_pi5.csv
+  650  chronyc tracking | tee experiments/results/placement/block3/distcap/chrony_fin_pi5.txt
+  651  cond after experiments/results/placement/block3/distcap/conditions.csv
+  652  history | tail -60 > experiments/results/placement/block3/distcap/historial_pi5.txt

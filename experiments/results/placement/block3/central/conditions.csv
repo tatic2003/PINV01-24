@@ -1,0 +1,3 @@
+moment,utc,load_1min,load_5min,load_15min,temp_c,throttled
+before,2026-10-23T18:46:46Z,0.00,0.06,0.11,67.0,0x0
+after,2026-10-23T19:02:27Z,0.12,0.20,0.15,66.4,0x0
