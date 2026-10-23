@@ -167,13 +167,14 @@ def synthetic_run(label, hosts, rtt_by_host, cpu_by_host, levels=(2.0, 20.0), n=
 
 
 def write_run(tmp_path, name, gen, onb, res, names):
-    gen.to_csv(tmp_path / f'gen_{name}.csv', index=False)
-    argv = ['--run', name, str(tmp_path / f'gen_{name}.csv')]
+    f = name.replace(':', '_')          # ':' is not allowed in Windows file names
+    gen.to_csv(tmp_path / f'gen_{f}.csv', index=False)
+    argv = ['--run', name, str(tmp_path / f'gen_{f}.csv')]
     for host, node in names.items():
-        onb[host].to_csv(tmp_path / f'onb_{name}_{node}.csv', index=False)
-        res[host].to_csv(tmp_path / f'res_{name}_{node}.csv', index=False)
-        argv += ['--node', name, node, host, str(tmp_path / f'onb_{name}_{node}.csv'),
-                 str(tmp_path / f'res_{name}_{node}.csv')]
+        onb[host].to_csv(tmp_path / f'onb_{f}_{node}.csv', index=False)
+        res[host].to_csv(tmp_path / f'res_{f}_{node}.csv', index=False)
+        argv += ['--node', name, node, host, str(tmp_path / f'onb_{f}_{node}.csv'),
+                 str(tmp_path / f'res_{f}_{node}.csv')]
     return argv
 
 
@@ -296,3 +297,84 @@ def test_make_figures_placement(tmp_path):
     assert (tmp_path / 'o2' / 'fig_placement.pdf').exists()
     manifest = pd.read_csv(tmp_path / 'o2' / 'MANIFEST.csv')
     assert (manifest['figure'] == 'fig_placement').sum() == 3
+
+# ------------------------------------------------------------------ several runs per configuration
+
+class TestPlacementBlocks:
+    def test_run_names(self):
+        assert ap_mod.split_run('central') == ('central', 1)
+        assert ap_mod.split_run('dist50:3') == ('dist50', 3)
+        for bad in ('central:', 'central:x', 'central:0', ':2'):
+            with pytest.raises(ValueError):
+                ap_mod.split_run(bad)
+
+    def test_confirmation_and_in_node_latency_per_node(self):
+        gen, onb, res = synthetic_run('d', ['h1', 'h2'], {'h1': 10.0, 'h2': 100.0},
+                                      {'h1': 20.0, 'h2': 90.0})
+        gen.loc[gen['host'] == 'h2', 'puback_ms'] = gen['publish_ms'] + 4.0
+        nodes = [dict(name='pi5', host='h1', onboarding=onb['h1'], resources=res['h1']),
+                 dict(name='opi', host='h2', onboarding=onb['h2'], resources=res['h2'])]
+        ev = ap_mod.run_events('d:2', gen, nodes)
+        assert set(ev['config']) == {'d'} and set(ev['block']) == {2}
+        nl = pd.DataFrame(ap_mod.node_level_rows('d:2', gen, nodes, ev)).set_index(['level', 'node'])
+        assert nl.loc[(2.0, 'pi5'), 'mqtt_confirm_median'] == pytest.approx(1.0)
+        assert nl.loc[(2.0, 'opi'), 'mqtt_confirm_median'] == pytest.approx(4.0)
+        # in-node latency = arrival at the bridge to the end of the registration (node clock)
+        assert nl.loc[(2.0, 'opi'), 'in_node_median'] == pytest.approx(110.0)
+        assert nl.loc[(2.0, 'opi'), 'sent'] == 5 and nl.loc[(2.0, 'opi'), 'registered'] == 5
+
+    @staticmethod
+    def _levels(values):
+        """values: {(config, block): (latency, util, cpu)} at levels 2 and 20."""
+        return pd.DataFrame([dict(run=f'{c}:{b}', config=c, block=b, level=l, sent=10, registered=10,
+                                  missing=0, rejected=0, latency_mean=v[0] * (1 + l / 20), util_max=v[1],
+                                  cpu_ms_per_reg=v[2], busiest_node='pi5')
+                             for (c, b), v in values.items() for l in (2.0, 20.0)])
+
+    def test_comparison_within_each_block(self):
+        levels = self._levels({('central', 1): (10, 10, 10), ('dist', 1): (20, 20, 20),
+                               ('central', 2): (10, 10, 30), ('dist', 2): (20, 20, 20)})
+        cmp = ap_mod.compare(levels, 'central')
+        assert set(cmp['block']) == {1, 2}
+        by = cmp.set_index(['block', 'level'])['preferable']
+        assert by[(1, 2.0)] == 'central' and by[(2, 2.0)] == 'none'
+        s = ap_mod.summarize(cmp)
+        assert list(s['block']) == [1, 2]
+        cons = ap_mod.consistency(cmp, s).set_index('level')
+        assert cons.loc[2.0, 'blocks'] == 2 and cons.loc[2.0, 'reference_preferable'] == 1
+        assert cons.loc[2.0, 'neither'] == 1 and cons.loc[2.0, 'crossover_per_block'] == 'none none'
+
+    def test_aggregate_gives_each_run_the_same_weight(self):
+        levels = self._levels({('central', 1): (10, 10, 10), ('central', 2): (20, 30, 40),
+                               ('central', 3): (30, 20, 70)})
+        a = ap_mod.aggregate(levels).set_index(['config', 'level'])
+        r = a.loc[('central', 2.0)]
+        assert r['runs'] == 3 and r['blocks'] == '1 2 3'
+        assert r['latency_mean_mean'] == pytest.approx(22.0)        # (11 + 22 + 33) / 3
+        assert (r['util_max_min'], r['util_max_max']) == (10, 30)
+        assert r['cpu_ms_per_reg_mean'] == pytest.approx(40.0)
+
+    def test_command_line_with_blocks(self, tmp_path):
+        argv = []
+        for b, t0 in ((1, 0.0), (2, 2e6)):
+            gc, oc, rc = synthetic_run('central', ['localhost'], {'localhost': 10.0}, {'localhost': 30.0}, t0=t0)
+            gd, od, rd = synthetic_run('dist50', ['localhost', '10.0.0.2'],
+                                       {'localhost': 10.0, '10.0.0.2': 100.0},
+                                       {'localhost': 15.0, '10.0.0.2': 60.0}, t0=t0 + 1e6)
+            argv += write_run(tmp_path, f'central:{b}', gc, oc, rc, {'localhost': 'pi5'})
+            argv += write_run(tmp_path, f'dist50:{b}', gd, od, rd, {'localhost': 'pi5', '10.0.0.2': 'opi'})
+        assert ap_mod.main(argv + ['--reference', 'central', '--out', str(tmp_path / 'o')]) == 0
+        for f in ('placement_node_levels.csv', 'placement_aggregate.csv', 'placement_consistency.csv'):
+            assert (tmp_path / 'o' / f).exists(), f
+        cons = pd.read_csv(tmp_path / 'o' / 'placement_consistency.csv')
+        assert (cons['blocks'] == 2).all() and (cons['reference_preferable'] == 2).all()
+        agg = pd.read_csv(tmp_path / 'o' / 'placement_aggregate.csv')
+        assert set(agg['runs']) == {2}
+
+    def test_same_run_named_twice(self, tmp_path):
+        gc, oc, rc = synthetic_run('central', ['h'], {'h': 10.0}, {'h': 30.0})
+        argv = write_run(tmp_path, 'central', gc, oc, rc, {'h': 'pi5'})
+        (tmp_path / 'again').mkdir()
+        argv += write_run(tmp_path / 'again', 'central:1', gc, oc, rc, {'h': 'pi5'})
+        with pytest.raises(SystemExit):
+            ap_mod.main(argv + ['--out', str(tmp_path / 'o')])
