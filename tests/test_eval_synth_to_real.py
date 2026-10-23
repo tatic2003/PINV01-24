@@ -46,13 +46,18 @@ def test_rule_baseline_rows(tmp_path):
                 ["o1", "orange_pi_zero_lts_512mb", "SingleBoardComputer", ""]])
     records, total = ev.load_real(tmp_path / "real")
     assert total == 4 and len(records) == 3          # the retained one is dropped
-    rows = ev.rule_rows(records, ["hw"])
+    all_rows = ev.rule_rows(records, ["hw"])
+    assert {r["model"] for r in all_rows} == {"rules", "rules_noname"}
+    assert all(r["generator"] == "rules" and r["seed"] == 0 for r in all_rows)
+    rows = [r for r in all_rows if r["model"] == "rules"]
     by_dev = {r["device_id"]: r for r in rows}
     assert set(by_dev) == {"e1", "o1"}
-    assert all(r["generator"] == "rules" and r["model"] == "rules" and r["seed"] == 0 for r in rows)
     assert by_dev["e1"]["correct"] == 1
     # No known keyword in its name and under 1 GB: the memory fallback says ESP32Device
     assert by_dev["o1"]["pred"] == "ESP32Device" and by_dev["o1"]["correct"] == 0
+    # Without its name the ESP32 falls to the memory thresholds (under 1 MB -> Microcontroller)
+    nameless = {r["device_id"]: r for r in all_rows if r["model"] == "rules_noname"}
+    assert nameless["e1"]["pred"] == "Microcontroller" and nameless["e1"]["correct"] == 0
 
 
 def test_rule_baseline_on_the_repository_data():
@@ -60,3 +65,10 @@ def test_rule_baseline_on_the_repository_data():
     rows = ev.rule_rows(records, ["hw"])
     wrong = {r["device_id"]: r["pred"] for r in rows if not r["correct"]}
     assert wrong.get("sbc-opizero-01") == "ESP32Device"
+
+
+def test_rule_baseline_keeps_the_captured_payloads(tmp_path):
+    records, _ = ev.load_real(ROOT / "datasets" / "real")
+    before = [dict(r["payload"]) for r in records]
+    ev.rule_rows(records, ["hw"])
+    assert [r["payload"] for r in records] == before

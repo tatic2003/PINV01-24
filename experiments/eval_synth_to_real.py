@@ -22,7 +22,13 @@ decision boundary and makes the task easier.
 The name-based rule baseline (DeviceClassifier(model_type='rule_based'), the
 same one as in eval_unseen_boards.py) classifies the same announcements. It
 is deterministic and needs no training, so it is scored once per labeling
-(generator and model 'rules', seed 0); --no-rules leaves it out.
+(generator and model 'rules', seed 0); --no-rules leaves it out. The model
+'rules_noname' is the same classifier on the announcements with the board and
+chip names removed (pnp_ai.features.without_hardware_name): it decides by
+declared capabilities and the memory thresholds alone.
+
+--models accepts every learned type of DeviceClassifier: random_forest,
+decision_tree, svm, mlp, logistic_regression and knn.
 
 Leave-one-board-out: to test a real board, the catalog generators are rebuilt
 WITHOUT that board's row, neither for sampling nor for the memory calibration.
@@ -63,6 +69,7 @@ from pnp_ai.dataset_generator import SyntheticDatasetGenerator           # noqa:
 from pnp_ai.dataset_generator.catalog import (                          # noqa: E402
     DEFAULT_LABELING, LABELINGS, CatalogDatasetGenerator, load_catalog, unify_label)
 from pnp_ai.device_classifier import DeviceClassifier                   # noqa: E402
+from pnp_ai.features import without_hardware_name                       # noqa: E402
 
 warnings.filterwarnings('ignore')
 
@@ -158,13 +165,20 @@ def score(clf, records, labeling):
 
 
 def rule_rows(records, labelings):
-    """Rows of the name-based rule baseline: one per labeling and configuration."""
+    """
+    Rows of the rule baselines: one per labeling, variant and configuration.
+
+    'rules' sees the announcements as captured; 'rules_noname' sees them
+    without the board and chip names.
+    """
     rules = DeviceClassifier(model_type='rule_based')
+    nameless = [{**r, 'payload': without_hardware_name(r['payload'])} for r in records]
     rows = []
-    for labeling in labelings:
-        for dev, s in sorted(score(rules, records, labeling).items()):
-            rows.append({'generator': 'rules', 'labeling': labeling, 'model': 'rules',
-                         'seed': 0, 'device_id': dev, **s})
+    for model, recs in (('rules', records), ('rules_noname', nameless)):
+        for labeling in labelings:
+            for dev, s in sorted(score(rules, recs, labeling).items()):
+                rows.append({'generator': 'rules', 'labeling': labeling, 'model': model,
+                             'seed': 0, 'device_id': dev, **s})
     return rows
 
 
@@ -226,7 +240,7 @@ def main(argv=None):
 
     if not args.no_rules:
         rows += rule_rows(records, args.labelings)
-        print(f"  {'rules':19s} {'':12s} {'rule_based':14s} listo")
+        print(f"  {'rules':19s} {'':12s} {'rules, rules_noname':14s} listo")
 
     # -- summary ---------------------------------------------------------------
     summary = []

@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-20T14:24:35",
+  "date": "2026-10-23T12:52:50",
   "catalog_path": "datasets\\catalog\\catalogo_placas.csv",
   "catalog_version": "8f8756c70cae",
   "catalog_boards": 114,
@@ -37,7 +37,11 @@
     "samples": 2000,
     "models": [
       "random_forest",
-      "decision_tree"
+      "decision_tree",
+      "svm",
+      "mlp",
+      "logistic_regression",
+      "knn"
     ],
     "feature_set": "resource",
     "generators": [

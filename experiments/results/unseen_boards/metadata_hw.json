@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-20T14:03:12",
+  "date": "2026-10-23T12:50:05",
   "catalog_version": "8f8756c70cae",
   "catalog_boards": 114,
   "class_counts": {
@@ -18,7 +18,11 @@
     "per_board": 5,
     "models": [
       "random_forest",
-      "decision_tree"
+      "decision_tree",
+      "svm",
+      "mlp",
+      "logistic_regression",
+      "knn"
     ],
     "feature_set": "resource"
   }

@@ -1,6 +1,15 @@
 generator,labeling,model,seeds,configs,acc_mean,acc_min,acc_max,conf_mean,failures
 catalog_nominal,hw,random_forest,10,12,0.7583,0.6667,1.0,0.8403,esp32-c3-38a960->Microcontroller (9/10); esp32-c3-645ce0->Microcontroller (9/10); esp32-c3-65beac->Microcontroller (9/10); sbc-opizero-01->IoTGateway (2/10)
 catalog_nominal,hw,decision_tree,10,12,0.6833,0.6667,0.75,0.9696,esp32-c3-38a960->Microcontroller (10/10); esp32-c3-645ce0->Microcontroller (10/10); esp32-c3-65beac->Microcontroller (10/10); sbc-opizero-01->IoTGateway (8/10)
+catalog_nominal,hw,svm,10,12,0.9333,0.9167,1.0,0.7248,sbc-opizero-01->IoTGateway (8/10)
+catalog_nominal,hw,mlp,10,12,0.9667,0.8333,1.0,0.7312,esp32-olimex-poe-01->IoTGateway (2/10); esp32-poecam-01->IoTGateway (2/10)
+catalog_nominal,hw,logistic_regression,10,12,1.0,1.0,1.0,0.7602,
+catalog_nominal,hw,knn,10,12,0.9083,0.75,1.0,0.8883,esp32-c3-38a960->Microcontroller (3/10); esp32-c3-645ce0->Microcontroller (3/10); esp32-c3-65beac->Microcontroller (3/10); sbc-opizero-01->IoTGateway (2/10)
 catalog_calibrated,hw,random_forest,10,12,0.975,0.9167,1.0,0.9314,sbc-opizero-01->IoTGateway (3/10)
 catalog_calibrated,hw,decision_tree,10,12,0.95,0.9167,1.0,0.9714,sbc-opizero-01->IoTGateway (6/10)
+catalog_calibrated,hw,svm,10,12,0.9417,0.9167,1.0,0.7289,sbc-opizero-01->IoTGateway (7/10)
+catalog_calibrated,hw,mlp,10,12,1.0,1.0,1.0,0.7395,
+catalog_calibrated,hw,logistic_regression,10,12,1.0,1.0,1.0,0.7649,
+catalog_calibrated,hw,knn,10,12,0.8833,0.6667,1.0,0.9032,esp32-c3-38a960->Microcontroller (4/10); esp32-c3-645ce0->Microcontroller (4/10); esp32-c3-65beac->Microcontroller (4/10); sbc-opizero-01->IoTGateway (2/10)
 rules,hw,rules,1,12,0.9167,0.9167,0.9167,0.9,sbc-opizero-01->ESP32Device (1/1)
+rules,hw,rules_noname,1,12,0.25,0.25,0.25,0.6958,esp32-c3-38a960->Microcontroller (1/1); esp32-c3-645ce0->Microcontroller (1/1); esp32-c3-65beac->Microcontroller (1/1); esp32-cam-af0bec->Microcontroller (1/1); esp32-cam-afd340->Microcontroller (1/1); esp32-olimex-poe-01->Microcontroller (1/1); esp32-poecam-01->Microcontroller (1/1); esp32-wroom32-267a68->Microcontroller (1/1); sbc-opizero-01->ESP32Device (1/1)

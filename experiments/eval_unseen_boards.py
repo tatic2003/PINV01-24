@@ -25,6 +25,14 @@ Here every board of the catalog is held out in turn (leave-one-board-out):
     do to keep the rules' certainty on known hardware and the ML's
     generalization on unknown hardware.
 
+'rules_noname' is the same rule classifier on the same announcements with
+the board and chip names removed (pnp_ai.features.without_hardware_name), so
+it decides by declared capabilities and the memory thresholds alone. It tells
+how much of the rule baseline comes from recognizing names.
+
+--models accepts every learned type of DeviceClassifier: random_forest,
+decision_tree, svm, mlp, logistic_regression and knn.
+
 Scored unit: the board (majority vote over its announcements). Labels: the
 catalog labeling chosen with --labeling. GNSS receivers are not included:
 both approaches decide them from the declared capability, identically.
@@ -60,6 +68,7 @@ sys.path.insert(0, str(ROOT))
 from pnp_ai.dataset_generator.catalog import (                          # noqa: E402
     DEFAULT_LABELING, LABELINGS, CatalogDatasetGenerator, load_catalog)
 from pnp_ai.device_classifier import DeviceClassifier                   # noqa: E402
+from pnp_ai.features import without_hardware_name                       # noqa: E402
 
 warnings.filterwarnings('ignore')
 ANOMALY_RATE = 0.1
@@ -125,7 +134,8 @@ def main():
                    'hardware': board.announced_name, 'label_true': truth,
                    'link_example': test[0]['link_type'],
                    'memory_example': test[0]['memory_total'], 'cpu_example': test[0]['cpu_freq_mhz'],
-                   'pred_rules': vote(rules, test)}
+                   'pred_rules': vote(rules, test),
+                   'pred_rules_noname': vote(rules, [without_hardware_name(a) for a in test])}
             for k, model in enumerate(args.models):
                 clf = train_ml(catalog, args.labeling, seed, board.board_id, model,
                                args.feature_set, args.samples)
@@ -136,7 +146,7 @@ def main():
             if (i + 1) % 20 == 0:
                 print(f"  semilla {seed}: {i + 1}/{len(boards)} placas ({time.time() - t0:.0f} s)")
 
-    methods = ['rules'] + args.models + ['hybrid']
+    methods = ['rules', 'rules_noname'] + args.models + ['hybrid']
     classes = sorted({r['label_true'] for r in rows})
 
     summary = []

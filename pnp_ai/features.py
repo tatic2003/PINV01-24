@@ -173,6 +173,21 @@ def hardware_name(data: Dict[str, Any]) -> str:
     return str(_first(data, 'hardware_type', 'hardware') or '').lower()
 
 
+#: Announcement keys that carry the board or chip name.
+NAME_KEYS = ('hardware_type', 'hardware', 'mcu')
+
+
+def without_hardware_name(data: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Copy of an announcement with the board and chip names removed.
+
+    Used by the name-free rule baseline of the evaluation scripts: the rule
+    classifier then decides by declared capabilities and memory thresholds
+    only. Nothing else in the announcement is changed.
+    """
+    return {k: v for k, v in data.items() if k not in NAME_KEYS}
+
+
 def link_type(data: Dict[str, Any]) -> str:
     """
     Physical link of the device, or '' when it cannot be determined.

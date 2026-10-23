@@ -34,6 +34,8 @@ try:
     from sklearn.svm import LinearSVC
     from sklearn.calibration import CalibratedClassifierCV
     from sklearn.neural_network import MLPClassifier
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.neighbors import KNeighborsClassifier
     from sklearn.preprocessing import LabelEncoder, StandardScaler
     from sklearn.model_selection import train_test_split, learning_curve
     from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
@@ -48,6 +50,25 @@ try:
     MATPLOTLIB_AVAILABLE = True
 except ImportError:
     MATPLOTLIB_AVAILABLE = False
+
+
+
+#: Learned model types accepted by DeviceClassifier.train().
+ML_MODEL_TYPES = ('decision_tree', 'random_forest', 'svm', 'mlp', 'logistic_regression', 'knn')
+
+
+def _baseline_model(model_type: str):
+    """
+    Comparison baselines for the evaluation scripts, with fixed settings.
+
+    They work on the standardized features like the other models. The server
+    does not use them.
+    """
+    if model_type == 'logistic_regression':
+        return LogisticRegression(max_iter=1000, random_state=42)
+    if model_type == 'knn':
+        return KNeighborsClassifier(n_neighbors=5)
+    raise ValueError(f"Not a baseline model: {model_type}")
 
 
 @dataclass
@@ -117,7 +138,8 @@ class DeviceClassifier:
         Initialize the classifier.
 
         Args:
-            model_type: 'decision_tree', 'random_forest', 'svm', or 'mlp'
+            model_type: 'decision_tree', 'random_forest', 'svm', 'mlp',
+                'logistic_regression', 'knn' or 'rule_based'
             feature_set: which features to use, see pnp_ai.features.
                 'resource'      -> quantitative resource characteristics only
                 'resource+name' -> also flags derived from the model name
@@ -232,9 +254,11 @@ class DeviceClassifier:
                 early_stopping=True,
                 validation_fraction=0.1
             )
+        elif self.model_type in ('logistic_regression', 'knn'):
+            self.model = _baseline_model(self.model_type)
         else:
             raise ValueError(f"Unknown model_type: {self.model_type}. "
-                             f"Choose from: decision_tree, random_forest, svm, mlp")
+                             f"Choose from: {', '.join(ML_MODEL_TYPES)}")
 
         self.model.fit(X_train, y_train)
         self.is_trained = True
@@ -451,6 +475,8 @@ class DeviceClassifier:
             model = CalibratedClassifierCV(LinearSVC(C=0.5, max_iter=5000, random_state=42), method="sigmoid", cv=3)
         elif self.model_type == 'mlp':
             model = MLPClassifier(hidden_layer_sizes=(64, 32), activation="relu", solver="adam", max_iter=500, random_state=42, early_stopping=True, validation_fraction=0.1)
+        elif self.model_type in ('logistic_regression', 'knn'):
+            model = _baseline_model(self.model_type)
         else:
             model = RandomForestClassifier(n_estimators=50, max_depth=10, random_state=42, n_jobs=1)
 
