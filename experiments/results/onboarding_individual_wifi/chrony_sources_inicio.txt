@@ -9,9 +9,9 @@
 ||                                 |    |           \
 MS Name/IP address         Stratum Poll Reach LastRx Last sample               
 ===============================================================================
-#? NMEA                          0   4   377    22    +30ms[  +30ms] +/-  200ms
-#* PPS                           0   4   377    22    +86ns[  +64ns] +/-  132ns
-^? ntp.copaco.com.py             2  10   377   766  -5615us[-5657us] +/-  125ms
-^? time.cloudflare.com           3  10   377   247  -1316us[-1318us] +/-   87ms
-^? ntp2.copaco.com.py            2  10   377   350  -5982us[-5991us] +/-  133ms
-^? time.cloudflare.com           3  10   377   720  -1681us[-1721us] +/-   87ms
+#? NMEA                          0   4   377    19    +14ms[  +14ms] +/-  200ms
+#* PPS                           0   4   377    19   +226ns[ +727ns] +/-  115ns
+^? ntp.copaco.com.py             2  10   377   912  -5675us[-5671us] +/-  126ms
+^? time.cloudflare.com           3  10   377   702  -2145us[-2141us] +/-   86ms
+^? time.cloudflare.com           3  10   377   100  -2268us[-2267us] +/-   86ms
+^? host-86.3.217.201.copaco>     2  10   377   167  -4769us[-4768us] +/-  125ms
