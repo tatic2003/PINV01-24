@@ -1,0 +1,5 @@
+args: {'seeds': 10, 'train': 2000, 'test': 400, 'out': 'C:\\Users\\tatic\\dev\\tesis-workspace\\PINV01-24-main\\baseline\\results_gnss_rule'}
+python: 3.11.1
+scikit-learn: 1.4.2
+numpy: 2.3.5
+platform: Windows-10-10.0.26200-SP0

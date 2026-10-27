@@ -1,0 +1,41 @@
+model,seed,condition,n_gnss,recall
+decision_tree,0,declared,61,1.0
+decision_tree,0,not declared,61,0.0
+decision_tree,1,declared,70,1.0
+decision_tree,1,not declared,70,0.0
+decision_tree,2,declared,73,1.0
+decision_tree,2,not declared,73,0.0
+decision_tree,3,declared,67,1.0
+decision_tree,3,not declared,67,0.0
+decision_tree,4,declared,69,1.0
+decision_tree,4,not declared,69,0.0
+decision_tree,5,declared,74,1.0
+decision_tree,5,not declared,74,0.0
+decision_tree,6,declared,47,1.0
+decision_tree,6,not declared,47,0.0
+decision_tree,7,declared,76,1.0
+decision_tree,7,not declared,76,0.0
+decision_tree,8,declared,71,1.0
+decision_tree,8,not declared,71,0.0
+decision_tree,9,declared,64,1.0
+decision_tree,9,not declared,64,0.0
+random_forest,0,declared,61,1.0
+random_forest,0,not declared,61,0.0
+random_forest,1,declared,70,1.0
+random_forest,1,not declared,70,0.0
+random_forest,2,declared,73,1.0
+random_forest,2,not declared,73,0.0
+random_forest,3,declared,67,1.0
+random_forest,3,not declared,67,0.0
+random_forest,4,declared,69,1.0
+random_forest,4,not declared,69,0.0
+random_forest,5,declared,74,1.0
+random_forest,5,not declared,74,0.0
+random_forest,6,declared,47,1.0
+random_forest,6,not declared,47,0.0
+random_forest,7,declared,76,1.0
+random_forest,7,not declared,76,0.0
+random_forest,8,declared,71,1.0
+random_forest,8,not declared,71,0.0
+random_forest,9,declared,64,1.0
+random_forest,9,not declared,64,0.0

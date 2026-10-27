@@ -6,7 +6,7 @@
     "calibrated": true
   },
   "protocol": {
-    "ablation": "test only",
+    "decided_by": "rule on the declared capability",
     "feature_set": "resource",
     "train": 2000,
     "test": 400,
@@ -14,8 +14,12 @@
     "anomaly_rate": 0.1,
     "confidence_threshold": 0.6
   },
+  "rule_false_positives": {
+    "devices": 3328,
+    "declared_gnss": 0
+  },
   "results": {
-    "decision_tree|with declares_gnss": {
+    "decision_tree|declared": {
       "recall_mean": 1.0,
       "recall_sd": 0.0,
       "recall_min": 1.0,
@@ -27,7 +31,7 @@
       "confidence_mean": 1.0,
       "fraction_below_threshold": 0.0
     },
-    "decision_tree|without declares_gnss": {
+    "decision_tree|not declared": {
       "recall_mean": 0.0,
       "recall_sd": 0.0,
       "recall_min": 0.0,
@@ -35,14 +39,14 @@
       "n_gnss_devices_total": 672,
       "predicted_as": {
         "SingleBoardComputer": 371,
-        "ESP32Device": 281,
+        "ESP32Device": 283,
         "IoTGateway": 17,
-        "Microcontroller": 3
+        "Microcontroller": 1
       },
-      "confidence_mean": 0.9904509607812262,
+      "confidence_mean": 0.9906098713664503,
       "fraction_below_threshold": 0.008928571428571428
     },
-    "random_forest|with declares_gnss": {
+    "random_forest|declared": {
       "recall_mean": 1.0,
       "recall_sd": 0.0,
       "recall_min": 1.0,
@@ -51,23 +55,23 @@
       "predicted_as": {
         "GNSSReceiver": 672
       },
-      "confidence_mean": 0.9592636551386613,
+      "confidence_mean": 1.0,
       "fraction_below_threshold": 0.0
     },
-    "random_forest|without declares_gnss": {
+    "random_forest|not declared": {
       "recall_mean": 0.0,
       "recall_sd": 0.0,
       "recall_min": 0.0,
       "recall_max": 0.0,
       "n_gnss_devices_total": 672,
       "predicted_as": {
-        "SingleBoardComputer": 371,
-        "ESP32Device": 279,
-        "IoTGateway": 17,
-        "Microcontroller": 5
+        "SingleBoardComputer": 381,
+        "ESP32Device": 280,
+        "IoTGateway": 7,
+        "Microcontroller": 4
       },
-      "confidence_mean": 0.9065675820896044,
-      "fraction_below_threshold": 0.050595238095238096
+      "confidence_mean": 0.9424299599543244,
+      "fraction_below_threshold": 0.02976190476190476
     }
   }
 }

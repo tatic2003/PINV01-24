@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-23T12:52:50",
+  "date": "2026-10-24T18:21:36",
   "catalog_path": "datasets\\catalog\\catalogo_placas.csv",
   "catalog_version": "8f8756c70cae",
   "catalog_boards": 114,
@@ -56,7 +56,6 @@
   "catalog_generator_full": {
     "classes": {
       "ESP32Device": 34,
-      "GNSSReceiver": 79,
       "IoTGateway": 7,
       "Microcontroller": 21,
       "Sensor": 7,
