@@ -1,0 +1,13 @@
+Reference ID    : 50505300 (PPS)
+Stratum         : 1
+Ref time (UTC)  : Mon Oct 26 23:11:21 2026
+System time     : 0.000000000 seconds fast of NTP time
+Last offset     : -0.000003141 seconds
+RMS offset      : 0.000020118 seconds
+Frequency       : 1.915 ppm slow
+Residual freq   : -0.007 ppm
+Skew            : 0.194 ppm
+Root delay      : 0.000000001 seconds
+Root dispersion : 0.000030023 seconds
+Update interval : 16.0 seconds
+Leap status     : Normal
