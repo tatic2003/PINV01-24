@@ -56,6 +56,9 @@ Usage:
     python experiments/analyze_onboarding.py resultados/onboarding_bridge.csv \
         --probe resultados/clock_probe.csv --out experiments/results/onboarding
 
+    Several probe files (one per session) can follow --probe; they are joined
+    and each device keeps its probe with the smallest delay.
+
 Outputs in --out: stages_per_event.csv, summary.csv (n, mean, sd, median, p95
 per stage, session and device type), trials.csv (bursts of simultaneous
 onboardings) and fig_onboarding_stages.{pdf,png}.
@@ -211,8 +214,14 @@ RESOLUTION_MS = 1.0
 
 
 def clock_bounds(probe_csv):
-    """Per device: clock bound (minimum delay / 2 + resolution) and median offset."""
-    p = pd.read_csv(probe_csv)
+    """Per device: clock bound (minimum delay / 2 + resolution) and median offset.
+
+    probe_csv is one path or a list of paths (e.g. the probes of several
+    sessions); they are joined first, so each device gets the probe with the
+    smallest delay among all the files where it was probed.
+    """
+    paths = [probe_csv] if isinstance(probe_csv, (str, Path)) else list(probe_csv)
+    p = pd.concat([pd.read_csv(path) for path in paths], ignore_index=True)
     p = p[p["answered"].astype(str).str.lower().isin(["true", "1"])]
     rows = []
     for dev, g in p.groupby("device_id"):
@@ -286,29 +295,31 @@ def plot(summary, out_dir, width=9.0):
     matplotlib.rcParams["pdf.fonttype"] = 42      # embed TrueType fonts (editable text)
 
     stages = ESP32_STAGES + LINUX_STAGES + SERIAL_STAGES + PIPELINE_STAGES
-    means = summary.pivot_table(index=["session", "device_type"], columns="stage",
-                                values="mean_ms", aggfunc="first")
-    means = means.reindex(columns=[s for s in stages if s in means.columns]).fillna(0.0)
-    if means.empty:
+    # Median of each stage, the same statistic as the onboarding table. Medians
+    # are not additive: the length of a bar need not equal the median total.
+    medians = summary.pivot_table(index=["session", "device_type"], columns="stage",
+                                  values="median_ms", aggfunc="first")
+    medians = medians.reindex(columns=[s for s in stages if s in medians.columns]).fillna(0.0)
+    if medians.empty:
         return
-    order = sorted(range(len(means)),
-                   key=lambda i: (row_position(*means.index[i]), means.index[i]))
-    means = means.iloc[order]
-    labels = [row_label(s, t) for s, t in means.index]
+    order = sorted(range(len(medians)),
+                   key=lambda i: (row_position(*medians.index[i]), medians.index[i]))
+    medians = medians.iloc[order]
+    labels = [row_label(s, t) for s, t in medians.index]
 
-    n_legend_rows = -(-len(means.columns) // 3)
-    fig, ax = plt.subplots(figsize=(width, 0.55 * len(means) + 1.0 + 0.22 * n_legend_rows))
-    left = np.zeros(len(means))
+    n_legend_rows = -(-len(medians.columns) // 3)
+    fig, ax = plt.subplots(figsize=(width, 0.55 * len(medians) + 1.0 + 0.22 * n_legend_rows))
+    left = np.zeros(len(medians))
     cmap = plt.get_cmap("tab20")
-    for i, st in enumerate(means.columns):
-        vals = means[st].to_numpy() / 1000.0
-        ax.barh(range(len(means)), vals, left=left, color=cmap(i % 20),
+    for i, st in enumerate(medians.columns):
+        vals = medians[st].to_numpy() / 1000.0
+        ax.barh(range(len(medians)), vals, left=left, color=cmap(i % 20),
                 label=STAGE_LABELS.get(st, st))
         left += vals
-    ax.set_yticks(range(len(means)))
+    ax.set_yticks(range(len(medians)))
     ax.set_yticklabels(labels, fontsize=8)
     ax.invert_yaxis()
-    ax.set_xlabel("Mean time (s), first registration after boot; SNTP step excluded")
+    ax.set_xlabel("Median time per stage (s), first registration after boot; SNTP step excluded")
     # Legend below the axes so that it never covers a bar.
     ax.legend(fontsize=7, ncol=3, loc="upper center", bbox_to_anchor=(0.45, -0.12), frameon=False)
     fig.tight_layout()
@@ -320,7 +331,8 @@ def plot(summary, out_dir, width=9.0):
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Onboarding latency decomposed by stage")
     ap.add_argument("onboarding_csv", nargs="+", help="CSV(s) written by the bridge (--onboarding-csv)")
-    ap.add_argument("--probe", help="CSV of experiments/clock_probe.py")
+    ap.add_argument("--probe", nargs="+", default=[],
+                    help="CSV(s) of experiments/clock_probe.py (several sessions are joined)")
     ap.add_argument("--out", default="experiments/results/onboarding")
     ap.add_argument("--all-seq", action="store_true", help="keep re-registrations (seq > 1)")
     ap.add_argument("--serial-agent", nargs="*", default=[],
