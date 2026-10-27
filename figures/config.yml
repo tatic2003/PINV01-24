@@ -97,94 +97,94 @@ convergence:
 placement:
   # experiments/analyze_placement.py: one entry per run, named CONFIG:BLOCK; host = broker as
   # written in the 'host' column of the generator CSV (--host of the generator).
-  # Block 1 was run on 21 October 2026 (Orange Pi Zero at 192.168.0.13); blocks 2 and 3 on
-  # 23 October 2026 (192.168.0.15). Order within each block: see the article, Section 4.4.
+  # Orange Pi Zero at 192.168.0.15 in all three blocks.
+  # Order within each block: see the article, Section 4.4.
   reference: central
   runs:
     - name: "central:1"
-      generator: figures/data/placement/block1/generator_central.csv
+      generator: figures/data/placement/block1/central/generator_central.csv
       nodes:
         - name: pi5
           host: localhost
-          onboarding: figures/data/placement/block1/onboarding_central_pi5.csv
-          resources: figures/data/placement/block1/resources_central_pi5.csv
+          onboarding: figures/data/placement/block1/central/onboarding_pi5.csv
+          resources: figures/data/placement/block1/central/resources_pi5.csv
     - name: "dist50:1"
-      generator: figures/data/placement/block1/generator_dist50.csv
+      generator: figures/data/placement/block1/dist50/generator_dist50.csv
       nodes:
         - name: pi5
           host: localhost
-          onboarding: figures/data/placement/block1/onboarding_dist50_pi5.csv
-          resources: figures/data/placement/block1/resources_dist50_pi5.csv
+          onboarding: figures/data/placement/block1/dist50/onboarding_pi5.csv
+          resources: figures/data/placement/block1/dist50/resources_pi5.csv
         - name: opi
-          host: 192.168.0.13
-          onboarding: figures/data/placement/block1/onboarding_dist50_opi.csv
-          resources: figures/data/placement/block1/resources_dist50_opi.csv
+          host: 192.168.0.15
+          onboarding: figures/data/placement/block1/dist50/onboarding_opi.csv
+          resources: figures/data/placement/block1/dist50/resources_opi.csv
     - name: "distcap:1"
-      generator: figures/data/placement/block1/generator_distcap.csv
+      generator: figures/data/placement/block1/distcap/generator_distcap.csv
       nodes:
         - name: pi5
           host: localhost
-          onboarding: figures/data/placement/block1/onboarding_distcap_pi5.csv
-          resources: figures/data/placement/block1/resources_distcap_pi5.csv
+          onboarding: figures/data/placement/block1/distcap/onboarding_pi5.csv
+          resources: figures/data/placement/block1/distcap/resources_pi5.csv
         - name: opi
-          host: 192.168.0.13
-          onboarding: figures/data/placement/block1/onboarding_distcap_opi.csv
-          resources: figures/data/placement/block1/resources_distcap_opi.csv
+          host: 192.168.0.15
+          onboarding: figures/data/placement/block1/distcap/onboarding_opi.csv
+          resources: figures/data/placement/block1/distcap/resources_opi.csv
     - name: "central:2"
-      generator: figures/data/placement/block2/generator_central.csv
+      generator: figures/data/placement/block2/central/generator_central.csv
       nodes:
         - name: pi5
           host: localhost
-          onboarding: figures/data/placement/block2/onboarding_central_pi5.csv
-          resources: figures/data/placement/block2/resources_central_pi5.csv
+          onboarding: figures/data/placement/block2/central/onboarding_pi5.csv
+          resources: figures/data/placement/block2/central/resources_pi5.csv
     - name: "dist50:2"
-      generator: figures/data/placement/block2/generator_dist50.csv
+      generator: figures/data/placement/block2/dist50/generator_dist50.csv
       nodes:
         - name: pi5
           host: localhost
-          onboarding: figures/data/placement/block2/onboarding_dist50_pi5.csv
-          resources: figures/data/placement/block2/resources_dist50_pi5.csv
+          onboarding: figures/data/placement/block2/dist50/onboarding_pi5.csv
+          resources: figures/data/placement/block2/dist50/resources_pi5.csv
         - name: opi
           host: 192.168.0.15
-          onboarding: figures/data/placement/block2/onboarding_dist50_opi.csv
-          resources: figures/data/placement/block2/resources_dist50_opi.csv
+          onboarding: figures/data/placement/block2/dist50/onboarding_opi.csv
+          resources: figures/data/placement/block2/dist50/resources_opi.csv
     - name: "distcap:2"
-      generator: figures/data/placement/block2/generator_distcap.csv
+      generator: figures/data/placement/block2/distcap/generator_distcap.csv
       nodes:
         - name: pi5
           host: localhost
-          onboarding: figures/data/placement/block2/onboarding_distcap_pi5.csv
-          resources: figures/data/placement/block2/resources_distcap_pi5.csv
+          onboarding: figures/data/placement/block2/distcap/onboarding_pi5.csv
+          resources: figures/data/placement/block2/distcap/resources_pi5.csv
         - name: opi
           host: 192.168.0.15
-          onboarding: figures/data/placement/block2/onboarding_distcap_opi.csv
-          resources: figures/data/placement/block2/resources_distcap_opi.csv
+          onboarding: figures/data/placement/block2/distcap/onboarding_opi.csv
+          resources: figures/data/placement/block2/distcap/resources_opi.csv
     - name: "central:3"
-      generator: figures/data/placement/block3/generator_central.csv
+      generator: figures/data/placement/block3/central/generator_central.csv
       nodes:
         - name: pi5
           host: localhost
-          onboarding: figures/data/placement/block3/onboarding_central_pi5.csv
-          resources: figures/data/placement/block3/resources_central_pi5.csv
+          onboarding: figures/data/placement/block3/central/onboarding_pi5.csv
+          resources: figures/data/placement/block3/central/resources_pi5.csv
     - name: "dist50:3"
-      generator: figures/data/placement/block3/generator_dist50.csv
+      generator: figures/data/placement/block3/dist50/generator_dist50.csv
       nodes:
         - name: pi5
           host: localhost
-          onboarding: figures/data/placement/block3/onboarding_dist50_pi5.csv
-          resources: figures/data/placement/block3/resources_dist50_pi5.csv
+          onboarding: figures/data/placement/block3/dist50/onboarding_pi5.csv
+          resources: figures/data/placement/block3/dist50/resources_pi5.csv
         - name: opi
           host: 192.168.0.15
-          onboarding: figures/data/placement/block3/onboarding_dist50_opi.csv
-          resources: figures/data/placement/block3/resources_dist50_opi.csv
+          onboarding: figures/data/placement/block3/dist50/onboarding_opi.csv
+          resources: figures/data/placement/block3/dist50/resources_opi.csv
     - name: "distcap:3"
-      generator: figures/data/placement/block3/generator_distcap.csv
+      generator: figures/data/placement/block3/distcap/generator_distcap.csv
       nodes:
         - name: pi5
           host: localhost
-          onboarding: figures/data/placement/block3/onboarding_distcap_pi5.csv
-          resources: figures/data/placement/block3/resources_distcap_pi5.csv
+          onboarding: figures/data/placement/block3/distcap/onboarding_pi5.csv
+          resources: figures/data/placement/block3/distcap/resources_pi5.csv
         - name: opi
           host: 192.168.0.15
-          onboarding: figures/data/placement/block3/onboarding_distcap_opi.csv
-          resources: figures/data/placement/block3/resources_distcap_opi.csv
+          onboarding: figures/data/placement/block3/distcap/onboarding_opi.csv
+          resources: figures/data/placement/block3/distcap/resources_opi.csv

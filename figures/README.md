@@ -51,9 +51,9 @@ No value shown in a figure is written in the code. The only fixed values are in 
 
 ### `data/placement/` — centralized vs distributed placement
 
-- Each placement was run three times, once in each of three blocks, in a Latin-square order: block 1 (centralized, even split, capacity split), block 2 (even, capacity, centralized) and block 3 (capacity, centralized, even). Block 1 was run on 21 October 2026, with the Orange Pi Zero at 192.168.0.13; blocks 2 and 3 on 23 October 2026, with the Orange Pi Zero at 192.168.0.15. The files of block 1 are in this folder; those of blocks 2 and 3 are in `block2/` and `block3/`.
+- Each placement was run three times, once in each of three blocks, in a Latin-square order: block 1 (centralized, even split, capacity split), block 2 (even, capacity, centralized) and block 3 (capacity, centralized, even). The Orange Pi Zero was at 192.168.0.15 in all three blocks. The files of each run are in `block<N>/<placement>/`, copied from `experiments/results/placement/`.
 - Placements: `central` (every announcement to the Raspberry Pi 5), `dist50` (50/50 split between the two nodes) and `distcap` (89/11 split).
-- `generator_<placement>.csv`: one row per announcement, written by `load_generator.py`, with the level (offered rate), the broker (`host`), the publication time and the time of the broker's acknowledgement.
-- `onboarding_<placement>_<node>.csv`: one row per registration on node `pi5` or `opi`, written by `mqtt_http_bridge.py --onboarding-csv` (arrival at the bridge, HTTP status and the stage times returned by the server).
-- `resources_<placement>_<node>.csv`: CPU, memory, temperature and CPU-0 frequency of the node, and CPU of its server, bridge, broker and synchronization agent, sampled every 0.5 s by `resource_monitor.py`.
+- `<placement>/generator_<placement>.csv`: one row per announcement, written by `load_generator.py`, with the level (offered rate), the broker (`host`), the publication time and the time of the broker's acknowledgement.
+- `<placement>/onboarding_<node>.csv`: one row per registration on node `pi5` or `opi`, written by `mqtt_http_bridge.py --onboarding-csv` (arrival at the bridge, HTTP status and the stage times returned by the server).
+- `<placement>/resources_<node>.csv`: CPU, memory, temperature and CPU-0 frequency of the node, and CPU of its server, bridge, broker and synchronization agent, sampled every 0.5 s by `resource_monitor.py`.
 - In `config.yml`, each run is named `<placement>:<block>`. The three blocks are aggregated by `analyze_placement.py`: each run weighs the same, and the figure shows the mean with the minimum and maximum of the three runs.
