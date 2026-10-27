@@ -31,7 +31,7 @@ This repository holds a system that keeps the registry without manual configurat
 Devices announce themselves over MQTT. On each edge node a bridge turns the MQTT events into REST calls to a Flask server, which:
 
 1. rejects malformed announcements with a lightweight check,
-2. classifies the device into one of six hardware classes with a random forest trained on a calibrated catalogue of 114 commercial boards (PnP-AI),
+2. classifies the device (PnP-AI): a rule assigns `GNSSReceiver` when the announcement declares a GNSS module; otherwise a random forest trained on a calibrated catalogue of 114 commercial boards predicts one of five hardware classes,
 3. validates the RDF description of the device with SHACL shapes, using the OWL subclass axioms of the ontology,
 4. records the event in a hash-chained BlockDAG whose nodes are signed with Ed25519.
 
@@ -90,7 +90,7 @@ blockdag/                DAG, Ed25519 signing, storage
 devices/                 agents for Linux boards, the GNSS receiver and the Arduino Uno
 firmware/                ESP32 sketches (Wi-Fi, Ethernet/PoE) and the Arduino Uno sketch
 datasets/                catalogue of 114 boards with measured calibration; real announcements
-baseline/                pipeline benchmarks, classifier evaluation, GNSS ablation
+baseline/                pipeline benchmarks, classifier evaluation, GNSS rule check
 experiments/             experiment runners and analysis scripts
 experiments/results/     raw data and analysis outputs of every experiment
 figures/                 make_figures.py, its configuration and its input data
@@ -117,14 +117,15 @@ python figures/make_figures.py
 | GNSS rule check | `baseline/run_gnss_rule_check.py` | `baseline/results_gnss_rule/` |
 | GNSS receiver classification (10 runs) | `devices/gnss_agent.py` and the bridge | `experiments/results/gnss_classification/` |
 | GNSS announcement validation | `experiments/run_gnss_validation.py` | `experiments/results/gnss_validation/` |
-| Onboarding stages and clock bounds | `experiments/analyze_onboarding.py` | raw: `experiments/results/onboarding_*/`; analysis: `experiments/results/onboarding_analysis/` |
+| Onboarding stages and clock offset estimates | `experiments/analyze_onboarding.py` | raw: `experiments/results/onboarding_*/`; analysis: `experiments/results/onboarding_analysis/` |
 | Last Will of the wired boards | `experiments/run_lwt_trials.py` | `figures/data/lwt_ethernet/` |
 | Load on the Raspberry Pi 5 and the Orange Pi Zero | `experiments/analyze_load.py` | raw: `experiments/results/load_pi5/`, `load_opi/`; analysis: `experiments/results/load_analysis/` |
 | Emulated vs physical devices | `experiments/analyze_load.py --validate` | `experiments/results/load_pi5val/` and, with the `performance` governor, `load_pi5perf/` |
 | Centralized vs distributed placement | `experiments/analyze_placement.py` | `experiments/results/placement/` |
-| Convergence after partition | `experiments/run_partition.py`, `experiments/analyze_convergence.py` | `experiments/results/convergence/` |
+| Convergence after partition (procedure: supplementary S8) | `experiments/run_partition.py`, `experiments/analyze_convergence.py` | `experiments/results/convergence/` |
 | Pipeline stage costs (supplementary) | `baseline/run_benchmark.py`, `baseline/run_distributed_benchmark.py` | `baseline/results_pi5_catalog/` |
 | Garbage-collector diagnostic (supplementary) | `baseline/diagnose_gc.py` | `baseline/results_pi5_catalog/gc_*` |
+| Classifier details: per-class recall and per-board errors (supplementary) | `experiments/eval_unseen_boards.py` | `experiments/results/unseen_boards/` |
 | Invalid announcements (supplementary) | `experiments/run_invalid_events.py` | `experiments/results/invalid_events/` |
 | Classifier on the synthetic test set (supplementary) | `baseline/plot_classifier_metrics.py` | `baseline/results_classifier_hw_pc/` |
 | GPS time to first fix and clock error (supplementary) | `experiments/ttff_gps.py`, chrony logs | `figures/data/ttff/`, `figures/data/chrony/` |
