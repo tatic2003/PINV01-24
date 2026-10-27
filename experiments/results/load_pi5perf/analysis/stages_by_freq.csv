@@ -1,2 +1,2 @@
 node,cpu0_mhz,n,bridge_to_registered_median,bridge_queue_median,http_median,srv_total_median,srv_classify_median,srv_shacl_median
-pi5perf,2400.0,40,15.604998046875,0.010986328125,15.5945,13.361,4.891,7.6485
+pi5perf,2400.0,40,15.350486328125001,0.010986328125,15.339500000000001,13.1435,4.7204999999999995,7.587

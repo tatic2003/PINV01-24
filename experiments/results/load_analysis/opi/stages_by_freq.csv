@@ -1,0 +1,4 @@
+node,cpu0_mhz,n,bridge_to_registered_median,bridge_queue_median,http_median,srv_total_median,srv_classify_median,srv_shacl_median
+opi,480.0,7,156.2850390625,0.1630859375,156.12,131.276,28.126,96.547
+opi,648.0,1,211.253005859375,0.156005859375,211.097,190.042,62.265,119.932
+opi,1296.0,4143,135.5899140625,0.087890625,135.491,118.972,26.92,87.286
