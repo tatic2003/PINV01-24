@@ -1,0 +1,30 @@
+PING 192.168.0.15 (192.168.0.15) 1400(1428) bytes of data.
+1408 bytes from 192.168.0.15: icmp_seq=1 ttl=64 time=3.13 ms
+1408 bytes from 192.168.0.15: icmp_seq=2 ttl=64 time=2.77 ms
+1408 bytes from 192.168.0.15: icmp_seq=3 ttl=64 time=3.38 ms
+1408 bytes from 192.168.0.15: icmp_seq=5 ttl=64 time=20.1 ms
+1408 bytes from 192.168.0.15: icmp_seq=6 ttl=64 time=7.52 ms
+1408 bytes from 192.168.0.15: icmp_seq=7 ttl=64 time=7.88 ms
+1408 bytes from 192.168.0.15: icmp_seq=8 ttl=64 time=6.57 ms
+1408 bytes from 192.168.0.15: icmp_seq=9 ttl=64 time=37.8 ms
+1408 bytes from 192.168.0.15: icmp_seq=10 ttl=64 time=7.80 ms
+1408 bytes from 192.168.0.15: icmp_seq=11 ttl=64 time=5.86 ms
+1408 bytes from 192.168.0.15: icmp_seq=12 ttl=64 time=10.4 ms
+1408 bytes from 192.168.0.15: icmp_seq=13 ttl=64 time=8.52 ms
+1408 bytes from 192.168.0.15: icmp_seq=14 ttl=64 time=7.72 ms
+1408 bytes from 192.168.0.15: icmp_seq=15 ttl=64 time=8.84 ms
+1408 bytes from 192.168.0.15: icmp_seq=16 ttl=64 time=36.7 ms
+1408 bytes from 192.168.0.15: icmp_seq=18 ttl=64 time=20.4 ms
+1408 bytes from 192.168.0.15: icmp_seq=20 ttl=64 time=6.77 ms
+1408 bytes from 192.168.0.15: icmp_seq=21 ttl=64 time=9.13 ms
+1408 bytes from 192.168.0.15: icmp_seq=22 ttl=64 time=8.80 ms
+1408 bytes from 192.168.0.15: icmp_seq=23 ttl=64 time=22.4 ms
+1408 bytes from 192.168.0.15: icmp_seq=25 ttl=64 time=7.97 ms
+1408 bytes from 192.168.0.15: icmp_seq=26 ttl=64 time=8.83 ms
+1408 bytes from 192.168.0.15: icmp_seq=27 ttl=64 time=13.8 ms
+1408 bytes from 192.168.0.15: icmp_seq=28 ttl=64 time=8.93 ms
+1408 bytes from 192.168.0.15: icmp_seq=29 ttl=64 time=9.59 ms
+
+--- 192.168.0.15 ping statistics ---
+30 packets transmitted, 25 received, 16.6667% packet loss, time 29096ms
+rtt min/avg/max/mdev = 2.767/11.667/37.789/8.967 ms
