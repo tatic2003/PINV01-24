@@ -152,18 +152,18 @@ The NMEA logs have latitude and longitude removed. The coordinates in the GNSS v
 
 ## Citation
 
-If you use this code or data, please cite the article and the archived release of this repository:
+If you use this code or data, please cite the article and the archived release of this repository. The DOI below always resolves to the latest release; Zenodo lists the DOI of each version.
 
-> Caballero, T., & Gregor, D. O. (2026). *PINV01-24: code and data for "Interoperability of Heterogeneous Devices in Intelligent Transportation Systems: Semantic Validation, PnP-AI, and DAG-Based Synchronization on Edge Hardware"* (Version v1.0.0) [Software]. Zenodo. https://doi.org/10.5281/zenodo.23567520
+> Caballero, T., & Gregor, D. O. (2026). *PINV01-24: code and data for "Interoperability of Heterogeneous Devices in Intelligent Transportation Systems: Semantic Validation, PnP-AI, and DAG-Based Synchronization on Edge Hardware"* [Software]. Zenodo. https://doi.org/10.5281/zenodo.23567519
 
 ```bibtex
 @misc{caballero2026pinv0124,
   author       = {Caballero, Tatiana and Gregor, Derlis O.},
   title        = {{PINV01-24}: code and data for ``Interoperability of Heterogeneous Devices in Intelligent Transportation Systems: Semantic Validation, {PnP-AI}, and {DAG}-Based Synchronization on Edge Hardware''},
-  howpublished = {Version v1.0.0 [software]. Zenodo},
+  howpublished = {[software]. Zenodo},
   year         = {2026},
-  doi          = {10.5281/zenodo.23567520},
-  url          = {https://doi.org/10.5281/zenodo.23567520}
+  doi          = {10.5281/zenodo.23567519},
+  url          = {https://doi.org/10.5281/zenodo.23567519}
 }
 ```
 

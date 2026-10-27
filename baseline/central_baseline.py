@@ -80,8 +80,8 @@ def make_generator(training_source: str, seed: int):
 
     'profiles' = SyntheticDatasetGenerator (hand-written profiles, 5 classes).
     'catalog'  = CatalogDatasetGenerator over the real-board catalog, calibrated
-                 memory, hardware labeling 'hw' (6 classes, with
-                 Microcontroller): the same data the server uses with
+                  memory, hardware labeling 'hw' (5 classes, with
+                   Microcontroller; GNSS receivers are typed by a rule): the same data the server uses with
                  --training-source catalog and the paper reports.
     """
     if training_source == 'profiles':

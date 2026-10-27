@@ -83,7 +83,7 @@ Examples:
         choices=['profiles', 'catalog'],
         default='catalog',
         help='Training data for the ML classifier: "catalog" = real-board '
-             'catalog with calibrated memory (6 classes); "profiles" = '
+             'catalog with calibrated memory (5 classes; GNSS receivers are typed by a rule); "profiles" = '
              'hand-written synthetic profiles (5 classes) (default: catalog)'
     )
     parser.add_argument(
