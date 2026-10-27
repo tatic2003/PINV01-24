@@ -16,6 +16,7 @@ from typing import List, Dict, Any, Optional, Tuple
 from dataclasses import dataclass, asdict, field
 import hashlib
 
+from ..capability_rules import GNSS_RULE_CLASS
 from ..features import FEATURE_SET_RESOURCE_NAME, extract_features
 
 
@@ -217,12 +218,16 @@ class SyntheticDatasetGenerator:
     - ITS-specific context data
     """
 
-    def __init__(self, seed: Optional[int] = None):
+    def __init__(self, seed: Optional[int] = None, include_gnss: bool = False):
         """
         Initialize the generator.
 
         Args:
             seed: Random seed for reproducibility
+            include_gnss: keep the GNSS receiver profiles. Off by default: the
+                class is decided by the rule of ``pnp_ai.capability_rules``
+                before the model runs, so the model is not trained on it.
+                Experiments that need receiver announcements ask for them.
         """
         if seed is not None:
             random.seed(seed)
@@ -235,7 +240,10 @@ class SyntheticDatasetGenerator:
         # fields existed.
         self._gnss_rng = random.Random(seed)
 
-        self.profiles = DEVICE_PROFILES
+        self.profiles = DEVICE_PROFILES if include_gnss else {
+            name: profile for name, profile in DEVICE_PROFILES.items()
+            if profile.device_type != GNSS_RULE_CLASS
+        }
         self.contexts = ITS_CONTEXTS
         self.locations = DEPLOYMENT_LOCATIONS
         self._device_counter = {}
@@ -375,10 +383,10 @@ class SyntheticDatasetGenerator:
             List of device dictionaries
         """
         if profile_distribution is None:
-            # Built from DEVICE_PROFILES, so every defined profile is sampled.
+            # Built from self.profiles, so every profile in use is sampled.
             profile_distribution = {
                 name: DEFAULT_PROFILE_WEIGHTS.get(name, DEFAULT_PROFILE_WEIGHT)
-                for name in DEVICE_PROFILES
+                for name in self.profiles
             }
 
         # Normalize weights

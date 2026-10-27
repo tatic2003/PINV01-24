@@ -4,11 +4,18 @@ GNSS announcement validation experiment.
 
 Sends valid and deliberately invalid GNSS announcements to a running server
 (POST /api/devices/register) and records, per case:
-  - the HTTP verdict of the server's registration path (lightweight validator),
+  - the HTTP verdict of the server's registration path (lightweight validator
+    first, then the full SHACL check on register),
+  - the verdict of the lightweight validator alone on the same data (in process),
   - the verdict of the SHACL GNSSReceiverShape on the same data (in process),
   - registration round-trip time and SHACL validation time.
 
-The two verdicts are compared and disagreements are reported, not hidden.
+The server and SHACL verdicts are compared and disagreements are reported, not
+hidden. The lightweight verdict is kept apart because one case, gnss_fields_missing,
+is rejected only by SHACL: it declares the gnss capability but carries no GNSS
+field, so the lightweight validator (which checks ranges only when some GNSS
+field is present) accepts it, the classifier types it as GNSSReceiver, and the
+GNSSReceiverShape rejects it for the missing fix_quality.
 
 Usage (server already running):
   python experiments/run_gnss_validation.py --server http://localhost:5000 --repeats 30
@@ -62,6 +69,10 @@ CASES = [
     ("fix_without_position", False, {}, ["lat", "lon"]),
     ("fix_quality_missing", False, {}, ["fix_quality"]),
     ("lat_not_numeric", False, {"lat": "abc"}, []),
+    # Declares gnss but announces no GNSS field at all: passes the lightweight
+    # check, is rejected by SHACL (GNSSReceiverShape requires fix_quality).
+    ("gnss_fields_missing", False, {},
+     ["lat", "lon", "hdop", "satellites", "fix_quality", "update_rate_hz"]),
 ]
 
 
@@ -86,6 +97,11 @@ def http(method, url, body=None):
     except urllib.error.HTTPError as e:
         status = e.code
     return status, (time.perf_counter() - t0) * 1000
+
+
+def light_verdict(data, mgr):
+    """Verdict of the lightweight validator alone, as the server runs it first."""
+    return mgr.validate_announcement(data).is_valid
 
 
 def shacl_verdict(data, validator, mgr):
@@ -120,12 +136,13 @@ def main():
             data = build(dev_id, over, rem)
             status, rtt = http("POST", f"{args.server}/api/devices/register", data)
             server_ok = status == 200
+            light_ok = light_verdict(data, mgr)
             shacl_ok, shacl_ms = shacl_verdict(data, validator, mgr)
             if server_ok:
                 http("DELETE", f"{args.server}/api/devices/{dev_id}")
             rows.append({"case": name, "run": i, "expected_valid": expected,
                          "http_status": status, "server_accepts": server_ok,
-                         "shacl_accepts": shacl_ok,
+                         "light_accepts": light_ok, "shacl_accepts": shacl_ok,
                          "register_ms": round(rtt, 3), "shacl_ms": round(shacl_ms, 3)})
 
     with open(path, "w", newline="") as f:
@@ -134,17 +151,19 @@ def main():
         w.writerows(rows)
 
     print(f"\nCSV: {path}\n")
-    print(f"{'case':28} {'expect':7} {'server':7} {'shacl':7} {'reg_ms(med)':>11} {'shacl_ms(med)':>13}")
-    wrong_server = wrong_shacl = disagree = 0
+    print(f"{'case':28} {'expect':7} {'server':7} {'light':7} {'shacl':7} {'reg_ms(med)':>11} {'shacl_ms(med)':>13}")
+    wrong_server = wrong_shacl = disagree = shacl_only = 0
     for name, expected, _, _ in CASES:
         r = [x for x in rows if x["case"] == name]
         s_ok = sum(x["server_accepts"] for x in r)
+        l_ok = sum(x["light_accepts"] for x in r)
         h_ok = sum(x["shacl_accepts"] for x in r)
         n = len(r)
         wrong_server += sum(x["server_accepts"] != expected for x in r)
         wrong_shacl += sum(x["shacl_accepts"] != expected for x in r)
         disagree += sum(x["server_accepts"] != x["shacl_accepts"] for x in r)
-        print(f"{name:28} {str(expected):7} {s_ok:>3}/{n:<3} {h_ok:>3}/{n:<3} "
+        shacl_only += sum(x["light_accepts"] and not x["shacl_accepts"] for x in r)
+        print(f"{name:28} {str(expected):7} {s_ok:>3}/{n:<3} {l_ok:>3}/{n:<3} {h_ok:>3}/{n:<3} "
               f"{statistics.median(x['register_ms'] for x in r):>11.2f} "
               f"{statistics.median(x['shacl_ms'] for x in r):>13.2f}")
     total = len(rows)
@@ -152,6 +171,7 @@ def main():
     print(f"Server verdict differs from expectation: {wrong_server}")
     print(f"SHACL verdict differs from expectation:  {wrong_shacl}")
     print(f"Server and SHACL disagree:               {disagree}")
+    print(f"Accepted by the lightweight check, rejected by SHACL: {shacl_only}")
 
 
 if __name__ == "__main__":

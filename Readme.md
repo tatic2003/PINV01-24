@@ -114,7 +114,7 @@ python figures/make_figures.py
 | Calibration of the catalogue | `datasets/catalog/build_catalogo.py` (validator) | `datasets/catalog/catalogo_placas.csv` (measured columns) |
 | Synthetic to real devices | `experiments/eval_synth_to_real.py` | `experiments/results/synth_to_real/` |
 | Boards never seen in training | `experiments/eval_unseen_boards.py` | `experiments/results/unseen_boards/` |
-| GNSS ablation | `baseline/run_gnss_ablation.py` | `baseline/results_gnss_ablation/` |
+| GNSS rule check | `baseline/run_gnss_rule_check.py` | `baseline/results_gnss_rule/` |
 | GNSS receiver classification (10 runs) | `devices/gnss_agent.py` and the bridge | `experiments/results/gnss_classification/` |
 | GNSS announcement validation | `experiments/run_gnss_validation.py` | `experiments/results/gnss_validation/` |
 | Onboarding stages and clock bounds | `experiments/analyze_onboarding.py` | raw: `experiments/results/onboarding_*/`; analysis: `experiments/results/onboarding_analysis/` |

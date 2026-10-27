@@ -14,6 +14,11 @@ from typing import Dict, Any, List, Optional, Tuple
 from dataclasses import dataclass
 import numpy as np
 
+from .capability_rules import (
+    GNSS_RULE_CLASS,
+    GNSS_RULE_CONFIDENCE,
+    declares_gnss,
+)
 from .features import (
     DEFAULT_FEATURE_SET,
     FEATURE_SET_RESOURCE,
@@ -289,6 +294,18 @@ class DeviceClassifier:
         Returns:
             ClassificationResult with type, confidence, and suggestions
         """
+        # The declared GNSS capability is decided by a rule, before the
+        # model: see pnp_ai.capability_rules. The model is not trained on the
+        # class and carries no feature for the declaration.
+        if declares_gnss(device_data):
+            return ClassificationResult(
+                device_type=GNSS_RULE_CLASS,
+                confidence=GNSS_RULE_CONFIDENCE,
+                all_probabilities={GNSS_RULE_CLASS: GNSS_RULE_CONFIDENCE},
+                suggested_role=self._suggest_role(GNSS_RULE_CLASS),
+                suggested_capabilities=self.DEVICE_CAPABILITIES.get(GNSS_RULE_CLASS, []),
+            )
+
         if self.model_type == 'rule_based' or not self.is_trained:
             return self._classify_rule_based(device_data)
 

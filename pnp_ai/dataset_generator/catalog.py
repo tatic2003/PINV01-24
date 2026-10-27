@@ -300,9 +300,16 @@ class CatalogDatasetGenerator(SyntheticDatasetGenerator):
     devices it returns have the same keys (plus board_id and catalog_version),
     and generate_anomalies() / generate_classification_dataset() are inherited.
 
-    Sampling: a class is chosen uniformly among the classes present (plus
-    GNSSReceiver), then a board uniformly within that class, so that classes
-    with many catalog rows (ESP32, SBC) do not crowd out the small ones.
+    Sampling: a class is chosen uniformly among the classes present, then a
+    board uniformly within that class, so that classes with many catalog rows
+    (ESP32, SBC) do not crowd out the small ones.
+
+    ``include_gnss`` adds a composed GNSSReceiver class, whose announcements
+    carry the declared capability and the receiver state. It is off by
+    default, because the classifier is not trained on that class: a receiver
+    is typed by the rule of ``pnp_ai.capability_rules`` before the model runs.
+    Experiments that need receiver announcements (SHACL validation, the load
+    population, the rule check) ask for them explicitly.
     """
 
     def __init__(
@@ -313,7 +320,7 @@ class CatalogDatasetGenerator(SyntheticDatasetGenerator):
         labeling: str = DEFAULT_LABELING,
         calibrated: bool = True,
         exclude_boards: Sequence[str] = (),
-        include_gnss: bool = True,
+        include_gnss: bool = False,
         class_weights: Optional[Dict[str, float]] = None,
     ):
         super().__init__(seed=seed)  # seeds the module RNG used by generate_anomalies

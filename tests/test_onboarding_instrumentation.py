@@ -259,6 +259,32 @@ class TestAnalysis:
         assert total["clock_bound_ms"] == 3.0 + self.an.RESOLUTION_MS
         assert (out / "fig_onboarding_stages.pdf").exists()
 
+    def test_several_probe_files(self, tmp_path):
+        """Probes of several sessions are joined; each device keeps its smallest delay."""
+        import pandas as pd
+        src = tmp_path / "onb.csv"
+        self.frame().to_csv(src, index=False)
+        probe_a = tmp_path / "probe_a.csv"
+        probe_b = tmp_path / "probe_b.csv"
+        pd.DataFrame([{"session": "a", "device_id": "esp32-c3-abc123", "answered": "True",
+                       "offset_ms": "1.5", "delay_ms": "10"}]).to_csv(probe_a, index=False)
+        pd.DataFrame([{"session": "b", "device_id": "esp32-c3-abc123", "answered": "True",
+                       "offset_ms": "0.5", "delay_ms": "4"},
+                      {"session": "b", "device_id": "esp32-c3-def456", "answered": "False",
+                       "offset_ms": "", "delay_ms": ""}]).to_csv(probe_b, index=False)
+        out = tmp_path / "out"
+        sys.argv = ["analyze_onboarding.py", str(src), "--probe", str(probe_a), str(probe_b),
+                    "--out", str(out)]
+        self.an.main()
+        bounds = pd.read_csv(out / "clock_bounds.csv")
+        assert len(bounds) == 1                      # unanswered probe dropped
+        row = bounds.iloc[0]
+        assert row["probes"] == 2
+        assert row["bound_ms"] == 2.0 + self.an.RESOLUTION_MS
+        assert row["best_offset_ms"] == 0.5
+        summary = pd.read_csv(out / "summary.csv")
+        assert summary["clock_bound_ms"].dropna().iloc[0] == 2.0 + self.an.RESOLUTION_MS
+
 
 def test_analysis_serial_agent_stages(tmp_path):
     """Serial-board rows get their USB stages from the agent CSV, joined on the publish time."""

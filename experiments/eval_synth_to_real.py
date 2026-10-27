@@ -43,9 +43,16 @@ Usage (from the repository root):
   python3 experiments/eval_synth_to_real.py
   python3 experiments/eval_synth_to_real.py --seeds 3 --models random_forest   # quick run
 
+A configuration that declares a GNSS capability is typed by the rule of
+pnp_ai.capability_rules before the model runs. Those configurations are marked
+'rule' in the column decided_by and scored apart (columns rule_configs and
+rule_correct of the summary): the accuracy columns describe the model alone.
+
 Outputs (in --out, default experiments/results/synth_to_real/):
-  per_config.csv   one row per generator x labeling x model x seed x device_id
-  summary.csv      accuracy per generator x labeling x model (mean/min/max over seeds)
+  per_config.csv   one row per generator x labeling x model x seed x device_id,
+                   with decided_by = model | rule
+  summary.csv      accuracy of the model per generator x labeling x model
+                   (mean/min/max over seeds), plus the rule's configurations
   metadata.json    catalog version, real data counts, arguments, calibration table
 
 Project: PINV01-24 - FIUNA
@@ -69,6 +76,7 @@ from pnp_ai.dataset_generator import SyntheticDatasetGenerator           # noqa:
 from pnp_ai.dataset_generator.catalog import (                          # noqa: E402
     DEFAULT_LABELING, LABELINGS, CatalogDatasetGenerator, load_catalog, unify_label)
 from pnp_ai.device_classifier import DeviceClassifier                   # noqa: E402
+from pnp_ai.capability_rules import declares_gnss                        # noqa: E402
 from pnp_ai.features import without_hardware_name                       # noqa: E402
 
 warnings.filterwarnings('ignore')
@@ -152,10 +160,16 @@ def score(clf, records, labeling):
         pred, _ = votes.most_common(1)[0]
         conf = statistics.mean(res.confidence for res in results if res.device_type == pred)
         truth = true_label(recs[0], labeling)
+        # A device that declares a GNSS capability is typed by the rule of
+        # pnp_ai.capability_rules, before the model. Its outcome is reported
+        # apart, so the accuracy of the model is not credited with a decision
+        # the declaration already makes.
+        by_rule = all(declares_gnss(r['payload']) for r in recs)
         out[dev] = {
             'board_id': recs[0]['board_id'],
             'label_true': truth,
             'pred': pred,
+            'decided_by': 'rule' if by_rule else 'model',
             'correct': int(pred == truth),
             'confidence': round(conf, 4),
             'n_announcements': len(recs),
@@ -248,20 +262,30 @@ def main(argv=None):
     for r in rows:
         groups[(r['generator'], r['labeling'], r['model'])].append(r)
     for (gen_name, labeling, model), rs in groups.items():
+        # The configurations the rule decides are scored apart: the accuracy
+        # columns below describe the model alone.
+        by_model = [r for r in rs if r['decided_by'] == 'model']
+        by_rule = [r for r in rs if r['decided_by'] == 'rule']
         per_seed = collections.defaultdict(list)
         fails = collections.Counter()
-        for r in rs:
+        for r in by_model:
             per_seed[r['seed']].append(r['correct'])
             if not r['correct']:
                 fails[f"{r['device_id']}->{r['pred']}"] += 1
         accs = [sum(v) / len(v) for v in per_seed.values()]
+        rule_seeds = collections.defaultdict(list)
+        for r in by_rule:
+            rule_seeds[r['seed']].append(r['correct'])
         summary.append({
             'generator': gen_name, 'labeling': labeling, 'model': model,
             'seeds': len(accs), 'configs': len(next(iter(per_seed.values()))),
             'acc_mean': round(statistics.mean(accs), 4),
             'acc_min': round(min(accs), 4), 'acc_max': round(max(accs), 4),
-            'conf_mean': round(statistics.mean(r['confidence'] for r in rs), 4),
+            'conf_mean': round(statistics.mean(r['confidence'] for r in by_model), 4),
             'failures': '; '.join(f"{k} ({n}/{len(accs)})" for k, n in fails.most_common()),
+            'rule_configs': len(next(iter(rule_seeds.values()))) if rule_seeds else 0,
+            'rule_correct': (round(statistics.mean(sum(v) / len(v) for v in rule_seeds.values()), 4)
+                             if rule_seeds else ''),
         })
 
     out = Path(args.out)

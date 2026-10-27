@@ -50,17 +50,23 @@ from baseline.central_baseline import TRAINING_SOURCES, make_generator
 # ── Styling ─────────────────────────────────────────────────────────────────
 
 MODEL_STYLES = {
-    'Decision Tree': {'color': '#e74c3c', 'short': 'DT'},
-    'Random Forest': {'color': '#e67e22', 'short': 'RF'},
-    'SVM':           {'color': '#8e44ad', 'short': 'SVM'},
-    'MLP':           {'color': '#2980b9', 'short': 'MLP'},
+    'Decision Tree':       {'color': '#e74c3c', 'short': 'DT'},
+    'Random Forest':       {'color': '#e67e22', 'short': 'RF'},
+    'SVM':                 {'color': '#8e44ad', 'short': 'SVM'},
+    'MLP':                 {'color': '#2980b9', 'short': 'MLP'},
+    'Logistic Regression': {'color': '#16a085', 'short': 'LR'},
+    'k-NN':                {'color': '#7f8c8d', 'short': 'kNN'},
 }
 
+# The six model families DeviceClassifier supports, so that this table covers
+# the same ones as the two experiments on real and unseen boards.
 MODEL_TYPES = {
-    'dt':  ('Decision Tree', 'decision_tree'),
-    'rf':  ('Random Forest', 'random_forest'),
-    'svm': ('SVM', 'svm'),
-    'mlp': ('MLP', 'mlp'),
+    'dt':   ('Decision Tree', 'decision_tree'),
+    'rf':   ('Random Forest', 'random_forest'),
+    'svm':  ('SVM', 'svm'),
+    'mlp':  ('MLP', 'mlp'),
+    'lr':   ('Logistic Regression', 'logistic_regression'),
+    'knn':  ('k-NN', 'knn'),
 }
 
 
@@ -320,12 +326,12 @@ def save_summary(results, output_path, meta):
 
     # Print console table
     print(f"\n{'='*65}")
-    print(f"  {'Model':<16} {'Accuracy':>9} {'F1-macro':>9} {'Infer (ms)':>11}")
+    print(f"  {'Model':<20} {'Accuracy':>9} {'F1-macro':>9} {'Infer (ms)':>11}")
     print(f"  {'-'*60}")
     for name, s in summary.items():
         if name == '_meta':
             continue
-        print(f"  {name:<16} {s['accuracy']:>9.4f} {s['f1_macro']:>9.4f} {s['infer_ms']:>11.4f}")
+        print(f"  {name:<20} {s['accuracy']:>9.4f} {s['f1_macro']:>9.4f} {s['infer_ms']:>11.4f}")
     print(f"{'='*65}")
 
 

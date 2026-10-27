@@ -19,7 +19,8 @@ def _gnss(devices):
 
 
 def test_gnss_receivers_have_fix_quality_and_position_when_fixed():
-    receivers = _gnss(SyntheticDatasetGenerator(seed=42).generate_dataset(500))
+    receivers = _gnss(SyntheticDatasetGenerator(seed=42, include_gnss=True)
+                      .generate_dataset(500))
     assert receivers
     for d in receivers:
         assert d['fix_quality'] in (0, 1, 2)

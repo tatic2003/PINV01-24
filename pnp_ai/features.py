@@ -42,6 +42,12 @@ Feature sets
 characteristics. ``FEATURE_SET_RESOURCE_NAME`` adds flags derived from the
 hardware model string (has_esp32, has_raspberry, ...).
 
+Neither set carries the declared GNSS capability. A receiver announces the
+resources of the board that hosts it, so no resource feature separates the
+two, and a feature that merely repeats the declaration would let the model
+take credit for a decision the declaration already makes. The capability is
+handled before the model instead, by the rule in ``pnp_ai.capability_rules``.
+
 The server and every evaluation of the article use ``FEATURE_SET_RESOURCE``.
 ``FEATURE_SET_RESOURCE_NAME`` is kept only for comparison: the name flags
 reproduce the lookup of the rule-based baseline inside the ML model, so they
@@ -231,13 +237,6 @@ def extract_features(
     }
     for name in _LINK_FEATURES:
         features[f'is_{name}'] = 1.0 if link == name else 0.0
-
-    # Declared capability, present in both feature sets. Resources alone cannot
-    # tell a GNSS receiver from the board that hosts it: a GPS HAT on a
-    # Raspberry Pi announces the Pi's memory and CPU.
-    features['declares_gnss'] = (
-        1.0 if declared_capabilities(device) & set(GNSS_CAPABILITY_NAMES) else 0.0
-    )
 
     if feature_set == FEATURE_SET_RESOURCE_NAME:
         hardware = hardware_name(device)

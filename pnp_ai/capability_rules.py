@@ -1,48 +1,38 @@
 """
-Safety-net capability rule for PnP-AI.
+Capability rule for PnP-AI: the GNSS receiver.
 
-GNSS receivers are classified by the ML model: the training data has a
-GNSSReceiver class and the feature set carries the declared capability
-(``declares_gnss``). This rule only acts when the loaded classifier does NOT
-know the class, for example a model trained before GNSS support was added and
-still on disk. In that case a declared GNSS capability types the device
-anyway, instead of silently calling a GPS HAT a single-board computer.
+A GNSS receiver has no resources of its own that the network can see. A GPS
+HAT on a Raspberry Pi announces the memory, the CPU and the link of the Pi, so
+nothing in the resources separates the receiver from its host. What separates
+them is the capability the device declares.
 
-When the classifier knows the class, its decision stands, including when it
-is wrong; that is what the evaluation measures.
+That makes the class a decision for a rule, not for a model: when an
+announcement declares ``gnss`` (or ``gps``), the device is a GNSS receiver,
+and a model trained on a feature that repeats the declaration would only
+restate it. The classifier is therefore trained without the class and without
+the feature, and this rule runs before the model, in
+``DeviceClassifier.classify``.
+
+A receiver that does not declare its capability is not recognized: it is typed
+by its host resources, like any other board. That limit belongs to the
+announcement, not to the model, and it is reported as such.
 
 Project: PINV01-24 - FIUNA
 """
 
-from typing import Any, Dict, Iterable, Optional
+from typing import Any, Dict
 
-from .device_classifier import ClassificationResult
 from .features import GNSS_CAPABILITY_NAMES, declared_capabilities
 
+#: Confidence reported when the rule decides. The declaration is categorical,
+#: so there is nothing to be uncertain about; a low-confidence flag would be
+#: misleading here.
+GNSS_RULE_CONFIDENCE = 1.0
 
-def apply_capability_rules(device_data: Dict[str, Any],
-                           result: ClassificationResult,
-                           known_classes: Optional[Iterable[str]] = None
-                           ) -> ClassificationResult:
-    """
-    Override the classification only if the classifier cannot output
-    GNSSReceiver and the announcement declares a GNSS capability.
+#: Class the rule assigns.
+GNSS_RULE_CLASS = 'GNSSReceiver'
 
-    Args:
-        known_classes: classes the classifier can output. ``None`` or empty
-            (rule-based classifier) means "does not know a trained class set";
-            the rule-based classifier handles GNSS itself, so nothing changes.
-    """
-    if result.device_type == 'GNSSReceiver' or not known_classes:
-        return result
-    if 'GNSSReceiver' in set(known_classes):
-        return result
-    if declared_capabilities(device_data) & set(GNSS_CAPABILITY_NAMES):
-        return ClassificationResult(
-            device_type='GNSSReceiver',
-            confidence=1.0,
-            all_probabilities={'GNSSReceiver': 1.0},
-            suggested_role='sensor',
-            suggested_capabilities=['gnss', 'position', 'time'],
-        )
-    return result
+
+def declares_gnss(device_data: Dict[str, Any]) -> bool:
+    """True when the announcement declares a GNSS capability."""
+    return bool(declared_capabilities(device_data) & set(GNSS_CAPABILITY_NAMES))

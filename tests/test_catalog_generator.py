@@ -30,9 +30,20 @@ def test_measured_boards_have_a_link(catalog):
 
 
 @pytest.mark.parametrize('labeling', ['clasificador', 'hw', 'hw_unificado'])
-def test_classes_include_microcontroller_and_gnss(catalog, labeling):
+def test_training_classes_leave_the_receiver_out(catalog, labeling):
+    """The class the rule decides is not in the training data by default."""
     gen = CatalogDatasetGenerator(seed=1, catalog=catalog, labeling=labeling)
     assert 'Microcontroller' in gen.classes
+    assert GNSS_LABEL not in gen.classes
+    labels = {d['device_type'] for d in gen.generate_dataset(600)}
+    assert labels == set(gen.classes)
+
+
+@pytest.mark.parametrize('labeling', ['clasificador', 'hw', 'hw_unificado'])
+def test_receivers_on_request(catalog, labeling):
+    """Experiments that need receiver announcements ask for them."""
+    gen = CatalogDatasetGenerator(seed=1, catalog=catalog, labeling=labeling,
+                                  include_gnss=True)
     assert GNSS_LABEL in gen.classes
     labels = {d['device_type'] for d in gen.generate_dataset(600)}
     assert labels == set(gen.classes)
@@ -51,7 +62,7 @@ def test_devices_have_the_features_schema(catalog):
         assert f['memory_total_mb'] > 0
         assert f['cpu_freq_mhz'] > 0
         assert d['catalog_version'] == catalog.version
-        assert (f['declares_gnss'] == 1.0) == (d['device_type'] == GNSS_LABEL)
+        assert 'declares_gnss' not in f
 
 
 def test_nominal_mode_announces_nominal_ram(catalog):

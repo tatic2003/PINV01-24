@@ -112,7 +112,9 @@ class AnnouncementSource:
         self.rng = random.Random(seed)
         if kind == 'catalog':
             from pnp_ai.dataset_generator.catalog import CatalogDatasetGenerator
-            self.gen = CatalogDatasetGenerator(seed=seed, calibrated=True)
+            # include_gnss: the emulated population keeps receivers, which
+            # the server types by rule instead of with the model.
+            self.gen = CatalogDatasetGenerator(seed=seed, calibrated=True, include_gnss=True)
         elif kind == 'testbed':
             self.pool = self._load_testbed(real_path or ROOT / 'datasets' / 'real' / 'announcements_real.jsonl')
             self.cycle = 0

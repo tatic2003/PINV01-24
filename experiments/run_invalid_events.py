@@ -107,7 +107,8 @@ GNSS_ONLY = {'gnss_missing_fix', 'gnss_fix_no_position', 'gnss_lat_out_of_range'
 
 def build_events(n, seed):
     """n events per category, each from a fresh valid catalog announcement."""
-    gen = CatalogDatasetGenerator(seed=seed, calibrated=True)   # server's labeling
+    # include_gnss: the GNSS defects below need receiver announcements.
+    gen = CatalogDatasetGenerator(seed=seed, calibrated=True, include_gnss=True)
     plain, gnss = [], []
     while len(plain) < n * (len(MUTATORS) - len(GNSS_ONLY)) or len(gnss) < n * len(GNSS_ONLY):
         d = gen.generate_device()

@@ -54,7 +54,8 @@ def test_catalog_gnss_samples_pass_shacl():
     from semantic_layer.rdf_store import RDFStore
     from semantic_layer.validator import SHACLValidator
 
-    gen = CatalogDatasetGenerator(seed=42, labeling='clasificador', calibrated=True)
+    gen = CatalogDatasetGenerator(seed=42, labeling='clasificador', calibrated=True,
+                                  include_gnss=True)
     validator = SHACLValidator()
     checked = 0
     for device in gen.generate_dataset(300):

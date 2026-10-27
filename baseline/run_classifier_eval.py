@@ -51,7 +51,10 @@ warnings.filterwarnings("ignore")
 
 MODELS = ["decision_tree", "random_forest", "svm", "mlp"]
 FEATURE_SETS = [FEATURE_SET_RESOURCE, FEATURE_SET_RESOURCE_NAME]
-CLASSES = ["ESP32Device", "GNSSReceiver", "IoTGateway", "Sensor", "SingleBoardComputer"]
+# The classes of SyntheticDatasetGenerator, the generator this script uses.
+# GNSSReceiver is not among them: the class is decided by the rule of
+# pnp_ai.capability_rules before the model, so the model is not trained on it.
+CLASSES = ["ESP32Device", "IoTGateway", "Sensor", "SingleBoardComputer"]
 RESULTS_DIR = Path(__file__).parent / "results"
 
 

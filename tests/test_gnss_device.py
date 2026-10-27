@@ -154,7 +154,7 @@ class TestClassificationRule:
 
 
 class TestMLClassification:
-    """The trained classifier, not a rule, decides the GNSSReceiver class."""
+    """A rule on the declared capability, not the model, decides the class."""
 
     @pytest.fixture(scope='class', params=['resource', 'resource+name'])
     def trained(self, request):
@@ -166,8 +166,11 @@ class TestMLClassification:
     PI5_HOST = {'memory_total': 8_589_934_592, 'memory_free': 6_000_000_000,
                 'cpu_freq_mhz': 2400, 'link_type': 'ethernet', 'protocol': 'mqtt'}
 
-    def test_gnss_class_is_in_the_model(self, trained):
-        assert 'GNSSReceiver' in list(trained.label_encoder.classes_)
+    def test_gnss_class_is_not_in_the_model(self, trained):
+        assert 'GNSSReceiver' not in list(trained.label_encoder.classes_)
+
+    def test_no_feature_repeats_the_declaration(self, trained):
+        assert 'declares_gnss' not in trained.feature_names
 
     def test_gps_hat_on_pi5_is_gnss_receiver(self, trained):
         data = dict(gnss_announcement(), **self.PI5_HOST)
@@ -181,18 +184,31 @@ class TestMLClassification:
                     link_type='wifi')
         assert trained.classify(data).device_type == 'GNSSReceiver'
 
-    def test_same_pi5_without_capability_stays_sbc(self, trained):
+    def test_same_pi5_without_the_capability_is_typed_as_a_board(self, trained):
+        """Without the declaration there is nothing to recognize: the device is
+        typed by the resources of its host, like any other board. Which board
+        class it lands on is the model's decision, and the
+        IoTGateway/SingleBoardComputer boundary is the weak one."""
         data = {'id': 'rpi5-plain', 'hardware': 'RaspberryPi-5', **self.PI5_HOST}
-        assert trained.classify(data).device_type == 'SingleBoardComputer'
+        result = trained.classify(data)
+        assert result.device_type != 'GNSSReceiver'
+        assert result.device_type in ('SingleBoardComputer', 'IoTGateway')
 
-    def test_safety_net_only_for_models_without_the_class(self):
-        from pnp_ai.capability_rules import apply_capability_rules
-        from pnp_ai.device_classifier import ClassificationResult
-        old = ClassificationResult('SingleBoardComputer', 0.9, {}, 'gateway', [])
-        data = gnss_announcement()
-        # Old 4-class model: the rule steps in.
-        fixed = apply_capability_rules(data, old, ['ESP32Device', 'SingleBoardComputer'])
-        assert fixed.device_type == 'GNSSReceiver'
-        # Model that knows the class: its decision stands, even a wrong one.
-        kept = apply_capability_rules(data, old, ['GNSSReceiver', 'SingleBoardComputer'])
-        assert kept.device_type == 'SingleBoardComputer'
+    def test_the_rule_decides_before_the_model(self, trained):
+        """The declaration settles the class, so the confidence is categorical."""
+        data = dict(gnss_announcement(), **self.PI5_HOST)
+        result = trained.classify(data)
+        assert result.device_type == 'GNSSReceiver'
+        assert result.confidence == 1.0
+        assert result.all_probabilities == {'GNSSReceiver': 1.0}
+
+    def test_gps_capability_spelling(self, trained):
+        data = dict(gnss_announcement(), **self.PI5_HOST)
+        data['capabilities'] = ['gps']
+        assert trained.classify(data).device_type == 'GNSSReceiver'
+
+    def test_rule_also_applies_without_a_trained_model(self):
+        from pnp_ai.device_classifier import DeviceClassifier
+        clf = DeviceClassifier(model_type='rule_based')
+        data = dict(gnss_announcement(), **self.PI5_HOST)
+        assert clf.classify(data).device_type == 'GNSSReceiver'
