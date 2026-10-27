@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-20T18:44:43.047289+00:00",
+  "generated_at": "2026-10-26T02:04:18.612721+00:00",
   "python": "3.13.5",
   "gc_thresholds": [
     2000,
@@ -20,31 +20,31 @@
     "gc_enabled": true,
     "events": 3000,
     "conforming": 3000,
-    "median_ms": 7.23,
-    "mean_ms": 7.719,
-    "sd_ms": 3.937,
-    "p95_ms": 8.809,
-    "p99_ms": 14.064,
-    "max_ms": 154.379,
+    "median_ms": 7.117,
+    "mean_ms": 7.45,
+    "sd_ms": 3.96,
+    "p95_ms": 8.701,
+    "p99_ms": 13.511,
+    "max_ms": 155.971,
     "events_over_50ms": 2,
     "events_over_100ms": 2,
     "slow_events_with_gen2_pause": 2,
     "slow_events_with_any_pause": 2,
     "gc_pauses": {
       "gen0": {
-        "count": 1612,
-        "max_ms": 0.643,
-        "median_ms": 0.435
+        "count": 1591,
+        "max_ms": 0.592,
+        "median_ms": 0.432
       },
       "gen1": {
-        "count": 146,
-        "max_ms": 7.562,
-        "median_ms": 5.985
+        "count": 144,
+        "max_ms": 7.195,
+        "median_ms": 5.608
       },
       "gen2": {
         "count": 2,
-        "max_ms": 146.904,
-        "median_ms": 143.071
+        "max_ms": 148.661,
+        "median_ms": 145.281
       }
     }
   },
@@ -52,12 +52,12 @@
     "gc_enabled": false,
     "events": 3000,
     "conforming": 3000,
-    "median_ms": 6.632,
-    "mean_ms": 6.959,
-    "sd_ms": 0.571,
-    "p95_ms": 8.054,
-    "p99_ms": 8.104,
-    "max_ms": 8.349,
+    "median_ms": 6.583,
+    "mean_ms": 6.699,
+    "sd_ms": 0.327,
+    "p95_ms": 7.674,
+    "p99_ms": 8.024,
+    "max_ms": 8.12,
     "events_over_50ms": 0,
     "events_over_100ms": 0,
     "slow_events_with_gen2_pause": 0,
