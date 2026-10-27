@@ -5,7 +5,7 @@
     "seed": 42,
     "training_samples": 2000,
     "shacl_on_register": true,
-    "output_dir": "experiments/results/invalid_events_5c"
+    "output_dir": "experiments/results/invalid_events"
   },
   "catalog_version": "8f8756c70cae",
   "python": "3.13.5",

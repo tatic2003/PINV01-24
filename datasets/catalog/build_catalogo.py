@@ -148,7 +148,7 @@ def main(argv):
                 errores.append(f"{tag}: {c}={r[c]} fuera de 0..100")
         if r["free_pct_lo"] and r["free_pct_hi"] and float(r["free_pct_lo"]) > float(r["free_pct_hi"]):
             errores.append(f"{tag}: free_pct_lo > free_pct_hi")
-        # enlace con el que se midió la memoria anunciada (v3, 2026-10-15)
+        # enlace con el que se midió la memoria anunciada (v3)
         if r["enlace_medido"] and r["enlace_medido"] not in ENLACES:
             errores.append(f"{tag}: enlace_medido {r['enlace_medido']!r} fuera del vocabulario {ENLACES}")
         if r["memoria_anunciada_bytes_medida"] and not r["enlace_medido"]:

@@ -6,7 +6,7 @@ Reads the per-event CSVs already written by run_distributed_benchmark.py and
 run_benchmark.py; it does not re-run any benchmark.
 
 Usage:
-    python baseline/plot_article_figures.py baseline/results_pi5_2026-10-17_catalog
+    python baseline/plot_article_figures.py baseline/results_pi5_catalog
 
 Outputs (in the same directory unless --out is given):
     fig_baseline_latency.pdf/.png   boxplot + CDF of end-to-end latency

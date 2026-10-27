@@ -1,5 +1,5 @@
 
-CSV: experiments/results/gnss_validation_5c_r2/gnss_validacion_2026-10-25_233545.csv
+CSV: experiments/results/gnss_validation/gnss_validacion.csv
 
 case                         expect  server  light   shacl   reg_ms(med) shacl_ms(med)
 valid_fix                    True     30/30   30/30   30/30        11.29          8.82

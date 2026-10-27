@@ -16,7 +16,7 @@ Figures:
 
 Usage (article settings are the defaults: catalog, 2000 samples, resource):
     cd PINV01-24-main
-    python baseline/plot_classifier_metrics.py --output-dir baseline/results_pi5_2026-10-17_catalog
+    python baseline/plot_classifier_metrics.py --output-dir baseline/results_pi5_catalog
 
 Output (in --output-dir), each figure as .png and .pdf:
     clsf_fig_a_accuracy_f1, clsf_fig_b_perclass_f1,

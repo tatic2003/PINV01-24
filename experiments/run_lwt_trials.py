@@ -267,8 +267,8 @@ def main():
     ap.add_argument("--mqtt-port", type=int, default=1883)
     ap.add_argument("--offsets", default="3,8,13,18,23,28,5,10,20,25",
                     help="segundos tras un heartbeat en que se corta el cable")
-    ap.add_argument("--csv", default="resultados/lwt_trials_2026-10-06.csv")
-    ap.add_argument("--ping-log", default="resultados/ping_lwt_trials_2026-10-06.log")
+    ap.add_argument("--csv", default="resultados/lwt_trials.csv")
+    ap.add_argument("--ping-log", default="resultados/ping_lwt_trials.log")
     args = ap.parse_args()
     offsets = [float(x) for x in args.offsets.split(",") if x.strip()]
 

@@ -100,7 +100,7 @@ def test_unknown_excluded_board_fails_loudly(catalog):
 
 
 def test_model_trained_on_catalog_classifies_real_announcements(catalog):
-    """Real payloads captured on 2026-10-13/14 (datasets/real/announcements_real.jsonl)."""
+    """Real payloads captured(datasets/real/announcements_real.jsonl)."""
     gen = CatalogDatasetGenerator(seed=0, catalog=catalog)
     devices = gen.generate_anomalies(gen.generate_dataset(1500), 0.1)
     clf = DeviceClassifier(model_type='random_forest', feature_set='resource')
