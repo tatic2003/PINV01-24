@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-10-20T16:27:19-03:00",
+  "generated_at": "2026-10-25T23:08:43-03:00",
   "args": {
     "n": 100,
     "seed": 42,
     "training_samples": 2000,
     "shacl_on_register": true,
-    "output_dir": "experiments/results/invalid_events"
+    "output_dir": "experiments/results/invalid_events_5c"
   },
   "catalog_version": "8f8756c70cae",
   "python": "3.13.5",

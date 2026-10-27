@@ -1,29 +1,29 @@
 category,path,n,rejected,rejection_rate,time_median_ms,time_p95_ms,outcomes,top_message
-valid,server,100,0,0.0,13.925,18.66,200:100,
-valid,shacl,100,0,0.0,7.295,8.701,conforms:100,
-missing_id,server,100,100,1.0,0.378,0.681,400:100,Required field 'device_id' is missing
-missing_id,shacl,100,100,1.0,0.177,0.188,rdf_error:100,ValueError: device_id is required
-missing_ip,server,100,100,1.0,0.635,0.71,400:100,Required field 'ip_address' is missing
-missing_ip,shacl,100,100,1.0,8.097,11.326,violation:100,Less than 1 values on <http://pnp-its.fiuna.edu.py/ontology/iot#device/arduino_uno_r4_minima-012>->iot:ipAddress
-missing_hardware,server,100,100,1.0,0.635,0.72,400:100,Required field 'hardware_type' is missing
-missing_hardware,shacl,100,100,1.0,8.073,14.345,violation:100,Less than 1 values on <http://pnp-its.fiuna.edu.py/ontology/iot#device/pjrc_teensy_4_1-011>->iot:hardwareType
-bad_ip,server,100,100,1.0,0.635,0.699,400:100,Invalid IP address format
-bad_ip,shacl,100,100,1.0,7.909,14.065,violation:100,Value does not match pattern '^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
-bad_id,server,100,100,1.0,0.636,0.727,400:100,"Device ID must be 1-64 characters: letters, digits, hyphens and underscores"
-bad_id,shacl,100,100,1.0,7.953,13.543,violation:100,Value does not match pattern '^[a-zA-Z0-9_-]+$'
-bad_mac,server,100,0,0.0,14.052,19.564,200:100,
-bad_mac,shacl,100,0,0.0,7.516,8.702,conforms:100,
-gnss_missing_fix,server,100,100,1.0,0.672,0.728,400:100,Required field 'fix_quality' is missing
-gnss_missing_fix,shacl,100,100,1.0,9.22,15.171,violation:100,Less than 1 values on <http://pnp-its.fiuna.edu.py/ontology/iot#device/gnss-260>->iot:fixQuality
-gnss_fix_no_position,server,100,100,1.0,0.661,0.783,400:100,A position is required when the receiver reports a fix
-gnss_fix_no_position,shacl,100,100,1.0,9.159,15.441,violation:100,Node <http://pnp-its.fiuna.edu.py/ontology/iot#device/lilygo_t_beam-006> must conform to one or more shapes in [ sh:prop
-gnss_lat_out_of_range,server,100,100,1.0,0.663,0.738,400:100,Latitude must be between -90 and 90
-gnss_lat_out_of_range,shacl,100,100,1.0,9.306,15.769,violation:100,"Value is not <= Literal(""90"", datatype=xsd:integer)"
-missing_memory,server,100,100,1.0,0.631,1.157,400:100,Required field 'memory_total' is missing
-missing_memory,shacl,100,100,1.0,7.83,8.968,violation:100,Less than 1 values on <http://pnp-its.fiuna.edu.py/ontology/iot#device/m5stack_atoms3-002>->iot:memoryTotal
-memory_free_gt_total,server,100,100,1.0,0.635,0.713,400:100,memory_free must not exceed memory_total
-memory_free_gt_total,shacl,100,100,1.0,7.951,13.289,violation:100,"Value of <http://pnp-its.fiuna.edu.py/ontology/iot#device/m5stack_core_basic-003>->iot:memoryTotal < Literal(""674290"", d"
-negative_memory,server,100,100,1.0,0.641,0.713,400:100,memory_total must be positive
-negative_memory,shacl,100,100,1.0,8.396,14.651,violation:100,"Value is not > Literal(""0"", datatype=xsd:integer)"
-memory_not_a_number,server,100,100,1.0,0.653,0.715,400:100,memory_total must be a number
-memory_not_a_number,shacl,100,100,1.0,8.627,15.589,violation:100,Value is not Literal with datatype xsd:integer
+valid,server,100,0,0.0,13.749,18.89,200:100,
+valid,shacl,100,0,0.0,7.396,13.091,conforms:100,
+missing_id,server,100,100,1.0,0.376,0.684,400:100,Required field 'device_id' is missing
+missing_id,shacl,100,100,1.0,0.178,0.189,rdf_error:100,ValueError: device_id is required
+missing_ip,server,100,100,1.0,0.633,0.701,400:100,Required field 'ip_address' is missing
+missing_ip,shacl,100,100,1.0,8.082,10.97,violation:100,Device must have an IP address for registration
+missing_hardware,server,100,100,1.0,0.634,0.729,400:100,Required field 'hardware_type' is missing
+missing_hardware,shacl,100,100,1.0,8.076,13.811,violation:100,Device must specify hardware type for registration
+bad_ip,server,100,100,1.0,0.635,0.7,400:100,Invalid IP address format
+bad_ip,shacl,100,100,1.0,7.896,14.016,violation:100,Value does not match pattern '^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
+bad_id,server,100,100,1.0,0.638,0.706,400:100,"Device ID must be 1-64 characters: letters, digits, hyphens and underscores"
+bad_id,shacl,100,100,1.0,7.939,13.527,violation:100,Value does not match pattern '^[a-zA-Z0-9_-]+$'
+bad_mac,server,100,0,0.0,13.925,19.379,200:100,
+bad_mac,shacl,100,0,0.0,7.538,8.699,conforms:100,
+gnss_missing_fix,server,100,100,1.0,0.666,0.735,400:100,Required field 'fix_quality' is missing
+gnss_missing_fix,shacl,100,100,1.0,9.199,15.485,violation:100,Less than 1 values on <http://pnp-its.fiuna.edu.py/ontology/iot#device/gnss-260>->iot:fixQuality
+gnss_fix_no_position,server,100,100,1.0,0.665,0.724,400:100,A position is required when the receiver reports a fix
+gnss_fix_no_position,shacl,100,100,1.0,9.242,9.53,violation:100,Node <http://pnp-its.fiuna.edu.py/ontology/iot#device/lilygo_t_beam-006> must conform to one or more shapes in [ sh:prop
+gnss_lat_out_of_range,server,100,100,1.0,0.667,0.735,400:100,Latitude must be between -90 and 90
+gnss_lat_out_of_range,shacl,100,100,1.0,9.289,15.817,violation:100,"Value is not <= Literal(""90"", datatype=xsd:integer)"
+missing_memory,server,100,100,1.0,0.63,0.712,400:100,Required field 'memory_total' is missing
+missing_memory,shacl,100,100,1.0,7.806,13.323,violation:100,Less than 1 values on <http://pnp-its.fiuna.edu.py/ontology/iot#device/m5stack_atoms3-002>->iot:memoryTotal
+memory_free_gt_total,server,100,100,1.0,0.643,0.73,400:100,memory_free must not exceed memory_total
+memory_free_gt_total,shacl,100,100,1.0,7.966,8.659,violation:100,"Value of <http://pnp-its.fiuna.edu.py/ontology/iot#device/m5stack_core_basic-003>->iot:memoryTotal < Literal(""674290"", d"
+negative_memory,server,100,100,1.0,0.652,0.707,400:100,memory_total must be positive
+negative_memory,shacl,100,100,1.0,8.44,15.027,violation:100,"Value is not > Literal(""0"", datatype=xsd:integer)"
+memory_not_a_number,server,100,100,1.0,0.657,0.706,400:100,memory_total must be a number
+memory_not_a_number,shacl,100,100,1.0,8.657,15.713,violation:100,Value is not Literal with datatype xsd:integer
